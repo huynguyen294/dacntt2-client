@@ -1,4 +1,4 @@
-import AdminLayout from "@/components/layouts/Admin";
+import { AdminLayout } from "@/components/layouts";
 
 const Admin = () => {
   return <AdminLayout>Admin</AdminLayout>;
