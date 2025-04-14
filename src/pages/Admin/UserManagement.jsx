@@ -6,10 +6,23 @@ import { Input } from "@heroui/input";
 import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/table";
 import { Tooltip } from "@heroui/tooltip";
 import { User } from "@heroui/user";
-import { ArrowLeftRight, ArrowUpDown, CirclePlus, Edit, Filter, Search, Trash2 } from "lucide-react";
+import {
+  ArrowDownUpIcon,
+  ArrowLeftRight,
+  ArrowRightCircle,
+  ArrowUpDown,
+  CirclePlus,
+  Edit,
+  Filter,
+  Search,
+  Trash2,
+} from "lucide-react";
 import { useCallback } from "react";
+import { useNavigate } from "react-router";
 
 const UserManagement = () => {
+  const navigate = useNavigate();
+
   const renderCell = useCallback((user, columnKey) => {
     const cellValue = user[columnKey];
 
@@ -58,23 +71,33 @@ const UserManagement = () => {
 
   return (
     <ModuleLayout
-      title="Quản lý người dùng"
-      breadcrumbItems={[{ label: "Quản lý người dùng", path: "/admin/user-management" }]}
+      title="Quản lý tài khoản"
+      breadcrumbItems={[{ label: "Quản lý tài khoản", path: "/admin/user-management" }]}
     >
-      <div className="mt-6 container mx-auto">
+      <div className="mt-10 container mx-auto">
         <div className="flex justify-between">
-          <h3 className="text-xl font-bold">
-            Danh sách người dùng{" "}
+          <h3 className="text-2xl font-bold">
+            Danh sách tài khoản{" "}
             <span className="bg-default-100 px-2 py-1 rounded-full text-[13px] font-normal ml-1">100</span>
           </h3>
         </div>
         <div className="flex justify-between my-2 items-center">
           <div className="flex gap-2 items-center">
-            <Input size="sm" placeholder="Tìm kiếm..." endContent={<Search size="14px" />} />
+            <Input
+              classNames={{ input: "px-2" }}
+              size="sm"
+              placeholder="Tìm kiếm..."
+              endContent={<Search size="16px" />}
+            />
             <Button size="sm" variant="flat" className="font-semibold" startContent={<Filter />}>
               Lọc
             </Button>
-            <Button size="sm" variant="flat" className="font-semibold" startContent={<ArrowUpDown />}>
+            <Button
+              size="sm"
+              variant="flat"
+              className="font-semibold min-w-auto w-[11rem]"
+              startContent={<ArrowUpDown size="14px" />}
+            >
               Sắp xếp
             </Button>
             <Button size="sm" variant="flat" className="font-semibold" startContent={<ArrowLeftRight />}>
@@ -83,8 +106,13 @@ const UserManagement = () => {
             <Divider orientation="vertical" className="h-6 mx-1" />
             <p className="whitespace-nowrap">0 Đã chọn</p>
           </div>
-          <Button className="font-semibold" color="primary" endContent={<CirclePlus size="18px" />}>
-            Thêm người dùng
+          <Button
+            className="font-semibold"
+            color="primary"
+            endContent={<CirclePlus size="18px" />}
+            onPress={() => navigate("/admin/user-management/add")}
+          >
+            Thêm tài khoản
           </Button>
         </div>
         <Table className="mt-4" selectionMode="multiple" aria-label="Example table with custom cells">

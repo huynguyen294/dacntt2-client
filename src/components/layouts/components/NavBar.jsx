@@ -3,15 +3,22 @@ import { Button } from "@heroui/button";
 import { Divider } from "@heroui/divider";
 import { Navbar as HeroUiNavBar, NavbarBrand, NavbarContent } from "@heroui/navbar";
 import { Bell, ChevronDown, Menu, Search, Settings } from "lucide-react";
+import SidebarDrawer from "./SidebarDrawer";
+import { useDisclosure } from "@heroui/modal";
 
-const NavBar = ({ title }) => {
+const NavBar = ({ title, hideMenuButton = false }) => {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
   return (
     <HeroUiNavBar maxWidth="full">
-      <NavbarContent justify="start">
-        <Button isIconOnly variant="light" radius="full">
-          <Menu />
-        </Button>
-        <NavbarBrand className="text-lg font-semibold">{title}</NavbarBrand>
+      <SidebarDrawer isOpen={isOpen} onOpenChange={onOpenChange} />
+      <NavbarContent justify="start" className="gap-1">
+        {!hideMenuButton && (
+          <Button isIconOnly variant="light" radius="full" onPress={onOpen}>
+            <Menu />
+          </Button>
+        )}
+        <NavbarBrand className="text-xl font-bold">{title}</NavbarBrand>
       </NavbarContent>
       <NavbarContent justify="end" className="flex justify-end">
         <div className="bg-default-100 rounded-full p-1 flex items-center">

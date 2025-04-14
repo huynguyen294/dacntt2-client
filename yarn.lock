@@ -545,6 +545,21 @@
     "@types/lodash.debounce" "^4.0.7"
     scroll-into-view-if-needed "3.0.10"
 
+"@heroui/card@^2.2.16":
+  version "2.2.16"
+  resolved "https://registry.yarnpkg.com/@heroui/card/-/card-2.2.16.tgz#8db06b6bcab995f23daafca47e06c18cb77f1c3c"
+  integrity sha512-mMptkJ3Yl8s9m5C4f2y9EvFojsCTS5RMKoLDhcdeR1HLIpriBE//ReZxCzCGo7rH3UfDPwPQgeOaVwgnyp3Txw==
+  dependencies:
+    "@heroui/react-utils" "2.1.8"
+    "@heroui/ripple" "2.2.12"
+    "@heroui/shared-utils" "2.1.7"
+    "@heroui/use-aria-button" "2.2.11"
+    "@react-aria/button" "3.12.1"
+    "@react-aria/focus" "3.20.1"
+    "@react-aria/interactions" "3.24.1"
+    "@react-aria/utils" "3.28.1"
+    "@react-types/shared" "3.28.0"
+
 "@heroui/checkbox@2.3.16", "@heroui/checkbox@^2.3.16":
   version "2.3.16"
   resolved "https://registry.yarnpkg.com/@heroui/checkbox/-/checkbox-2.3.16.tgz#6b27c47f349bee4f39e4b1b9f6160190fad0e4e4"
@@ -718,7 +733,7 @@
     "@react-types/shared" "3.28.0"
     "@tanstack/react-virtual" "3.11.3"
 
-"@heroui/modal@2.2.14":
+"@heroui/modal@2.2.14", "@heroui/modal@^2.2.14":
   version "2.2.14"
   resolved "https://registry.yarnpkg.com/@heroui/modal/-/modal-2.2.14.tgz#6a6ea7beef9f76169bd778cc12d971473a6265f2"
   integrity sha512-0IhtFICTuYta/7PTcbzm/3y2jJmBIw+/xvkMUoTTjfXzW9bepMoGuZhfalJuaexqXm1mS+wxrn8/4w3NH5i8hA==

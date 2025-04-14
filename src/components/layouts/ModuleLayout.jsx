@@ -11,8 +11,8 @@ const ModuleLayout = ({ title, breadcrumbItems = [], children }) => {
       <div className="flex-1 h-[100dvh] flex flex-col">
         <NavBar title={title} />
         <div className="px-6 flex-1 overflow-y-auto">
-          <Breadcrumbs>
-            <BreadcrumbItem onPress={() => navigate("/admin")} startContent={<Home size="12px" />}>
+          <Breadcrumbs size="lg" className="ml-3">
+            <BreadcrumbItem onPress={() => navigate("/admin")} startContent={<Home size="16px" />}>
               Trang chủ
             </BreadcrumbItem>
             {breadcrumbItems.map(({ path, label }, index) => (
