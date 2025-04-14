@@ -1,5 +1,5 @@
 import { PasswordInput } from "@/components/common";
-import { LoginLayout } from "@/components/layouts";
+import { AuthLayout } from "@/components/layouts";
 import { useNavigate } from "@/hooks";
 import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
@@ -14,7 +14,7 @@ const Register = () => {
     console.log("handleSubmit");
   };
   return (
-    <LoginLayout key="register-page">
+    <AuthLayout key="register-page">
       <div className="flex h-full w-full items-center justify-center">
         <div className="flex w-full max-w-sm sm:max-w-md flex-col gap-4 rounded-large bg-content1 px-8 pb-10 pt-6 shadow-small">
           <div className="flex flex-col gap-1">
@@ -40,7 +40,7 @@ const Register = () => {
           </p>
         </div>
       </div>
-    </LoginLayout>
+    </AuthLayout>
   );
 };
 

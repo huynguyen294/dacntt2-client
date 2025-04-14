@@ -1,7 +1,7 @@
-import { AdminLayout } from "@/components/layouts";
+import { MainLayout } from "@/components/layouts";
 
 const Admin = () => {
-  return <AdminLayout>Admin</AdminLayout>;
+  return <MainLayout title="Tổng quan">Admin</MainLayout>;
 };
 
 export default Admin;

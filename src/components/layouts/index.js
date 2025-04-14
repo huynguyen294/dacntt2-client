@@ -1,2 +1,3 @@
-export { default as LoginLayout } from "./Login";
-export { default as AdminLayout } from "./Admin";
+export { default as AuthLayout } from "./AuthLayout";
+export { default as MainLayout } from "./MainLayout";
+export { default as ModuleLayout } from "./ModuleLayout";

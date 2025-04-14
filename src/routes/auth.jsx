@@ -1,8 +1,5 @@
-import { Login, Register } from "@/pages/Auth";
+import { Login } from "@/pages/Auth";
 
-const authRoutes = [
-  { path: "/login", element: <Login /> },
-  { path: "/register", element: <Register /> },
-];
+const authRoutes = [{ path: "/login", element: <Login /> }];
 
 export default authRoutes;

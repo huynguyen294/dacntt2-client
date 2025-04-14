@@ -5,7 +5,7 @@ import appRoutes from "@/routes";
 
 const useRouter = () => {
   const routes = useMemo(() => {
-    const list = appRoutes.auth;
+    const list = [...appRoutes.auth, ...appRoutes.admin];
     return createBrowserRouter(list);
   }, []);
 
