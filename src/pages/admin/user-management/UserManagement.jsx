@@ -1,4 +1,3 @@
-import { getUsers } from "@/apis/user";
 import { ModuleLayout } from "@/components/layouts";
 import { DATE_FORMAT } from "@/constants";
 import { Button } from "@heroui/button";
@@ -12,21 +11,11 @@ import { Tooltip } from "@heroui/tooltip";
 import { User } from "@heroui/user";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
-import {
-  ArrowDown,
-  ChevronDown,
-  Edit,
-  Grid2X2,
-  ListFilter,
-  Plus,
-  Search,
-  SlidersHorizontal,
-  Trash2,
-} from "lucide-react";
+import { ChevronDown, Edit, Grid2X2, ListFilter, Plus, Search, SlidersHorizontal, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { userManagementBreadcrumbItems } from ".";
-import { ScrollArea, ScrollBar } from "@/components/shadcn";
+import { getUsers } from "@/apis";
 
 const UserManagement = () => {
   const navigate = useNavigate();
@@ -45,7 +34,7 @@ const UserManagement = () => {
   const renderCell = useCallback((user, columnKey) => {
     let cellValue = user[columnKey];
     if (columnKey === "createdAt" || columnKey === "dateOfBirth") {
-      cellValue = format(new Date(cellValue), DATE_FORMAT);
+      if (cellValue) cellValue = format(new Date(cellValue), DATE_FORMAT);
     }
 
     switch (columnKey) {
@@ -130,7 +119,12 @@ const UserManagement = () => {
             <Divider orientation="vertical" className="h-6 mx-1" />
             <p className="whitespace-nowrap">{selectedKeys === "all" ? pager.pageSize : selectedKeys.size} Đã chọn</p>
             {(selectedKeys === "all" || selectedKeys.size > 0) && (
-              <Button size="sm" variant="flat" className="font-semibold min-w-fit" endContent={<ChevronDown />}>
+              <Button
+                size="sm"
+                variant="flat"
+                className="font-semibold min-w-fit"
+                endContent={<ChevronDown size="13px" />}
+              >
                 Thao tác nhiều
               </Button>
             )}

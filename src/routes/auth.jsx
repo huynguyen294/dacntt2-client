@@ -1,4 +1,4 @@
-import { Login, Register } from "@/pages/auth-";
+import { Login, Register } from "@/pages/auth";
 
 const authRoutes = [
   { path: "/login", element: <Login /> },

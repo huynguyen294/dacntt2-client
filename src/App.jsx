@@ -1,11 +1,12 @@
-import { RouterProvider } from "react-router";
-import { useInitialization, useRouter } from "./hooks";
+import { createBrowserRouter, RouterProvider } from "react-router";
+import { useVerifyUser } from "./hooks";
 
 import "./App.css";
+import appRoutes from "./routes";
 
 const App = () => {
-  useInitialization();
-  const router = useRouter();
+  useVerifyUser();
+  const router = createBrowserRouter(appRoutes);
 
   return <RouterProvider router={router} />;
 };

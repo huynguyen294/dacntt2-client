@@ -5,6 +5,7 @@ import { useShallow } from "zustand/shallow";
 export const valueWithPrevious = (value, previous) => (typeof value === "function" ? value(previous) : value);
 
 export const createStoreSelector = (storeHook, properties) => {
+  if (!properties) return storeHook();
   //default with shallow
   if (typeof properties === "function") return storeHook(useShallow(properties));
   //single
@@ -19,7 +20,22 @@ export const createActionGetter = (storeHook, actionKey) => storeHook.getState()
 
 export const generateCommonActions = (set) => ({
   change: (property, value) => {
-    set(produce((state) => ({ [property]: valueWithPrevious(value, state[property]) })));
+    if (typeof property === "object") {
+      const object = { ...property };
+      const keys = Object.keys(object);
+
+      set(
+        produce((state) => {
+          const newValues = keys.reduce((acc, key) => {
+            return { ...acc, [key]: valueWithPrevious(object[key], state[key]) };
+          }, {});
+
+          return newValues;
+        })
+      );
+    } else {
+      set(produce((state) => ({ [property]: valueWithPrevious(value, state[property]) })));
+    }
   },
   add: (property, value, isUnshift) => {
     set(

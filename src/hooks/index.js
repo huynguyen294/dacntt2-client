@@ -1,3 +1,4 @@
 export { default as useInitialization } from "./useInitialization";
 export { default as useNavigate } from "./useNavigate";
-export { default as useRouter } from "./useRouter";
+export { default as useVerifyUser } from "./useVerifyUser";
+export { default as useAuthorizationRedirect } from "./useAuthorizationRedirect";

@@ -1,20 +1,33 @@
-import { PasswordInput } from "@/components/common";
+import { signIn } from "@/apis";
+import { Form, PasswordInput } from "@/components/common";
 import { AuthLayout } from "@/components/layouts";
 import { useNavigate } from "@/hooks";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button } from "@heroui/button";
 import { Divider } from "@heroui/divider";
-import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
 import { Link } from "@heroui/link";
+import { useState } from "react";
 
 const Login = () => {
   const navigate = useNavigate();
+  const [signing, setSigning] = useState(false);
+  const [error, setError] = useState({});
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("handleSubmit");
+  const handleLogin = async (data) => {
+    setSigning(true);
+    const result = await signIn(data, navigate);
+    if (!result.ok) {
+      const validate = {};
+      if (result.status === 404) {
+        validate.email = result.message;
+      } else {
+        validate.password = result.message;
+      }
+      setError(validate);
+    }
+    setSigning(false);
   };
 
   return (
@@ -24,15 +37,32 @@ const Login = () => {
           <div className="flex flex-col gap-1">
             <h1 className="text-foreground-500 text-large font-medium">Đăng nhập</h1>
           </div>
-          <Form className="flex flex-col gap-3" validationBehavior="native" onSubmit={handleSubmit}>
-            <Input isRequired label="Email" name="email" type="email" variant="bordered" />
-            <PasswordInput isRequired label="Mật khẩu" name="password" variant="bordered" />
+          <Form className="flex flex-col gap-3" validationBehavior="native" onSubmit={handleLogin}>
+            <Input
+              isInvalid={Boolean(error.email)}
+              errorMessage={error.email}
+              isRequired
+              label="Email"
+              name="email"
+              type="email"
+              variant="bordered"
+              onBlur={() => setError("")}
+            />
+            <PasswordInput
+              isInvalid={Boolean(error.password)}
+              errorMessage={error.password}
+              isRequired
+              label="Mật khẩu"
+              name="password"
+              variant="bordered"
+              onBlur={() => setError("")}
+            />
             <div className="flex w-full items-center justify-between px-1 py-2">
               <Link className="text-default-500" href="#" size="sm">
                 Quên mật khẩu?
               </Link>
             </div>
-            <Button className="w-full" color="primary" type="submit">
+            <Button isLoading={signing} className="w-full" color="primary" type="submit">
               Đăng nhập
             </Button>
           </Form>
@@ -42,7 +72,7 @@ const Login = () => {
             <Divider className="flex-1" />
           </div>
           <div className="flex flex-col gap-2">
-            <Button startContent={<FontAwesomeIcon icon={faGoogle} />} variant="bordered">
+            <Button isLoading={signing} startContent={<FontAwesomeIcon icon={faGoogle} />} variant="bordered">
               Đăng nhập bằng Google
             </Button>
           </div>

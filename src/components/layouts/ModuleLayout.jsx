@@ -1,4 +1,6 @@
+/* eslint-disable react-refresh/only-export-components */
 import { cn } from "@/lib/utils";
+import { withAuth } from "@/hocs";
 import NavBar from "./components/NavBar";
 
 const ModuleLayout = ({ title, breadcrumbItems, children, className }) => {
@@ -10,4 +12,4 @@ const ModuleLayout = ({ title, breadcrumbItems, children, className }) => {
   );
 };
 
-export default ModuleLayout;
+export default withAuth(ModuleLayout);

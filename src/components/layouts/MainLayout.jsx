@@ -1,3 +1,5 @@
+/* eslint-disable react-refresh/only-export-components */
+import { withAuth } from "@/hocs";
 import NavBar from "./components/NavBar";
 import Sidebar from "./components/Sidebar";
 
@@ -13,4 +15,4 @@ const MainLayout = ({ title, children, hideMenuButton }) => {
   );
 };
 
-export default MainLayout;
+export default withAuth(MainLayout);

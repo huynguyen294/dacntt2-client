@@ -3,11 +3,22 @@ import { Eye, EyeOff } from "lucide-react";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 
-const PasswordInput = ({ isRequired, label, name, placeholder, variant, className, ...otherProps }) => {
+const PasswordInput = ({
+  isRequired,
+  isInvalid,
+  errorMessage,
+  label,
+  name,
+  onBlur,
+  placeholder,
+  variant,
+  className,
+  ...otherProps
+}) => {
   const [isVisible, setIsVisible] = useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
 
-  const mainProps = { isRequired, label, name, placeholder, variant, className };
+  const mainProps = { onBlur, isRequired, isInvalid, errorMessage, label, name, placeholder, variant, className };
 
   return (
     <Input

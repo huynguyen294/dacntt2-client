@@ -16,7 +16,7 @@ export const useAppStoreBase = create((set) => ({
   },
 }));
 
-export const getAppActions = createActionGetter(useAppStoreBase, "appActions");
-const useAppStore = createStoreSelector(useAppStoreBase);
+export const getAppActions = () => createActionGetter(useAppStoreBase, "appActions");
 
+const useAppStore = (properties) => createStoreSelector(useAppStoreBase, properties);
 export default useAppStore;
