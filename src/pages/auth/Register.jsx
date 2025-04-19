@@ -26,6 +26,7 @@ const Register = () => {
     const { passwordConfirm, firstName, lastName, ...payload } = data;
     if (payload.password !== passwordConfirm) {
       changeError({ passwordConfirm: "Mật khẩu không khớp" });
+      return;
     }
 
     setRegistering(true);
