@@ -1,12 +1,16 @@
 import { useNavigate } from "@/hooks";
+import { cn } from "@/lib/utils";
 import { Button } from "@heroui/button";
 import { ChartSpline, GraduationCap, HandCoins, LayoutDashboard, School, User, Warehouse } from "lucide-react";
+import { useLocation } from "react-router";
 
-const Sidebar = () => {
+const Sidebar = ({ className }) => {
+  const location = useLocation();
   const navigate = useNavigate();
+  const pathname = location.pathname;
 
   return (
-    <div className="border-r-1 h-[100dvh] hidden sm:block">
+    <div className={cn("border-r-1 h-[100dvh] hidden sm:block", className)}>
       <div className="h-[4rem] flex items-center justify-center border-b-1 text-primary-800">
         <School size="22px" strokeWidth={2.5} className="mr-2" />
         <p className="font-bold text-lg">CENTER MANAGEMENT</p>
@@ -14,7 +18,7 @@ const Sidebar = () => {
       <div className="flex-1 overflow-y-auto p-6 w-80">
         <Button
           size="lg"
-          className="justify-start font-semibold bg-default-100"
+          className={cn("justify-start font-semibold", pathname === "/admin" && "bg-default-100")}
           fullWidth
           disableRipple
           disableAnimation
@@ -27,7 +31,7 @@ const Sidebar = () => {
         <p className="text-sm font-semibold text-foreground-600 my-3 ml-1">Quản lý</p>
         <Button
           size="lg"
-          className="justify-start font-semibold"
+          className={cn("justify-start font-semibold")}
           fullWidth
           disableRipple
           disableAnimation
@@ -38,7 +42,7 @@ const Sidebar = () => {
         </Button>
         <Button
           size="lg"
-          className="justify-start font-semibold"
+          className={cn("justify-start font-semibold")}
           fullWidth
           disableRipple
           disableAnimation
@@ -49,7 +53,7 @@ const Sidebar = () => {
         </Button>
         <Button
           size="lg"
-          className="justify-start font-semibold"
+          className={cn("justify-start font-semibold")}
           fullWidth
           disableRipple
           disableAnimation
@@ -60,7 +64,7 @@ const Sidebar = () => {
         </Button>
         <Button
           size="lg"
-          className="justify-start font-semibold"
+          className={cn("justify-start font-semibold", pathname.includes("/user-management") && "bg-default-100")}
           fullWidth
           disableRipple
           disableAnimation
@@ -73,7 +77,7 @@ const Sidebar = () => {
         <p className="text-sm font-semibold text-foreground-600 my-3 ml-1">Báo cáo</p>
         <Button
           size="lg"
-          className="justify-start font-semibold"
+          className={cn("justify-start font-semibold")}
           fullWidth
           disableRipple
           disableAnimation

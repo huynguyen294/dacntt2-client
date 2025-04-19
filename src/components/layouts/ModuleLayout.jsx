@@ -1,34 +1,11 @@
-import { BreadcrumbItem, Breadcrumbs } from "@heroui/breadcrumbs";
+import { cn } from "@/lib/utils";
 import NavBar from "./components/NavBar";
-import { Home } from "lucide-react";
-import { useNavigate } from "@/hooks";
 
-const ModuleLayout = ({ title, breadcrumbItems = [], children }) => {
-  const navigate = useNavigate();
-
+const ModuleLayout = ({ title, breadcrumbItems, children, className }) => {
   return (
-    <main className="flex">
-      <div className="flex-1 h-[100dvh] flex flex-col">
-        <NavBar title={title} />
-        <div className="px-6 flex-1 overflow-y-auto">
-          <Breadcrumbs size="lg" className="ml-3">
-            <BreadcrumbItem onPress={() => navigate("/admin")} startContent={<Home size="16px" />}>
-              Trang chủ
-            </BreadcrumbItem>
-            {breadcrumbItems.map(({ path, label }, index) => (
-              <BreadcrumbItem
-                onPress={() => {
-                  if (index === breadcrumbItems.length - 1) return;
-                  navigate(path);
-                }}
-              >
-                {label}
-              </BreadcrumbItem>
-            ))}
-          </Breadcrumbs>
-          {children}
-        </div>
-      </div>
+    <main className={cn("h-[100dvh] flex flex-col overflow-hidden container mx-auto", className)}>
+      <NavBar title={title} shouldHideOnScroll breadcrumbItems={breadcrumbItems} />
+      {children}
     </main>
   );
 };

@@ -7,7 +7,7 @@ const SidebarDrawer = ({ isOpen, onOpenChange }) => {
       <DrawerContent>
         {() => (
           <DrawerBody>
-            <Sidebar />
+            <Sidebar className="border-r-0" />
           </DrawerBody>
         )}
       </DrawerContent>
