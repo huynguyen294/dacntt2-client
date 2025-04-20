@@ -1,4 +1,6 @@
-import { AddUser, Admin, UserManagement } from "@/pages/admin";
+import Admin from "./Admin";
+import AddUser from "./user-management/AddUser";
+import UserManagement from "./user-management/UserManagement";
 
 const adminRoutes = [
   { path: "/admin", element: <Admin /> },

@@ -1,4 +1,4 @@
-import { Teacher } from "@/pages/teacher";
+import Teacher from "./Teacher";
 
 const teacherRoutes = [{ path: "/teacher", element: <Teacher /> }];
 

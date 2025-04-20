@@ -1,4 +1,4 @@
-import { ModuleLayout } from "@/components/layouts";
+import { ModuleLayout } from "@/layouts";
 import { addUserBreadcrumbItems } from ".";
 
 const AddUser = () => {

@@ -1,4 +1,4 @@
-import { ModuleLayout } from "@/components/layouts";
+import { ModuleLayout } from "@/layouts";
 import { DATE_FORMAT } from "@/constants";
 import { Button } from "@heroui/button";
 import { Chip } from "@heroui/chip";
@@ -12,7 +12,7 @@ import { User } from "@heroui/user";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { ChevronDown, Edit, Grid2X2, ListFilter, Plus, Search, SlidersHorizontal, Trash2 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { userManagementBreadcrumbItems } from ".";
 import { getUsers } from "@/apis";
@@ -29,12 +29,15 @@ const UserManagement = () => {
   const users = data?.users || [];
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
 
-  const changePager = useCallback((prop, value) => setPager((prev) => ({ ...prev, [prop]: value })), []);
+  const changePager = (prop, value) => setPager((prev) => ({ ...prev, [prop]: value }));
 
-  const renderCell = useCallback((user, columnKey) => {
+  const renderCell = (user, columnKey, index) => {
     let cellValue = user[columnKey];
     if (columnKey === "createdAt" || columnKey === "dateOfBirth") {
       if (cellValue) cellValue = format(new Date(cellValue), DATE_FORMAT);
+    }
+    if (columnKey === "index") {
+      cellValue = (index + 1) * pager.page;
     }
 
     switch (columnKey) {
@@ -71,7 +74,7 @@ const UserManagement = () => {
       default:
         return cellValue;
     }
-  }, []);
+  };
 
   useEffect(() => {
     if (isSuccess && data?.pager) {
@@ -147,17 +150,17 @@ const UserManagement = () => {
         selectedKeys={selectedKeys}
         onSelectionChange={setSelectedKeys}
       >
-        <TableHeader columns={columns}>
-          {(column) => (
+        <TableHeader>
+          {columns.map((column) => (
             <TableColumn key={column.uid} align={column.uid === "actions" ? "center" : "start"}>
               {column.name}
             </TableColumn>
-          )}
+          ))}
         </TableHeader>
         {isLoading ? (
           <TableBody>
             <TableRow>
-              <TableCell colSpan={7}>
+              <TableCell colSpan={8}>
                 <div className="h-40 w-full flex justify-center items-center">
                   <Spinner variant="wave" />
                 </div>
@@ -169,7 +172,7 @@ const UserManagement = () => {
             {users.map((user, rowIdx) => (
               <TableRow key={user.id}>
                 {columns.map((col, colIdx) => (
-                  <TableCell key={`${rowIdx}-${colIdx}`}>{renderCell(user, col.uid)}</TableCell>
+                  <TableCell key={`${rowIdx}-${colIdx}`}>{renderCell(user, col.uid, rowIdx)}</TableCell>
                 ))}
               </TableRow>
             ))}
@@ -185,6 +188,7 @@ const UserManagement = () => {
           total={pager.pageCount}
           onChange={(newValues) => {
             setSelectedKeys(new Set([]));
+            console.log(newValues);
             changePager("page", newValues);
           }}
         />
@@ -196,13 +200,14 @@ const UserManagement = () => {
 const defaultPager = { total: 0, pageCount: 1, page: 1, pageSize: 20 };
 
 const columns = [
+  { name: "STT", uid: "index" },
   { name: "Tài khoản", uid: "user" },
   { name: "Vai trò", uid: "role" },
   { name: "Email", uid: "email" },
   { name: "Ngày sinh", uid: "dateOfBirth" },
   { name: "Ngày đăng ký", uid: "createdAt" },
   { name: "Số điện thoại", uid: "phoneNumber" },
-  { name: "Chức năng", uid: "actions" },
+  { name: "Hành động", uid: "actions" },
 ];
 
 export default UserManagement;

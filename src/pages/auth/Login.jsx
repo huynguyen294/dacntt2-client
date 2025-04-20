@@ -1,6 +1,6 @@
 import { signIn } from "@/apis";
 import { Form, PasswordInput } from "@/components/common";
-import { AuthLayout } from "@/components/layouts";
+import { AuthLayout } from "@/layouts";
 import { useNavigate } from "@/hooks";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

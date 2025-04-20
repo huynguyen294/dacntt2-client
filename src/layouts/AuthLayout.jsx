@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { withOutAuth } from "@/hocs";
-import { Spotlight } from "../aceternity";
+import { Spotlight } from "../components/aceternity";
 
 const AuthLayout = ({ children }) => {
   return (

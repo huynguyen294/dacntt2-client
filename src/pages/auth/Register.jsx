@@ -1,6 +1,6 @@
 import { signUp } from "@/apis";
 import { Form, PasswordInput } from "@/components/common";
-import { AuthLayout } from "@/components/layouts";
+import { AuthLayout } from "@/layouts";
 import { useNavigate } from "@/hooks";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";

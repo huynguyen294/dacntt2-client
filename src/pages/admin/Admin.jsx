@@ -1,4 +1,4 @@
-import { MainLayout } from "@/components/layouts";
+import { MainLayout } from "@/layouts";
 import KPI from "@/components/ui/KPI";
 
 const Admin = () => {
