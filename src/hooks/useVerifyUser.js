@@ -3,14 +3,15 @@ import { useEffect } from "react";
 import { resetAppData, useAppStore } from "@/state";
 import { cryptoDecrypt, verifyUserToken } from "@/utils";
 import { addToast } from "@heroui/toast";
+import useNavigate from "./useNavigate";
 
 const useVerifyUser = () => {
+  const navigate = useNavigate();
   const appActions = useAppStore("appActions");
 
   useEffect(() => {
     (async () => {
       let user = cryptoDecrypt(localStorage.getItem("profile"));
-      console.log({ user });
       if (!user) return;
 
       user = JSON.parse(user);
@@ -21,10 +22,10 @@ const useVerifyUser = () => {
       }
 
       addToast({ color: "danger", title: "Phiên đăng nhập hết hạn!", description: "Vui lòng đăng nhập lại." });
-      window.location.href = "/login";
+      navigate("/login");
       resetAppData();
     })();
-  }, [appActions]);
+  }, [appActions, navigate]);
 
   return null;
 };

@@ -7,7 +7,7 @@ import { getAppActions } from "@/state";
 const serverUrl = import.meta.env.VITE_SERVER_URL;
 export const getNewAccessToken = async () => {
   try {
-    const result = await axios.get(`${serverUrl}/api-v1/users/new-access-token`, {
+    const result = await axios.get(`${serverUrl}/api-v1/auth/new-access-token`, {
       withCredentials: true,
     });
     return { ok: true, newAccessToken: result.data.newAccessToken };

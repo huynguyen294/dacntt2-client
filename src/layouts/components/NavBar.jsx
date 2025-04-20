@@ -3,13 +3,13 @@ import { Button } from "@heroui/button";
 import { Divider } from "@heroui/divider";
 import { Navbar as HeroUiNavBar, NavbarBrand, NavbarContent } from "@heroui/navbar";
 import { Bell, ChevronDown, Info, LayoutDashboard, LogOut, Menu, Search, Settings, UserPen } from "lucide-react";
-import { useDisclosure } from "@heroui/modal";
-import { useNavigate } from "react-router";
 import { BreadcrumbItem, Breadcrumbs } from "@heroui/breadcrumbs";
-import { Dropdown, DropdownItem, DropdownMenu, DropdownSection, DropdownTrigger } from "@heroui/dropdown";
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/dropdown";
 import { resetAppData, useAppStore } from "@/state";
-import { User } from "@heroui/user";
+import { useDisclosure } from "@heroui/modal";
 import { signOut } from "@/apis";
+import { useNavigate } from "@/hooks";
+import { User } from "@heroui/user";
 import SidebarDrawer from "./SidebarDrawer";
 
 const NavBar = ({ breadcrumbItems = [], hideMenuButton = false }) => {
@@ -49,7 +49,6 @@ const NavBar = ({ breadcrumbItems = [], hideMenuButton = false }) => {
               </BreadcrumbItem>
               {breadcrumbItems.map(({ path, label }, index) => (
                 <BreadcrumbItem
-                  href={path}
                   onPress={() => {
                     if (index === breadcrumbItems.length - 1) return;
                     navigate(path);

@@ -5,16 +5,13 @@ import { Accordion, AccordionItem } from "@heroui/accordion";
 import { Button } from "@heroui/button";
 import {
   ChartColumnBig,
-  ChartSpline,
   ChevronDown,
   CircleDot,
   GraduationCap,
-  HandCoins,
   LayoutDashboard,
   Podcast,
   School,
   User,
-  Warehouse,
 } from "lucide-react";
 import { useLocation } from "react-router";
 
@@ -65,8 +62,6 @@ const Sidebar = ({ className }) => {
     const active = item.isDashboard ? item.path === pathname : pathname.includes(item.path);
     const Icon = item.icon || CircleDot;
 
-    console.log(item);
-
     return (
       <Button
         size="lg"
@@ -112,8 +107,6 @@ const Sidebar = ({ className }) => {
       </Section>
     );
   };
-
-  console.log(sidebarItems);
 
   return (
     sidebarItems && (

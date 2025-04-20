@@ -58,7 +58,7 @@ const Login = () => {
               onBlur={() => setError("")}
             />
             <div className="flex w-full items-center justify-between px-1 py-2">
-              <Link className="text-default-500" href="#" size="sm">
+              <Link className="text-default-500" size="sm" onPress={() => navigate("/forget-password")}>
                 Quên mật khẩu?
               </Link>
             </div>
@@ -78,7 +78,7 @@ const Login = () => {
           </div>
           <p className="text-foreground-500 text-center text-small">
             Bạn chưa tài khoản ?&nbsp;
-            <Link href="#" size="sm" onClick={() => navigate("/register")}>
+            <Link href="#" size="sm" onPress={() => navigate("/register")}>
               Đăng ký
             </Link>
           </p>

@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { userManagementBreadcrumbItems } from ".";
 import { getUsers } from "@/apis";
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/dropdown";
 
 const UserManagement = () => {
   const navigate = useNavigate();
@@ -25,6 +26,8 @@ const UserManagement = () => {
     queryKey: ["users", `p=${pager.page},ps=${pager.pageSize}`],
     queryFn: () => getUsers(pager),
   });
+
+  const loadingState = isLoading || data?.users.length === 0 ? "loading" : "idle";
 
   const users = data?.users || [];
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
@@ -37,7 +40,7 @@ const UserManagement = () => {
       if (cellValue) cellValue = format(new Date(cellValue), DATE_FORMAT);
     }
     if (columnKey === "index") {
-      cellValue = (index + 1) * pager.page;
+      cellValue = index + 1 + (pager.page - 1) * pager.pageSize;
     }
 
     switch (columnKey) {
@@ -120,7 +123,9 @@ const UserManagement = () => {
               Cột
             </Button>
             <Divider orientation="vertical" className="h-6 mx-1" />
-            <p className="whitespace-nowrap">{selectedKeys === "all" ? pager.pageSize : selectedKeys.size} Đã chọn</p>
+            <p className="whitespace-nowrap">
+              {selectedKeys === "all" ? users.length || 0 : selectedKeys.size} Đã chọn
+            </p>
             {(selectedKeys === "all" || selectedKeys.size > 0) && (
               <Button
                 size="sm"
@@ -157,41 +162,65 @@ const UserManagement = () => {
             </TableColumn>
           ))}
         </TableHeader>
-        {isLoading ? (
-          <TableBody>
-            <TableRow>
-              <TableCell colSpan={8}>
-                <div className="h-40 w-full flex justify-center items-center">
-                  <Spinner variant="wave" />
-                </div>
-              </TableCell>
+        <TableBody loadingContent={<Spinner variant="wave" />} loadingState={loadingState}>
+          {users.map((user, rowIdx) => (
+            <TableRow key={user.id}>
+              {columns.map((col, colIdx) => (
+                <TableCell key={`${rowIdx}-${colIdx}`}>{renderCell(user, col.uid, rowIdx)}</TableCell>
+              ))}
             </TableRow>
-          </TableBody>
-        ) : (
-          <TableBody>
-            {users.map((user, rowIdx) => (
-              <TableRow key={user.id}>
-                {columns.map((col, colIdx) => (
-                  <TableCell key={`${rowIdx}-${colIdx}`}>{renderCell(user, col.uid, rowIdx)}</TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        )}
+          ))}
+        </TableBody>
       </Table>
-      <div className="px-10 pb-6">
+      <div className="px-10 pb-6 flex justify-between">
         <Pagination
           isCompact
           showControls
           showShadow
           page={pager.page}
           total={pager.pageCount}
-          onChange={(newValues) => {
+          onChange={(newPage) => {
             setSelectedKeys(new Set([]));
-            console.log(newValues);
-            changePager("page", newValues);
+            changePager("page", newPage);
           }}
         />
+
+        <div className="space-x-2">
+          <Dropdown>
+            <DropdownTrigger>
+              <Button size="sm" variant="bordered" className="border-1" endContent={<ChevronDown size="12px" />}>
+                Hiển thị: {pager.pageSize}
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu selectedKeys={new Set([pager.pageSize.toString()])} selectionMode="single">
+              <DropdownItem key={10} onPress={() => changePager("pageSize", 10)}>
+                10
+              </DropdownItem>
+              <DropdownItem key={20} onPress={() => changePager("pageSize", 20)}>
+                20
+              </DropdownItem>
+              <DropdownItem key={50} onPress={() => changePager("pageSize", 30)}>
+                50
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+          <Button
+            size="sm"
+            variant="flat"
+            isDisabled={pager.page === 1}
+            onPress={() => changePager("page", pager.page - 1)}
+          >
+            Trang trước
+          </Button>
+          <Button
+            size="sm"
+            variant="flat"
+            isDisabled={pager.page === pager.pageCount}
+            onPress={() => changePager("page", pager.page + 1)}
+          >
+            Trang sau
+          </Button>
+        </div>
       </div>
     </ModuleLayout>
   );

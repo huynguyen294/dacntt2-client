@@ -1,7 +1,7 @@
 import { signUp } from "@/apis";
 import { Form, PasswordInput } from "@/components/common";
-import { AuthLayout } from "@/layouts";
 import { useNavigate } from "@/hooks";
+import { AuthLayout } from "@/layouts";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Link } from "@heroui/link";
@@ -10,7 +10,6 @@ import { useState } from "react";
 
 const Register = () => {
   const navigate = useNavigate();
-
   const [errors, setErrors] = useState({});
   const [registering, setRegistering] = useState(false);
 
@@ -79,7 +78,7 @@ const Register = () => {
           </Form>
           <p className="text-foreground-500 text-center text-small">
             Bạn đã có tài khoản ?&nbsp;
-            <Link href="#" size="sm" onClick={() => navigate("/login")}>
+            <Link onPress={() => navigate("/login")} size="sm">
               Đăng nhập
             </Link>
           </p>

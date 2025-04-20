@@ -13,12 +13,24 @@ const PasswordInput = ({
   placeholder,
   variant,
   className,
+  labelPlacement,
   ...otherProps
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
 
-  const mainProps = { onBlur, isRequired, isInvalid, errorMessage, label, name, placeholder, variant, className };
+  const mainProps = {
+    labelPlacement,
+    onBlur,
+    isRequired,
+    isInvalid,
+    errorMessage,
+    label,
+    name,
+    placeholder,
+    variant,
+    className,
+  };
 
   return (
     <Input
