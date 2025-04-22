@@ -7,7 +7,9 @@ import {
   ChartColumnBig,
   ChevronDown,
   CircleDot,
+  CircleHelp,
   GraduationCap,
+  Info,
   LayoutDashboard,
   Podcast,
   School,
@@ -76,7 +78,7 @@ const Sidebar = ({ className }) => {
         variant="light"
         startContent={
           isInSection ? (
-            <CircleDot size={active ? "10px" : "10px"} strokeWidth={active ? 6 : 3} className="w-6" />
+            <CircleDot size={active ? "9px" : "7px"} strokeWidth={active ? 6 : 3} className="w-6" />
           ) : (
             <Icon
               size="21px"
@@ -152,7 +154,6 @@ const userSidebarItems = {
         { label: "Chứng chỉ", path: "/admin/certificates" },
         { label: "Khóa học", path: "/admin/courses" },
         { label: "Lớp học", path: "/admin/classes" },
-        { label: "Lịch học", path: "/admin/class-schedule" },
       ],
     },
     {
@@ -168,6 +169,12 @@ const userSidebarItems = {
           path: "/admin/finance-report",
         },
         { label: "Báo cáo đào tạo", path: "/admin/edu-report" },
+      ],
+    },
+    {
+      items: [
+        { label: "Trung tâm trợ giúp", path: "/admin/certificates", icon: CircleHelp },
+        { label: "Thông tin phần mềm", path: "/admin/courses", icon: Info },
       ],
     },
   ],

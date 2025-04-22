@@ -1,3 +1,42 @@
+import Compressor from "compressorjs";
+
+const maxSize = 2 * 1024 * 1024; // 2MB
+export const compressImg = async (file) => {
+  let quality = Number((maxSize / file.size).toFixed(1));
+  if (quality > 1) quality = 1;
+
+  return new Promise((res, rej) => {
+    new Compressor(file, {
+      quality,
+      mimeType: "image/jpeg",
+      success(result) {
+        res(result);
+      },
+      error(err) {
+        rej(err.message);
+      },
+    });
+  });
+};
+
+export const getIdFromSrc = (src) => {
+  if (!src) return null;
+  const splitted = src.split("/");
+  const splitted2 = splitted[splitted.length - 1].split("?v=");
+  return splitted2[0];
+};
+
+export const getCloudinaryPublicIdFromUrl = (url) => {
+  if (!url) return null;
+  const splitted = url.split("/");
+  const length = splitted.length;
+  const folder = splitted[length - 2];
+  const id = splitted[length - 1].split(".")[0];
+  return `${folder}/${id}`;
+};
+
+export const convertImageSrc = (link) => ({ link, id: getCloudinaryPublicIdFromUrl(link), file: null });
+
 export const currencyToNumber = (str = "") => parseInt(String(str).replaceAll(/[.,]/g, ""));
 
 export const removeVietnameseTones = (str) => {

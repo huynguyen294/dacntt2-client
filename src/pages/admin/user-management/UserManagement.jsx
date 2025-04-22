@@ -11,23 +11,27 @@ import { Tooltip } from "@heroui/tooltip";
 import { User } from "@heroui/user";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { ChevronDown, Edit, Grid2X2, ListFilter, Plus, Search, SlidersHorizontal, Trash2 } from "lucide-react";
+import { Ban, ChevronDown, Edit, Grid2X2, ListFilter, Plus, Search, SlidersHorizontal, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { userManagementBreadcrumbItems } from ".";
 import { getUsers } from "@/apis";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/dropdown";
+import useDebounce from "@/hooks/useDebounce";
 
 const UserManagement = () => {
   const navigate = useNavigate();
 
+  const [query, setQuery] = useState("");
   const [pager, setPager] = useState(defaultPager);
+  const debounceQuery = useDebounce(query);
+
   const { isLoading, data, isSuccess } = useQuery({
-    queryKey: ["users", `p=${pager.page},ps=${pager.pageSize}`],
-    queryFn: () => getUsers(pager),
+    queryKey: ["users", `p=${pager.page},ps=${pager.pageSize},q=${debounceQuery}`],
+    queryFn: () => getUsers(pager, {}, debounceQuery),
   });
 
-  const loadingState = isLoading || data?.users.length === 0 ? "loading" : "idle";
+  const loadingState = isLoading ? "loading" : "idle";
 
   const users = data?.users || [];
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
@@ -98,10 +102,12 @@ const UserManagement = () => {
           <div className="flex gap-2 items-center overflow-x-auto">
             <Input
               size="sm"
-              className="min-w-[250px]"
-              classNames={{ input: "px-2 text-base" }}
-              placeholder="Tìm kiếm..."
+              className="min-w-[300px]"
+              classNames={{ input: "px-2" }}
+              placeholder="Tìm theo tên, email, số điện thoại"
               endContent={<Search size="16px" />}
+              value={query}
+              onValueChange={setQuery}
             />
             <Button
               size="sm"
@@ -154,6 +160,7 @@ const UserManagement = () => {
         aria-label="Example table with custom cells"
         selectedKeys={selectedKeys}
         onSelectionChange={setSelectedKeys}
+        classNames={{ wrapper: "h-full" }}
       >
         <TableHeader>
           {columns.map((column) => (
@@ -162,7 +169,16 @@ const UserManagement = () => {
             </TableColumn>
           ))}
         </TableHeader>
-        <TableBody loadingContent={<Spinner variant="wave" />} loadingState={loadingState}>
+        <TableBody
+          emptyContent={
+            <div className="text-foreground-500 font-semibold flex gap-2 w-full justify-center">
+              <Ban size="18px" />
+              Không có dữ liệu
+            </div>
+          }
+          loadingContent={<Spinner variant="wave" />}
+          loadingState={loadingState}
+        >
           {users.map((user, rowIdx) => (
             <TableRow key={user.id}>
               {columns.map((col, colIdx) => (

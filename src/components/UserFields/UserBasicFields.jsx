@@ -1,11 +1,22 @@
 import { DatePicker } from "@heroui/date-picker";
 import { Input } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
+import { AvatarInput } from "../common";
+import { convertImageSrc } from "@/utils";
 
-const UserBasicFields = () => {
+//https://res.cloudinary.com/easybiov2/image/upload/v1742222204/ngocnhung05062000/hew2aof03eyxf3jgfpyt.jpg
+const UserBasicFields = ({ img = convertImageSrc(), onImgChange = () => {} }) => {
   return (
     <>
-      <div className="row-span-2"></div>
+      <div className="row-span-2 flex justify-center items-center">
+        <AvatarInput
+          className="mt-4"
+          value={img}
+          onChange={onImgChange}
+          variant="bordered"
+          onDelete={() => onImgChange(convertImageSrc())}
+        />
+      </div>
       <Input
         isRequired
         size="lg"
