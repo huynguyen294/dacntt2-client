@@ -3,9 +3,14 @@ import { Input } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
 import { AvatarInput } from "../common";
 import { convertImageSrc } from "@/utils";
+import { format } from "date-fns";
+import { DATE_FORMAT } from "@/constants";
+import { parseDate } from "@internationalized/date";
 
 //https://res.cloudinary.com/easybiov2/image/upload/v1742222204/ngocnhung05062000/hew2aof03eyxf3jgfpyt.jpg
-const UserBasicFields = ({ img = convertImageSrc(), onImgChange = () => {} }) => {
+const UserBasicFields = ({ form, defaultValues, img = convertImageSrc(), onImgChange = () => {} }) => {
+  const { actions } = form;
+
   return (
     <>
       <div className="row-span-2 flex justify-center items-center">
@@ -18,20 +23,33 @@ const UserBasicFields = ({ img = convertImageSrc(), onImgChange = () => {} }) =>
         />
       </div>
       <Input
+        defaultValue={defaultValues.name}
         isRequired
+        name="name"
         size="lg"
         variant="bordered"
         label="Họ và tên"
         radius="sm"
         labelPlacement="outside"
         placeholder="Nguyễn Văn A"
+        validate={(value) => console.log({ value, values: actions.getFormState() })}
       />
-      <Select size="lg" variant="bordered" label="Giới tính" radius="sm" labelPlacement="outside">
+      <Select
+        defaultSelectedKeys={defaultValues.gender && new Set([defaultValues.gender])}
+        name="gender"
+        size="lg"
+        variant="bordered"
+        label="Giới tính"
+        radius="sm"
+        labelPlacement="outside"
+      >
         <SelectItem key="Nam">Nam</SelectItem>
         <SelectItem key="Nữ">Nữ</SelectItem>
         <SelectItem key="Khác">Khác</SelectItem>
       </Select>
       <Input
+        defaultValue={defaultValues.email}
+        name="email"
         isRequired
         size="lg"
         variant="bordered"
@@ -41,6 +59,8 @@ const UserBasicFields = ({ img = convertImageSrc(), onImgChange = () => {} }) =>
         placeholder="example@gmail.com"
       />
       <Input
+        defaultValue={defaultValues.phoneNumber}
+        name="phoneNumber"
         size="lg"
         variant="bordered"
         label="Số điện thoại"
@@ -49,6 +69,7 @@ const UserBasicFields = ({ img = convertImageSrc(), onImgChange = () => {} }) =>
         placeholder="097..."
       />
       <DatePicker
+        defaultValue={defaultValues.dateOfBirth && parseDate(format(defaultValues.dateOfBirth, DATE_FORMAT))}
         name="dateOfBirth"
         calendarProps={{ showMonthAndYearPickers: true }}
         size="lg"
@@ -59,6 +80,8 @@ const UserBasicFields = ({ img = convertImageSrc(), onImgChange = () => {} }) =>
         classNames={{ label: "-mt-1" }}
       />
       <Input
+        defaultValue={defaultValues.address}
+        name="address"
         size="lg"
         variant="bordered"
         label="Địa chỉ"

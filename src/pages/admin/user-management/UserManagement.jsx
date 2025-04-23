@@ -62,19 +62,36 @@ const UserManagement = () => {
         );
       case "actions":
         return (
-          <div className="relative flex items-center gap-2 justify-center">
-            <Tooltip content="Details">
-              <span className="text-lg text-default-400 cursor-pointer active:opacity-50"></span>
-            </Tooltip>
-            <Tooltip content="Edit user">
+          <div className="relative flex items-center justify-center">
+            {/*  <Tooltip content="Details">
               <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                <Edit size="18px" />
+
               </span>
+            </Tooltip> */}
+            <Tooltip content="Edit user">
+              <Button
+                onPress={() => {
+                  navigate(`/admin/user-management/edit/${user.id}`);
+                }}
+                size="sm"
+                isIconOnly
+                radius="full"
+                variant="light"
+              >
+                <Edit size="18px" />
+              </Button>
             </Tooltip>
             <Tooltip color="danger" content="Delete user">
-              <span className="text-lg text-danger cursor-pointer active:opacity-50">
+              <Button
+                onClick={(e) => e.stopPropagation()}
+                size="sm"
+                color="danger"
+                isIconOnly
+                radius="full"
+                variant="light"
+              >
                 <Trash2 size="18px" />
-              </span>
+              </Button>
             </Tooltip>
           </div>
         );

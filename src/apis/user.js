@@ -11,9 +11,23 @@ export const getUsers = async (pager, order, search, filters) => {
   return result.data;
 };
 
+export const getUserById = async (id) => {
+  const result = await API.get(`/api-v1/users/${id}`);
+  return result.data;
+};
+
 export const signUp = async (data) => {
   try {
     await API.post(`/api-v1/users/sign-up`, data);
+    return { ok: true };
+  } catch (error) {
+    return getServerErrorMessage(error);
+  }
+};
+
+export const updateUser = async (id, newData) => {
+  try {
+    await API.patch(`/api-v1/users/${id}`, newData);
     return { ok: true };
   } catch (error) {
     return getServerErrorMessage(error);

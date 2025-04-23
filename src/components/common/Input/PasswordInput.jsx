@@ -12,8 +12,10 @@ const PasswordInput = ({
   onBlur,
   placeholder,
   variant,
+  defaultValue,
   className,
   labelPlacement,
+  autoComplete,
   ...otherProps
 }) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -30,6 +32,8 @@ const PasswordInput = ({
     placeholder,
     variant,
     className,
+    defaultValue,
+    autoComplete,
   };
 
   return (

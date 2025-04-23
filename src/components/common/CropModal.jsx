@@ -43,6 +43,7 @@ const CropModal = ({ cancelable, isOpen, aspect, onOpenChange, onChange, onDelet
                       </div>
                     ) : (
                       <Cropper
+                        cropShape="round"
                         image={imageSrc}
                         crop={crop}
                         zoom={zoom}

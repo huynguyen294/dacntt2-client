@@ -1,6 +1,7 @@
+import { withAuth } from "@/hocs";
 import { MainLayout } from "@/layouts";
 
-const Student = () => {
+const Student = withAuth(() => {
   return (
     <MainLayout>
       <div className="p-6">
@@ -8,6 +9,6 @@ const Student = () => {
       </div>
     </MainLayout>
   );
-};
+});
 
 export default Student;
