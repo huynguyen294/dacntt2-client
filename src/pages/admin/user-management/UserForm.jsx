@@ -2,7 +2,7 @@
 import { Collapse, Form, PasswordInput } from "@/components/common";
 import { UserBasicFields } from "@/components";
 import { Select, SelectItem } from "@heroui/select";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@heroui/button";
 import { Plus, RefreshCcw, Save } from "lucide-react";
 import { useNavigate } from "@/hooks";
@@ -42,17 +42,12 @@ const UserForm = ({ defaultValues = defaultUserFormValues, editMode }) => {
 
   // handle for date
   const form = useForm();
-  const { errors, actions, isDirty } = form;
+  const { isError, isDirty, errors, actions } = form;
 
   const handleSubmit = async (data) => {
     const { passwordConfirm, ...payload } = data;
-    if (payload.password !== passwordConfirm) {
-      actions.changeError("passwordConfirm", "Mật khẩu không khớp");
-      return;
-    }
 
     setRegistering(true);
-
     if (editMode) {
       const result = await updateUser(userId, payload);
       if (result.ok) {
@@ -122,8 +117,17 @@ const UserForm = ({ defaultValues = defaultUserFormValues, editMode }) => {
             variant="bordered"
             isInvalid={Boolean(errors.passwordConfirm)}
             errorMessage={errors.passwordConfirm}
-            onBlur={() => actions.clearError("passwordConfirm")}
             autoComplete="new-password"
+            onBlur={(e) => {
+              let passwordConfirmError = "";
+              const currentPasswordConfirm = e.target.value;
+              const { password } = actions.getFormState();
+
+              if (currentPasswordConfirm !== password) {
+                passwordConfirmError = "Mật khẩu không khớp";
+              }
+              actions.changeError("passwordConfirm", passwordConfirmError);
+            }}
           />
         </div>
       </Collapse>
@@ -144,6 +148,7 @@ const UserForm = ({ defaultValues = defaultUserFormValues, editMode }) => {
       <div className="space-x-4">
         <Button
           isLoading={registering}
+          isDisabled={isError}
           type="submit"
           startContent={editMode ? <Save size="20px" /> : <Plus size="20px" />}
           className="shadow-xl"

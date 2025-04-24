@@ -1,7 +1,9 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 const useValidateForm = () => {
   const [errors, setErrors] = useState({});
+
+  const isError = useMemo(() => Object.keys(errors).length > 0, [errors]);
 
   const changeError = useCallback((field, errorMessage) => {
     setErrors((prev) => {
@@ -25,7 +27,7 @@ const useValidateForm = () => {
     setErrors({});
   }, []);
 
-  return { errors, changeError, changeErrors, clearError, clearErrors };
+  return { isError, errors, changeError, changeErrors, clearError, clearErrors };
 };
 
 export default useValidateForm;

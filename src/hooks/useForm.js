@@ -7,7 +7,7 @@ const defaultOptions = {
 
 const useForm = (options = defaultOptions) => {
   const { defaultValues } = options;
-  const { changeError, errors, changeErrors, clearError, clearErrors } = useValidateForm();
+  const { changeError, errors, changeErrors, clearError, clearErrors, isError } = useValidateForm();
   const [isDirty, setIsDirty] = useState(false);
   const formState = useRef({});
   const initState = useRef(defaultValues);
@@ -21,11 +21,6 @@ const useForm = (options = defaultOptions) => {
     },
     [isDirty]
   );
-
-  const setValue = useCallback((field, newValue) => {
-    ref.current.elements[field].value = newValue;
-    ref.current.elements[field].dispatchEvent(new Event("input", { bubbles: true }));
-  }, []);
 
   const reset = useCallback(() => {
     ref.current.reset();
@@ -46,12 +41,12 @@ const useForm = (options = defaultOptions) => {
   return {
     ref,
     isDirty,
+    isError,
     errors,
     actions: {
       getDefaultValues,
       getFormState,
       setFormState,
-      setValue,
       changeError,
       changeErrors,
       clearError,
