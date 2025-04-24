@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Accordion, AccordionItem } from "@heroui/accordion";
+import { useEffect, useRef } from "react";
 
 const Collapse = ({
   defaultExpanded,
@@ -13,6 +14,7 @@ const Collapse = ({
   children,
   indicator,
 }) => {
+  const ref = useRef();
   const activeProps = active ? { selectedKeys: new Set(["1"]) } : null;
 
   if (showDivider) {
@@ -24,18 +26,27 @@ const Collapse = ({
     classNames.content = cn("px-4 pt-0 pb-6", classNames.content);
   }
 
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      ref.current.click();
+    }, 1000);
+
+    return () => timerId && clearTimeout(timerId);
+  }, []);
+
   return (
     <Accordion
       defaultExpandedKeys={defaultExpanded && new Set(["1"])}
       variant={variant}
-      keepContentMounted
       className={cn("px-0", className)}
+      ref={ref}
       {...activeProps}
     >
       <AccordionItem
         key="1"
         aria-label={title}
         title={title}
+        keepContentMounted
         classNames={classNames}
         startContent={startContent}
         indicator={indicator}

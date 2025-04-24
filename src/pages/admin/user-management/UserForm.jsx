@@ -5,14 +5,13 @@ import { Select, SelectItem } from "@heroui/select";
 import { useState } from "react";
 import { Button } from "@heroui/button";
 import { Plus, RefreshCcw, Save } from "lucide-react";
-import { useNavigate } from "@/hooks";
-import { createUser, signUp, updateUser } from "@/apis";
+import { useForm, useNavigate } from "@/hooks";
+import { createUser, updateUser } from "@/apis";
 import { useQueryClient } from "@tanstack/react-query";
 import { addToast } from "@heroui/toast";
 import { convertImageSrc } from "@/utils";
 import { format } from "date-fns";
-import { DATE_FORMAT, ROLE_PALLET } from "@/constants";
-import useForm from "@/hooks/useForm";
+import { DATE_FORMAT, ROLE_LABELS, ROLE_PALLET, USER_ROLES } from "@/constants";
 import { Checkbox } from "@heroui/checkbox";
 
 const defaultUserFormValues = {
@@ -74,7 +73,7 @@ const UserForm = ({ defaultValues = defaultUserFormValues, editMode }) => {
   return (
     <Form form={form} className="mt-3 space-y-4" onSubmit={handleSubmit}>
       <Collapse showDivider defaultExpanded variant="splitted" title="THÔNG TIN CƠ BẢN">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-start gap-4 pb-4">
           <UserBasicFields form={form} img={imgUrl} onImgChange={setImgUrl} defaultValues={defaultValues} />
         </div>
       </Collapse>
@@ -84,8 +83,9 @@ const UserForm = ({ defaultValues = defaultUserFormValues, editMode }) => {
             Thay đổi mật khẩu
           </Checkbox>
         )}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-start gap-4 pb-4">
           <Select
+            autoFocus
             name="role"
             isRequired
             defaultSelectedKeys={defaultValues.role && new Set([defaultValues.role])}
@@ -104,24 +104,19 @@ const UserForm = ({ defaultValues = defaultUserFormValues, editMode }) => {
             radius="sm"
             labelPlacement="outside"
           >
-            <SelectItem key="admin" startContent={<div className="size-2 bg-admin_color rounded-full" />}>
-              Admin
-            </SelectItem>
-            <SelectItem startContent={<div className="size-2 bg-teacher_color rounded-full" />} key="teacher">
-              Giáo viên
-            </SelectItem>
-            <SelectItem startContent={<div className="size-2 bg-consultant_color rounded-full" />} key="consultant">
-              Tư vấn viên
-            </SelectItem>
-            <SelectItem
-              startContent={<div className="size-2 bg-finance_officer_color rounded-full" />}
-              key="finance-officer"
-            >
-              Nhân viên học vụ/tài chính
-            </SelectItem>
-            <SelectItem startContent={<div className="size-2 bg-student_color rounded-full" />} key="student">
-              Học viên
-            </SelectItem>
+            {USER_ROLES.map((id) => (
+              <SelectItem
+                key={id}
+                startContent={
+                  <div
+                    style={{ "--current-color": ROLE_PALLET[id] }}
+                    className="size-2 var(--current-color) rounded-full"
+                  />
+                }
+              >
+                {ROLE_LABELS[id]}
+              </SelectItem>
+            ))}
           </Select>
           <PasswordInput
             isDisabled={editMode && !resetPassword}

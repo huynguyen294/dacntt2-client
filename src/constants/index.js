@@ -1,5 +1,12 @@
 export const DATE_FORMAT = "yyyy-MM-dd";
-export const ROUTE_ROLES = ["admin", "teacher"];
+export const USER_ROLES = ["admin", "teacher", "consultant", "finance-officer", "student"];
+export const ROLE_LABELS = {
+  admin: "Admin",
+  teacher: "Giáo viên",
+  consultant: "Tư vấn viên",
+  "finance-officer": "Nhân viên học vụ/tài chính",
+  student: "Học viên",
+};
 export const ROLE_PALLET = {
   admin: "#f36870",
   teacher: "#74b2d0",

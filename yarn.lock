@@ -846,7 +846,7 @@
     "@react-aria/utils" "3.28.1"
     scroll-into-view-if-needed "3.0.10"
 
-"@heroui/popover@2.3.17":
+"@heroui/popover@2.3.17", "@heroui/popover@^2.3.17":
   version "2.3.17"
   resolved "https://registry.yarnpkg.com/@heroui/popover/-/popover-2.3.17.tgz#195b6a7c92c38721ca2077ed679d562fc9fe670e"
   integrity sha512-6SD0CgYrNv5CUZDcgIBRkZHzfU3AE+JZua1CllPWCYxOjsfukAaLpkCjz1lZaAIA72HkiCWpXYs+k2KrAN+cAQ==
@@ -867,6 +867,23 @@
     "@react-stately/overlays" "3.6.14"
     "@react-types/button" "3.11.0"
     "@react-types/overlays" "3.8.13"
+
+"@heroui/radio@^2.3.16":
+  version "2.3.16"
+  resolved "https://registry.yarnpkg.com/@heroui/radio/-/radio-2.3.16.tgz#b3ba4b229457488f74119eb10d6da9a390ce6355"
+  integrity sha512-YLeHGUY68QGLJgGT2dio8qsap5AfHOCQU2ATiunW02/5V4rDB5dh1Pjwj+FRjJtnVEncp7HAB6TFbgdF9AkZcQ==
+  dependencies:
+    "@heroui/form" "2.1.16"
+    "@heroui/react-utils" "2.1.8"
+    "@heroui/shared-utils" "2.1.7"
+    "@react-aria/focus" "3.20.1"
+    "@react-aria/interactions" "3.24.1"
+    "@react-aria/radio" "3.11.1"
+    "@react-aria/utils" "3.28.1"
+    "@react-aria/visually-hidden" "3.8.21"
+    "@react-stately/radio" "3.10.11"
+    "@react-types/radio" "3.8.7"
+    "@react-types/shared" "3.28.0"
 
 "@heroui/react-rsc-utils@2.1.6":
   version "2.1.6"
@@ -1758,6 +1775,22 @@
     "@react-types/shared" "^3.29.0"
     "@swc/helpers" "^0.5.0"
 
+"@react-aria/radio@3.11.1":
+  version "3.11.1"
+  resolved "https://registry.yarnpkg.com/@react-aria/radio/-/radio-3.11.1.tgz#0bb3dc46e28085ca488afbbbecc53825647f7d56"
+  integrity sha512-plAO5MW+QD9/kMe5NNKBzKf/+b6CywdoZ5a1T/VbvkBQYYcHaYQeBuKQ4l+hF+OY2tKAWP0rrjv7tEtacPc9TA==
+  dependencies:
+    "@react-aria/focus" "^3.20.1"
+    "@react-aria/form" "^3.0.14"
+    "@react-aria/i18n" "^3.12.7"
+    "@react-aria/interactions" "^3.24.1"
+    "@react-aria/label" "^3.7.16"
+    "@react-aria/utils" "^3.28.1"
+    "@react-stately/radio" "^3.10.11"
+    "@react-types/radio" "^3.8.7"
+    "@react-types/shared" "^3.28.0"
+    "@swc/helpers" "^0.5.0"
+
 "@react-aria/selection@3.23.1":
   version "3.23.1"
   resolved "https://registry.yarnpkg.com/@react-aria/selection/-/selection-3.23.1.tgz#7e344d0bf9e2eaf29a6d534f8d4cd912af3fd88e"
@@ -2158,6 +2191,28 @@
     "@react-types/overlays" "^3.8.14"
     "@swc/helpers" "^0.5.0"
 
+"@react-stately/radio@3.10.11":
+  version "3.10.11"
+  resolved "https://registry.yarnpkg.com/@react-stately/radio/-/radio-3.10.11.tgz#98bcce75bdb3670a6ab559373bcdc6901bd05b55"
+  integrity sha512-dclixp3fwNBbgpbi66x36YGaNwN7hI1nbuhkcnLAE0hWkTO8/wtKBgGqRKSfNV7MSiWlhBhhcdPcQ+V7q7AQIQ==
+  dependencies:
+    "@react-stately/form" "^3.1.2"
+    "@react-stately/utils" "^3.10.5"
+    "@react-types/radio" "^3.8.7"
+    "@react-types/shared" "^3.28.0"
+    "@swc/helpers" "^0.5.0"
+
+"@react-stately/radio@^3.10.11":
+  version "3.10.12"
+  resolved "https://registry.yarnpkg.com/@react-stately/radio/-/radio-3.10.12.tgz#79eb7d9263eed9b162b525dce35199d8414e2f95"
+  integrity sha512-hFH45CXVa7uyXeTYQy7LGR0SnmGnNRx7XnEXS25w4Ch6BpH8m8SAbhKXqysgcmsE3xrhRas7P9zWw7wI24G28Q==
+  dependencies:
+    "@react-stately/form" "^3.1.3"
+    "@react-stately/utils" "^3.10.6"
+    "@react-types/radio" "^3.8.8"
+    "@react-types/shared" "^3.29.0"
+    "@swc/helpers" "^0.5.0"
+
 "@react-stately/selection@^3.20.0", "@react-stately/selection@^3.20.1":
   version "3.20.1"
   resolved "https://registry.yarnpkg.com/@react-stately/selection/-/selection-3.20.1.tgz#a2a849dd443bc4cf898e0239ab1f25d83532143b"
@@ -2475,6 +2530,20 @@
   version "3.8.14"
   resolved "https://registry.yarnpkg.com/@react-types/overlays/-/overlays-3.8.14.tgz#75b5e27579bde3db4b231f6dbe230a5494531896"
   integrity sha512-XJS67KHYhdMvPNHXNGdmc85gE+29QT5TwC58V4kxxHVtQh9fYzEEPzIV8K84XWSz04rRGe3fjDgRNbcqBektWQ==
+  dependencies:
+    "@react-types/shared" "^3.29.0"
+
+"@react-types/radio@3.8.7":
+  version "3.8.7"
+  resolved "https://registry.yarnpkg.com/@react-types/radio/-/radio-3.8.7.tgz#9fbc297ff9326d964313f2c56a07a47f447bdc08"
+  integrity sha512-K620hnDmSR7u9cZfwJIfoLvmZS1j9liD7nDXBm+N6aiq9E+8sw312sIEX5iR2TrQ4xovvJQZN7DWxPVr+1LfWw==
+  dependencies:
+    "@react-types/shared" "^3.28.0"
+
+"@react-types/radio@^3.8.7", "@react-types/radio@^3.8.8":
+  version "3.8.8"
+  resolved "https://registry.yarnpkg.com/@react-types/radio/-/radio-3.8.8.tgz#dbb3940408c38ed073ad441f05be4318e5013398"
+  integrity sha512-QfAIp+0CnRSnoRTJVXUEPi+9AvFvRzWLIKEnE9OmgXjuvJCU3QNiwd8NWjNeE+94QBEVvAZQcqGU+44q5poxNg==
   dependencies:
     "@react-types/shared" "^3.29.0"
 

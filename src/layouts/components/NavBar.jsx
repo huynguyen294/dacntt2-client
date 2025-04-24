@@ -11,6 +11,7 @@ import { signOut } from "@/apis";
 import { useNavigate } from "@/hooks";
 import { User } from "@heroui/user";
 import SidebarDrawer from "./SidebarDrawer";
+import { cn } from "@/lib/utils";
 
 const NavBar = ({ breadcrumbItems = [], hideMenuButton = false }) => {
   const navigate = useNavigate();
@@ -29,11 +30,15 @@ const NavBar = ({ breadcrumbItems = [], hideMenuButton = false }) => {
       <HeroUiNavBar maxWidth="full" shouldHideOnScroll>
         <SidebarDrawer isOpen={isOpen} onOpenChange={onOpenChange} />
         <NavbarContent justify="start" className="gap-1">
-          {!hideMenuButton && (
-            <Button isIconOnly variant="light" radius="full" onPress={onOpen}>
-              <Menu />
-            </Button>
-          )}
+          <Button
+            isIconOnly
+            variant="light"
+            radius="full"
+            className={cn("hidden sm:inline-flex", hideMenuButton && "inline-flex sm:hidden")}
+            onPress={onOpen}
+          >
+            <Menu />
+          </Button>
           <NavbarBrand>
             <Breadcrumbs
               className="ml-2"

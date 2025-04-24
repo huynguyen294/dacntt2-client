@@ -19,7 +19,7 @@ export const getNewAccessToken = async () => {
 export const signIn = async (data, navigate) => {
   const appActions = getAppActions();
   try {
-    const res = await API.post("/api-v1/auth/sign-in", data);
+    const res = await API.post("/api-v1/auth/sign-in", data, { withCredentials: true });
     const user = res.data.user;
     if (!user.imageUrl) user.imageUrl = "";
     user.accessToken = res.data.accessToken;

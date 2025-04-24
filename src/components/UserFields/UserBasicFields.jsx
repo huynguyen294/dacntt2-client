@@ -11,7 +11,7 @@ import { parseDate } from "@internationalized/date";
 const UserBasicFields = ({ form, defaultValues, img = convertImageSrc(), onImgChange = () => {} }) => {
   return (
     <>
-      <div className="row-span-2 flex justify-center items-center">
+      <div className="row-span-2 flex justify-center items-center w-full">
         <AvatarInput
           className="mt-4"
           value={img}
@@ -21,6 +21,7 @@ const UserBasicFields = ({ form, defaultValues, img = convertImageSrc(), onImgCh
         />
       </div>
       <Input
+        autoFocus
         defaultValue={defaultValues.name}
         isRequired
         name="name"

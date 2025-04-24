@@ -1,5 +1,5 @@
 import { ModuleLayout } from "@/layouts";
-import { DATE_FORMAT, ROLE_PALLET } from "@/constants";
+import { DATE_FORMAT, ROLE_LABELS, ROLE_PALLET, USER_ROLES } from "@/constants";
 import { Button } from "@heroui/button";
 import { Chip } from "@heroui/chip";
 import { Divider } from "@heroui/divider";
@@ -9,35 +9,78 @@ import { Spinner } from "@heroui/spinner";
 import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/table";
 import { Tooltip } from "@heroui/tooltip";
 import { User } from "@heroui/user";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { Ban, ChevronDown, Edit, Grid2X2, ListFilter, Plus, Search, SlidersHorizontal, Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import {
+  ArrowDown,
+  Ban,
+  CheckCheck,
+  ChevronDown,
+  Edit,
+  Grid2X2,
+  ListFilter,
+  Plus,
+  Search,
+  SlidersHorizontal,
+  Trash2,
+} from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 import { userManagementBreadcrumbItems } from ".";
-import { getUsers } from "@/apis";
+import { deleteUserById, getUsers } from "@/apis";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/dropdown";
-import useDebounce from "@/hooks/useDebounce";
 import { alpha } from "@/utils";
+import { ConfirmDeleteDialog } from "@/components";
+import { useDisclosure } from "@heroui/modal";
+import { addToast } from "@heroui/toast";
+import { useDebounce } from "@/hooks";
+import { cn } from "@/lib/utils";
+import { Popover, PopoverContent, PopoverTrigger } from "@heroui/popover";
+import { Checkbox, CheckboxGroup } from "@heroui/checkbox";
+import { Radio, RadioGroup } from "@heroui/radio";
 
 const UserManagement = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const [query, setQuery] = useState("");
   const [pager, setPager] = useState(defaultPager);
+  const [order, setOrder] = useState({ order: "desc", orderBy: "createdAt" });
+  const [selectedKeys, setSelectedKeys] = useState(new Set([]));
+  const [selectedColumns, setSelectedColumns] = useState(new Set(defaultSelectedColumns));
+  const [filters, setFilters] = useState({});
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [popoverOpen, setPopoverOpen] = useState(false);
   const debounceQuery = useDebounce(query);
 
+  const { isOpen, onClose, onOpen } = useDisclosure();
+
+  const roleKey = filters.roles ? `r=${filters.roles.join(",")}` : "";
   const { isLoading, data, isSuccess } = useQuery({
-    queryKey: ["users", `p=${pager.page},ps=${pager.pageSize},q=${debounceQuery}`],
-    queryFn: () => getUsers(pager, {}, debounceQuery),
+    queryKey: [
+      "users",
+      `p=${pager.page},ps=${pager.pageSize},q=${debounceQuery},o=${order.order},ob=${order.orderBy}${roleKey}`,
+    ],
+    queryFn: () => getUsers(pager, order, debounceQuery, filters),
   });
 
+  const users = data?.users || [];
   const loadingState = isLoading ? "loading" : "idle";
 
-  const users = data?.users || [];
-  const [selectedKeys, setSelectedKeys] = useState(new Set([]));
+  const filteredColumns = useMemo(() => columns.filter((col) => selectedColumns.has(col.uid)), [selectedColumns]);
 
   const changePager = (prop, value) => setPager((prev) => ({ ...prev, [prop]: value }));
+
+  const handleDeleteUser = async () => {
+    if (!selectedUserId) return;
+    const result = await deleteUserById(selectedUserId);
+    if (!result.ok) {
+      addToast({ color: "danger", title: "Xóa thất bại!", description: result.message });
+    } else {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    }
+    onClose();
+  };
 
   const renderCell = (user, columnKey, index) => {
     let cellValue = user[columnKey];
@@ -90,6 +133,10 @@ const UserManagement = () => {
             <Tooltip color="danger" content="Delete user">
               <Button
                 onClick={(e) => e.stopPropagation()}
+                onPress={() => {
+                  onOpen();
+                  setSelectedUserId(user.id);
+                }}
                 size="sm"
                 color="danger"
                 isIconOnly
@@ -115,6 +162,13 @@ const UserManagement = () => {
   return (
     <ModuleLayout breadcrumbItems={userManagementBreadcrumbItems}>
       <div className="px-10">
+        <ConfirmDeleteDialog
+          title="Xóa người dùng"
+          message="Người dùng này sẽ bị xóa vĩnh viễn khỏi hệ thống."
+          isOpen={isOpen}
+          onClose={onClose}
+          onDelete={handleDeleteUser}
+        />
         <div className="flex justify-between">
           <h3 className="text-2xl font-bold">
             Danh sách tài khoản{" "}
@@ -132,25 +186,125 @@ const UserManagement = () => {
               value={query}
               onValueChange={setQuery}
             />
-            <Button
-              size="sm"
-              variant="flat"
-              className="font-semibold min-w-fit"
-              startContent={<SlidersHorizontal size="13px" />}
+            <Popover
+              placement="bottom"
+              showArrow
+              isOpen={popoverOpen}
+              onOpenChange={setPopoverOpen}
+              onClose={() => setPopoverOpen(false)}
             >
-              Lọc
-            </Button>
-            <Button
-              size="sm"
-              variant="flat"
-              className="font-semibold min-w-fit"
-              startContent={<ListFilter size="13px" />}
-            >
-              Sắp xếp
-            </Button>
-            <Button size="sm" variant="flat" className="font-semibold min-w-fit" startContent={<Grid2X2 size="13px" />}>
-              Cột
-            </Button>
+              <PopoverTrigger>
+                <Button
+                  size="sm"
+                  variant="flat"
+                  className="font-semibold min-w-fit"
+                  startContent={<SlidersHorizontal size="13px" />}
+                >
+                  Lọc
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent>
+                <div className="p-2 space-y-4">
+                  <CheckboxGroup defaultValue={USER_ROLES} label="Vai trò">
+                    {USER_ROLES.map((role) => (
+                      <Checkbox value={role}>{ROLE_LABELS[role]}</Checkbox>
+                    ))}
+                  </CheckboxGroup>
+                  <RadioGroup label="Ngày đăng ký" defaultValue="all" classNames={{ label: "text-base" }}>
+                    <Radio value="all">Tất cả</Radio>
+                    <Radio value="last7days">7 ngày gần nhất</Radio>
+                    <Radio value="last30days">30 ngày gần nhất</Radio>
+                    <Radio value="last60days">60 ngày gần nhất</Radio>
+                  </RadioGroup>
+                  <div className="flex">
+                    <Button
+                      onPress={() => setPopoverOpen(false)}
+                      startContent={<CheckCheck size="15px" />}
+                      size="sm"
+                      color="primary"
+                      className="mr-2 h-8"
+                    >
+                      Áp dụng
+                    </Button>
+                    <Button onPress={() => setPopoverOpen(false)} size="sm" variant="bordered" color="danger">
+                      Hủy
+                    </Button>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+            <Dropdown showArrow>
+              <DropdownTrigger>
+                <Button
+                  size="sm"
+                  variant="flat"
+                  className="font-semibold min-w-fit"
+                  startContent={<ListFilter size="13px" />}
+                >
+                  Sắp xếp
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu
+                disallowEmptySelection
+                closeOnSelect={false}
+                selectedKeys={new Set([order.orderBy])}
+                disabledKeys={["actions", "index"]}
+                selectionMode="single"
+                variant="faded"
+              >
+                {filteredColumns.map((col) => {
+                  const selected = order.orderBy === col.uid;
+                  return (
+                    <DropdownItem
+                      hideSelectedIcon
+                      endContent={
+                        selected && (
+                          <ArrowDown
+                            size="15px"
+                            className={cn("transition-transform", order.order === "asc" && "rotate-180")}
+                          />
+                        )
+                      }
+                      key={col.uid}
+                      onPress={() => {
+                        if (selected) {
+                          setOrder((prev) => ({ ...prev, order: prev.order === "desc" ? "asc" : "desc" }));
+                        } else {
+                          setOrder({ orderBy: col.uid, order: "desc" });
+                        }
+                      }}
+                    >
+                      {col.name}
+                    </DropdownItem>
+                  );
+                })}
+              </DropdownMenu>
+            </Dropdown>
+            <Dropdown showArrow>
+              <DropdownTrigger>
+                <Button
+                  size="sm"
+                  variant="flat"
+                  className="font-semibold min-w-fit"
+                  startContent={<Grid2X2 size="13px" />}
+                >
+                  Cột
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu
+                disallowEmptySelection
+                closeOnSelect={false}
+                selectedKeys={selectedColumns}
+                onSelectionChange={setSelectedColumns}
+                disabledKeys={["actions"]}
+                selectionMode="multiple"
+                variant="faded"
+              >
+                {columns.map((col) => (
+                  <DropdownItem key={col.uid}>{col.name}</DropdownItem>
+                ))}
+              </DropdownMenu>
+            </Dropdown>
             <Divider orientation="vertical" className="h-6 mx-1" />
             <p className="whitespace-nowrap">
               {selectedKeys === "all" ? users.length || 0 : selectedKeys.size} Đã chọn
@@ -186,7 +340,7 @@ const UserManagement = () => {
         classNames={{ wrapper: "h-full" }}
       >
         <TableHeader>
-          {columns.map((column) => (
+          {filteredColumns.map((column) => (
             <TableColumn key={column.uid} align={column.uid === "actions" ? "center" : "start"}>
               {column.name}
             </TableColumn>
@@ -204,7 +358,7 @@ const UserManagement = () => {
         >
           {users.map((user, rowIdx) => (
             <TableRow key={user.id}>
-              {columns.map((col, colIdx) => (
+              {filteredColumns.map((col, colIdx) => (
                 <TableCell key={`${rowIdx}-${colIdx}`}>{renderCell(user, col.uid, rowIdx)}</TableCell>
               ))}
             </TableRow>
@@ -273,9 +427,23 @@ const columns = [
   { name: "Vai trò", uid: "role" },
   { name: "Email", uid: "email" },
   { name: "Ngày sinh", uid: "dateOfBirth" },
-  { name: "Ngày đăng ký", uid: "createdAt" },
+  { name: "Giới tính", uid: "gender" },
   { name: "Số điện thoại", uid: "phoneNumber" },
+  { name: "Địa chỉ", uid: "address" },
+  { name: "Ngày đăng ký", uid: "createdAt" },
   { name: "Hành động", uid: "actions" },
+];
+
+const defaultSelectedColumns = [
+  "index",
+  "name",
+  "user",
+  "role",
+  "email",
+  "gender",
+  "phoneNumber",
+  "createdAt",
+  "actions",
 ];
 
 export default UserManagement;
