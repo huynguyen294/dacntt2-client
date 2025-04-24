@@ -1,3 +1,4 @@
+import { ROLE_PALLET } from "./src/constants";
 import { heroui } from "@heroui/theme";
 
 /** @type {import('tailwindcss').Config} */
@@ -16,6 +17,11 @@ export default {
       themes: {
         light: {
           colors: {
+            admin_color: ROLE_PALLET.admin,
+            consultant_color: ROLE_PALLET.consultant,
+            teacher_color: ROLE_PALLET.teacher,
+            student_color: ROLE_PALLET.student,
+            finance_officer_color: ROLE_PALLET["finance-officer"],
             primary: {
               50: "#ecf9f0",
               100: "#d1f0dc",
@@ -90,6 +96,11 @@ export default {
         },
         dark: {
           colors: {
+            admin_color: ROLE_PALLET.admin,
+            consultant_color: ROLE_PALLET.consultant,
+            teacher_color: ROLE_PALLET.teacher,
+            student_color: ROLE_PALLET.student,
+            finance_officer_color: ROLE_PALLET["finance-officer"],
             primary: {
               50: "#1f3d29",
               100: "#306142",

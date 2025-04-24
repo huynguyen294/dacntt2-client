@@ -6,24 +6,25 @@ import { useState } from "react";
 import { Button } from "@heroui/button";
 import { Plus, RefreshCcw, Save } from "lucide-react";
 import { useNavigate } from "@/hooks";
-import { signUp, updateUser } from "@/apis";
+import { createUser, signUp, updateUser } from "@/apis";
 import { useQueryClient } from "@tanstack/react-query";
 import { addToast } from "@heroui/toast";
 import { convertImageSrc } from "@/utils";
 import { format } from "date-fns";
-import { DATE_FORMAT } from "@/constants";
+import { DATE_FORMAT, ROLE_PALLET } from "@/constants";
 import useForm from "@/hooks/useForm";
+import { Checkbox } from "@heroui/checkbox";
 
 const defaultUserFormValues = {
-  imageUrl: null,
-  password: "",
-  passwordConfirm: "",
-  role: "student",
   name: "",
-  gender: "",
   email: "",
-  phoneNumber: "",
+  gender: "",
   address: "",
+  password: "",
+  phoneNumber: "",
+  imageUrl: null,
+  role: "student",
+  passwordConfirm: "",
   dateOfBirth: null,
 };
 
@@ -38,6 +39,7 @@ const UserForm = ({ defaultValues = defaultUserFormValues, editMode }) => {
   const [role, setRole] = useState(defaultValues.role);
 
   const [registering, setRegistering] = useState(false);
+  const [resetPassword, setResetPassword] = useState(false);
   const [imgUrl, setImgUrl] = useState(convertImageSrc(imageUrl));
 
   // handle for date
@@ -56,9 +58,10 @@ const UserForm = ({ defaultValues = defaultUserFormValues, editMode }) => {
       } else {
         addToast({ color: "danger", title: "Lỗi tạo tài khoản", description: result.message });
       }
+      return;
     }
 
-    const result = await signUp(payload);
+    const result = await createUser(payload);
     if (result.ok) {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       navigate("/admin/user-management");
@@ -76,44 +79,71 @@ const UserForm = ({ defaultValues = defaultUserFormValues, editMode }) => {
         </div>
       </Collapse>
       <Collapse showDivider defaultExpanded variant="splitted" title="BẢO MẬT">
+        {editMode && (
+          <Checkbox className="mb-2" isSelected={resetPassword} onValueChange={setResetPassword}>
+            Thay đổi mật khẩu
+          </Checkbox>
+        )}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-4">
           <Select
             name="role"
             isRequired
             defaultSelectedKeys={defaultValues.role && new Set([defaultValues.role])}
+            startContent={
+              <div
+                style={{ "--current-color": ROLE_PALLET[role] }}
+                className="size-2 bg-[var(--current-color)] rounded-full mr-1"
+              />
+            }
             selectedKeys={new Set([role])}
             onSelectionChange={(newValue) => setRole(newValue.currentKey)}
+            onChange={actions.instantChange}
             size="lg"
             variant="bordered"
             label="Vai trò"
             radius="sm"
             labelPlacement="outside"
           >
-            <SelectItem key="admin">Admin</SelectItem>
-            <SelectItem key="student">Học viên</SelectItem>
-            <SelectItem key="teacher">Giáo viên</SelectItem>
-            <SelectItem key="consultant">Tư vấn viên</SelectItem>
-            <SelectItem key="finance-officer">Nhân viên học vụ/tài chính</SelectItem>
+            <SelectItem key="admin" startContent={<div className="size-2 bg-admin_color rounded-full" />}>
+              Admin
+            </SelectItem>
+            <SelectItem startContent={<div className="size-2 bg-teacher_color rounded-full" />} key="teacher">
+              Giáo viên
+            </SelectItem>
+            <SelectItem startContent={<div className="size-2 bg-consultant_color rounded-full" />} key="consultant">
+              Tư vấn viên
+            </SelectItem>
+            <SelectItem
+              startContent={<div className="size-2 bg-finance_officer_color rounded-full" />}
+              key="finance-officer"
+            >
+              Nhân viên học vụ/tài chính
+            </SelectItem>
+            <SelectItem startContent={<div className="size-2 bg-student_color rounded-full" />} key="student">
+              Học viên
+            </SelectItem>
           </Select>
           <PasswordInput
+            isDisabled={editMode && !resetPassword}
+            isRequired={resetPassword ? true : false}
             name="password"
             radius="sm"
             size="lg"
             labelPlacement="outside"
             label="Mật khẩu"
-            isRequired
             variant="bordered"
             placeholder="Nhập mật khẩu"
             autoComplete="new-password"
           />
           <PasswordInput
+            isDisabled={editMode && !resetPassword}
+            isRequired={resetPassword ? true : false}
             name="passwordConfirm"
             radius="sm"
             size="lg"
             labelPlacement="outside"
             label="Nhập lại mật khẩu"
             placeholder="Nhập lại mật khẩu"
-            isRequired
             variant="bordered"
             isInvalid={Boolean(errors.passwordConfirm)}
             errorMessage={errors.passwordConfirm}

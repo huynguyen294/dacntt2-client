@@ -25,6 +25,15 @@ export const signUp = async (data) => {
   }
 };
 
+export const createUser = async (data) => {
+  try {
+    await API.post(`/api-v1/users`, data);
+    return { ok: true };
+  } catch (error) {
+    return getServerErrorMessage(error);
+  }
+};
+
 export const updateUser = async (id, newData) => {
   try {
     await API.patch(`/api-v1/users/${id}`, newData);

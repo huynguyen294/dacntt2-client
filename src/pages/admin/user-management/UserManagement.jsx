@@ -1,5 +1,5 @@
 import { ModuleLayout } from "@/layouts";
-import { DATE_FORMAT } from "@/constants";
+import { DATE_FORMAT, ROLE_PALLET } from "@/constants";
 import { Button } from "@heroui/button";
 import { Chip } from "@heroui/chip";
 import { Divider } from "@heroui/divider";
@@ -18,6 +18,7 @@ import { userManagementBreadcrumbItems } from ".";
 import { getUsers } from "@/apis";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/dropdown";
 import useDebounce from "@/hooks/useDebounce";
+import { alpha } from "@/utils";
 
 const UserManagement = () => {
   const navigate = useNavigate();
@@ -56,7 +57,12 @@ const UserManagement = () => {
         );
       case "role":
         return (
-          <Chip className="capitalize" size="sm" variant="flat">
+          <Chip
+            className="capitalize bg-[var(--current-color)]"
+            size="sm"
+            variant="flat"
+            style={{ "--current-color": alpha(ROLE_PALLET[cellValue], 0.2) }}
+          >
             {cellValue}
           </Chip>
         );

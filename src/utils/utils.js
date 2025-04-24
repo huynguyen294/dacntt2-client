@@ -19,6 +19,26 @@ export const compressImg = async (file) => {
   });
 };
 
+export const alpha = (hex, alpha) => {
+  // Kiểm tra định dạng hex #RGBRGB #RGB
+  if (!/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/.test(hex)) {
+    return;
+  }
+
+  // Chuyển đổi mã màu 3 ký tự sang 6 ký tự
+  if (hex.length === 4) {
+    hex = `#${hex[1]}${hex[1]}${hex[2]}${hex[2]}${hex[3]}${hex[3]}`;
+  }
+
+  // Tách thành các thành phần màu
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+
+  // Trả về chuỗi màu rgba
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
 export const getIdFromSrc = (src) => {
   if (!src) return null;
   const splitted = src.split("/");

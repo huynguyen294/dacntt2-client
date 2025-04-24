@@ -3,7 +3,7 @@ import { useCallback, useMemo, useState } from "react";
 const useValidateForm = () => {
   const [errors, setErrors] = useState({});
 
-  const isError = useMemo(() => Object.keys(errors).length > 0, [errors]);
+  const isError = useMemo(() => Object.values(errors).filter(Boolean).length > 0, [errors]);
 
   const changeError = useCallback((field, errorMessage) => {
     setErrors((prev) => {

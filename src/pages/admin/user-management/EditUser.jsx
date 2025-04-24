@@ -30,7 +30,7 @@ const EditUser = () => {
             <Spinner variant="wave" />
           </div>
         )}
-        {data?.user && <UserForm editMode={true} defaultValues={data.user} />}
+        {data?.user && <UserForm editMode defaultValues={data.user} />}
       </div>
     </ModuleLayout>
   );

@@ -9,8 +9,6 @@ import { parseDate } from "@internationalized/date";
 
 //https://res.cloudinary.com/easybiov2/image/upload/v1742222204/ngocnhung05062000/hew2aof03eyxf3jgfpyt.jpg
 const UserBasicFields = ({ form, defaultValues, img = convertImageSrc(), onImgChange = () => {} }) => {
-  const { actions } = form;
-
   return (
     <>
       <div className="row-span-2 flex justify-center items-center">
@@ -32,7 +30,6 @@ const UserBasicFields = ({ form, defaultValues, img = convertImageSrc(), onImgCh
         radius="sm"
         labelPlacement="outside"
         placeholder="Nguyễn Văn A"
-        validate={(value) => console.log({ value, values: actions.getFormState() })}
       />
       <Select
         defaultSelectedKeys={defaultValues.gender && new Set([defaultValues.gender])}
@@ -42,6 +39,7 @@ const UserBasicFields = ({ form, defaultValues, img = convertImageSrc(), onImgCh
         label="Giới tính"
         radius="sm"
         labelPlacement="outside"
+        onChange={form.actions.instantChange}
       >
         <SelectItem key="Nam">Nam</SelectItem>
         <SelectItem key="Nữ">Nữ</SelectItem>
@@ -69,6 +67,7 @@ const UserBasicFields = ({ form, defaultValues, img = convertImageSrc(), onImgCh
         placeholder="097..."
       />
       <DatePicker
+        onChange={form.actions.instantChange}
         defaultValue={defaultValues.dateOfBirth && parseDate(format(defaultValues.dateOfBirth, DATE_FORMAT))}
         name="dateOfBirth"
         calendarProps={{ showMonthAndYearPickers: true }}

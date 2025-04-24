@@ -23,13 +23,18 @@ const useForm = (options = defaultOptions) => {
   );
 
   const reset = useCallback(() => {
-    ref.current.reset();
     setIsDirty(false);
-    formState.current = {};
-  }, []);
+    clearErrors();
+    ref.current.reset();
+    formState.current = initState.current;
+  }, [clearErrors]);
 
   const getFormState = useCallback((field) => (field ? formState.current[field] : formState.current), []);
   const getDefaultValues = useCallback(() => initState.current, []);
+  const instantChange = useCallback(
+    () => setTimeout(() => ref.current.dispatchEvent(new Event("input", { bubbles: true }))),
+    []
+  );
 
   useEffect(() => {
     if (ref.current) {
@@ -44,6 +49,7 @@ const useForm = (options = defaultOptions) => {
     isError,
     errors,
     actions: {
+      instantChange,
       getDefaultValues,
       getFormState,
       setFormState,

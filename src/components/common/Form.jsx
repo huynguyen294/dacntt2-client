@@ -6,6 +6,8 @@ const Form = ({
   action,
   children,
   onSubmit = () => {},
+  onInput = () => {},
+  onChange = () => {},
   className,
   validationBehavior = "native",
   ...other
@@ -23,10 +25,12 @@ const Form = ({
         onSubmit(data);
       }}
       onInput={(e) => {
+        onInput(e);
         if (form) {
           const { actions } = form;
-          const values = Object.fromEntries(new FormData(e.currentTarget));
-          actions.setFormState(values);
+          const formState = Object.fromEntries(new FormData(e.currentTarget));
+          actions.setFormState(formState);
+          onChange(formState);
         }
       }}
       {...other}

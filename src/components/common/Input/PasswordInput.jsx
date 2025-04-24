@@ -4,6 +4,7 @@ import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 
 const PasswordInput = ({
+  isDisabled,
   isRequired,
   isInvalid,
   errorMessage,
@@ -22,6 +23,7 @@ const PasswordInput = ({
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   const mainProps = {
+    isDisabled,
     labelPlacement,
     onBlur,
     isRequired,
