@@ -4,7 +4,10 @@ const useValidateForm = () => {
   const [errors, setErrors] = useState({});
 
   const changeError = useCallback((field, errorMessage) => {
-    setErrors((prev) => ({ ...prev, [field]: errorMessage }));
+    setErrors((prev) => {
+      if (prev[field] === errorMessage) return prev;
+      return { ...prev, [field]: errorMessage };
+    });
   }, []);
 
   const changeErrors = useCallback((errors) => {
@@ -12,7 +15,10 @@ const useValidateForm = () => {
   }, []);
 
   const clearError = useCallback((field) => {
-    setErrors((prev) => ({ ...prev, [field]: "" }));
+    setErrors((prev) => {
+      if (!prev[field]) return prev;
+      return { ...prev, [field]: "" };
+    });
   }, []);
 
   const clearErrors = useCallback(() => {
