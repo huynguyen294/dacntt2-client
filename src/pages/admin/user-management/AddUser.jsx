@@ -1,10 +1,18 @@
 import { ModuleLayout } from "@/layouts";
-import { addUserBreadcrumbItems } from ".";
+import { breadcrumbItemsByRole } from ".";
+import { useParams } from "react-router";
 import UserForm from "./UserForm";
 
 const AddUser = () => {
+  const { role } = useParams();
+
   return (
-    <ModuleLayout title="Thêm tài khoản" breadcrumbItems={addUserBreadcrumbItems}>
+    <ModuleLayout
+      breadcrumbItems={[
+        ...breadcrumbItemsByRole[role || "admin"],
+        { label: "Thêm tài khoản", path: `/admin/user-management/${role}/add` },
+      ]}
+    >
       <div className="px-10 overflow-y-auto pb-10">
         <p className="text-2xl font-bold pl-1">Thêm tài khoản</p>
         <UserForm />

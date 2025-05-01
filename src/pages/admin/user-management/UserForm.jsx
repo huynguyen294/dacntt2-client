@@ -13,21 +13,12 @@ import { convertImageSrc } from "@/utils";
 import { format } from "date-fns";
 import { DATE_FORMAT, ROLE_LABELS, ROLE_PALLET, USER_ROLES } from "@/constants";
 import { Checkbox } from "@heroui/checkbox";
+import { Input, Textarea } from "@heroui/input";
+import { DatePicker } from "@heroui/date-picker";
+import { useParams } from "react-router";
 
-const defaultUserFormValues = {
-  name: "",
-  email: "",
-  gender: "",
-  address: "",
-  password: "",
-  phoneNumber: "",
-  imageUrl: null,
-  role: "student",
-  passwordConfirm: "",
-  dateOfBirth: null,
-};
-
-const UserForm = ({ defaultValues = defaultUserFormValues, editMode }) => {
+const UserForm = ({ defaultValues = {}, editMode }) => {
+  const { role: paramRole } = useParams();
   const { id: userId, imageUrl, password, ...removed } = defaultValues;
   removed.dateOfBirth = removed.dateOfBirth && format(removed.dateOfBirth, DATE_FORMAT);
   removed.password = "";
@@ -35,7 +26,7 @@ const UserForm = ({ defaultValues = defaultUserFormValues, editMode }) => {
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [role, setRole] = useState(defaultValues.role);
+  const [role, setRole] = useState(defaultValues.role || paramRole || "student");
 
   const [registering, setRegistering] = useState(false);
   const [resetPassword, setResetPassword] = useState(false);
@@ -53,7 +44,7 @@ const UserForm = ({ defaultValues = defaultUserFormValues, editMode }) => {
       const result = await updateUser(userId, payload);
       if (result.ok) {
         queryClient.invalidateQueries({ queryKey: ["users"] });
-        navigate("/admin/user-management");
+        navigate("/admin/user-management/" + role);
       } else {
         addToast({ color: "danger", title: "Lỗi tạo tài khoản", description: result.message });
       }
@@ -63,7 +54,7 @@ const UserForm = ({ defaultValues = defaultUserFormValues, editMode }) => {
     const result = await createUser(payload);
     if (result.ok) {
       queryClient.invalidateQueries({ queryKey: ["users"] });
-      navigate("/admin/user-management");
+      navigate("/admin/user-management/" + role);
     } else {
       addToast({ color: "danger", title: "Lỗi tạo tài khoản", description: result.message });
     }
@@ -77,10 +68,10 @@ const UserForm = ({ defaultValues = defaultUserFormValues, editMode }) => {
           <UserBasicFields form={form} img={imgUrl} onImgChange={setImgUrl} defaultValues={defaultValues} />
         </div>
       </Collapse>
-      <Collapse showDivider defaultExpanded variant="splitted" title="BẢO MẬT">
+      <Collapse showDivider defaultExpanded variant="splitted" title="THÔNG TIN TÀI KHOẢN">
         {editMode && (
           <Checkbox className="mb-2" isSelected={resetPassword} onValueChange={setResetPassword}>
-            Thay đổi mật khẩu
+            Đặt lại mật khẩu
           </Checkbox>
         )}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-start gap-4 pb-4">
@@ -110,7 +101,7 @@ const UserForm = ({ defaultValues = defaultUserFormValues, editMode }) => {
                 startContent={
                   <div
                     style={{ "--current-color": ROLE_PALLET[id] }}
-                    className="size-2 var(--current-color) rounded-full"
+                    className="size-2 bg-[var(--current-color)] rounded-full"
                   />
                 }
               >
@@ -156,20 +147,100 @@ const UserForm = ({ defaultValues = defaultUserFormValues, editMode }) => {
           />
         </div>
       </Collapse>
-      {/* {role === "teacher" && (
-    <Collapse showDivider defaultExpanded variant="splitted" title="THÔNG TIN GIÁO VIÊN"></Collapse>
-  )}
-  {role === "consultant" && (
-    <Collapse showDivider defaultExpanded variant="splitted" title="THÔNG TIN TƯ VẤN VIÊN"></Collapse>
-  )}
-  {role === "finance-officer" && (
-    <Collapse
-      showDivider
-      defaultExpanded
-      variant="splitted"
-      title="THÔNG TIN NHÂN VIÊN HỌC VỤ/TÀI CHÍNH"
-    ></Collapse>
-  )} */}
+      {["teacher", "consultant", "finance-officer"].includes(role) && (
+        <Collapse showDivider defaultExpanded variant="splitted" title={"THÔNG TIN " + ROLE_LABELS[role]}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-start gap-4 pb-4">
+            <Select
+              autoFocus
+              name="employmentType"
+              isRequired
+              onChange={actions.instantChange}
+              size="lg"
+              variant="bordered"
+              label="Loại lao động"
+              radius="sm"
+              labelPlacement="outside"
+              placeholder="Chính thức, thời vụ..."
+            >
+              <SelectItem key={"Chính thức"}>Chính thức</SelectItem>
+              <SelectItem key={"Bán thời gian"}>Bán thời gian</SelectItem>
+              <SelectItem key={"Thời vụ"}>Thời vụ</SelectItem>
+            </Select>
+            <Input
+              autoFocus
+              isRequired
+              name="salary"
+              size="lg"
+              variant="bordered"
+              label="Lương cơ bản"
+              radius="sm"
+              labelPlacement="outside"
+              placeholder="Nhập số tiền"
+            />
+            <DatePicker
+              onChange={actions.instantChange}
+              // defaultValue={defaultValues.dateOfBirth && parseDate(format(defaultValues.dateOfBirth, DATE_FORMAT))}
+              name="startDate"
+              calendarProps={{ showMonthAndYearPickers: true }}
+              size="lg"
+              variant="bordered"
+              label="Ngày vào làm"
+              radius="sm"
+              labelPlacement="outside"
+              classNames={{ label: "-mt-1" }}
+            />
+            <Input
+              autoFocus
+              isRequired
+              name="major"
+              size="lg"
+              variant="bordered"
+              label="Chuyên môn"
+              radius="sm"
+              labelPlacement="outside"
+              placeholder="Toán, Tiếng Anh..."
+            />
+            <Input
+              autoFocus
+              isRequired
+              name="certificates"
+              size="lg"
+              variant="bordered"
+              label="Bằng cấp"
+              radius="sm"
+              labelPlacement="outside"
+              placeholder="Tốt nghiệp trường, trung tâm..."
+            />
+            <Select
+              autoFocus
+              name="employmentType"
+              isRequired
+              onChange={actions.instantChange}
+              size="lg"
+              variant="bordered"
+              label="Trạng thái"
+              radius="sm"
+              labelPlacement="outside"
+              placeholder="Đang làm, đã nghĩ..."
+            >
+              <SelectItem key={"Đang làm việc"}>Đang làm việc</SelectItem>
+              <SelectItem key={"Tạm nghĩ việc"}>Tạm nghĩ việc</SelectItem>
+              <SelectItem key={"Đã nghĩ việc"}>Đã nghĩ việc</SelectItem>
+            </Select>
+            <Textarea
+              autoFocus
+              isRequired
+              name="certificates"
+              size="lg"
+              variant="bordered"
+              label="Ghi chú (nếu có)"
+              radius="sm"
+              labelPlacement="outside"
+              placeholder="Ghi chú thêm nếu có"
+            />
+          </div>
+        </Collapse>
+      )}
       <div className="space-x-4">
         <Button
           isLoading={registering}

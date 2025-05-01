@@ -14,3 +14,4 @@ export const ROLE_PALLET = {
   "finance-officer": "#b7ac44",
   student: "#a8bbb0",
 };
+export const DEFAULT_PAGER = { total: 0, pageCount: 1, page: 1, pageSize: 20 };

@@ -25,9 +25,9 @@ const App = () => {
 
         <Route path="admin">
           <Route index element={<Admin />} />
-          <Route path="user-management" element={<UserManagement />} />
-          <Route path="user-management/add" element={<AddUser />} />
-          <Route path="user-management/edit/:userId" element={<EditUser />} />
+          <Route path="user-management/:role" element={<UserManagement />} />
+          <Route path="user-management/:role/add" element={<AddUser />} />
+          <Route path="user-management/:role/edit/:userId" element={<EditUser />} />
         </Route>
 
         <Route path="teacher">

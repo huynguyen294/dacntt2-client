@@ -92,7 +92,7 @@ const NavBar = ({ breadcrumbItems = [], hideMenuButton = false }) => {
               </DropdownTrigger>
               <DropdownMenu aria-label="Profile Actions" variant="flat">
                 <DropdownItem key="profile" className="h-14 gap-2">
-                  <User name={user.name} description={user.email} />
+                  <User avatarProps={{ src: user.imageUrl }} name={user.name} description={user.email} />
                 </DropdownItem>
                 <DropdownItem startContent={<UserPen size="16px" />} key="settings">
                   Hồ sơ

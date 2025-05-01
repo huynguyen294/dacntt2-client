@@ -61,7 +61,13 @@ const Sidebar = ({ className }) => {
   };
 
   const SidebarItem = ({ item, isInSection }) => {
-    const active = item.isDashboard ? item.path === pathname : pathname.includes(item.path);
+    let active;
+    if (item.isDashboard) {
+      active = item.path === pathname;
+    } else {
+      active = pathname.includes(item.path);
+    }
+
     const Icon = item.icon || CircleDot;
 
     return (
@@ -135,11 +141,11 @@ const userSidebarItems = {
       section: "Người dùng",
       sectionIcon: User,
       items: [
-        { label: "Tài khoản", path: "/admin/user-management" },
-        { label: "Học viên", path: "/admin/students" },
-        { label: "Giáo viên", path: "/admin/teachers" },
-        { label: "Tư vấn viên", path: "/admin/consultants" },
-        { label: "Nhân viên học vụ/tài chính", path: "/admin/finance-officers" },
+        { label: "Tài khoản", path: "/admin/user-management/_" },
+        { label: "Học viên", path: "/admin/user-management/student" },
+        { label: "Giáo viên", path: "/admin/user-management/teacher" },
+        { label: "Tư vấn viên", path: "/admin/user-management/consultant" },
+        { label: "Nhân viên học vụ/tài chính", path: "/admin/user-management/finance-officer" },
       ],
     },
     {

@@ -1,8 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useMemo } from "react";
 import { useLocation } from "react-router";
 import { cryptoDecrypt } from "@/utils";
-import useNavigate from "./useNavigate";
 import { USER_ROLES } from "@/constants";
+import useNavigate from "./useNavigate";
 
 const useAuthorizationRedirect = () => {
   const navigate = useNavigate();
@@ -14,22 +15,22 @@ const useAuthorizationRedirect = () => {
     user = user ? JSON.parse(user) : null;
     if (!user || pathname.includes(user.role)) return true;
 
-    // student not have sub path
+    // student haven't sub path
     if ((!pathname.includes(user.role) || pathname === "/") && user.role !== "student") {
-      navigate("/" + user.role);
+      setTimeout(() => navigate("/" + user.role));
       return false;
     }
 
     let valid = true;
     USER_ROLES.forEach((role) => {
       if (pathname.includes(role)) {
-        navigate("/");
+        setTimeout(() => navigate("/"));
         valid = false;
       }
     });
 
     return valid;
-  }, [location, navigate]);
+  }, [location]);
 
   return valid;
 };

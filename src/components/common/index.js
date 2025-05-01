@@ -5,3 +5,8 @@ export { default as ImageLoading } from "./ImageLoading";
 export { default as CropModal } from "./CropModal";
 export { default as Form } from "./Form";
 export { default as Collapse } from "./Collapse";
+export { default as Table } from "./Table/Table";
+export { default as TableFooter } from "./Table/TableFooter";
+export { default as TableHeader } from "./Table/TableHeader";
+export { default as TableProvider } from "./Table/TableProvider";
+export * from "./Table/context";

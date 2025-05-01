@@ -5,3 +5,4 @@ export { default as useAuthorizationRedirect } from "./useAuthorizationRedirect"
 export { default as useValidateForm } from "./useValidateForm";
 export { default as useForm } from "./useForm";
 export { default as useDebounce } from "./useDebounce";
+export { default as useTable } from "./useTable";

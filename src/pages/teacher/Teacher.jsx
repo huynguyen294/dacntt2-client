@@ -2,7 +2,7 @@ import { MainLayout } from "@/layouts";
 
 const Teacher = () => {
   return (
-    <MainLayout>
+    <MainLayout hideMenuButton>
       <div className="p-6">
         <p className="text-xl">Xin chào giáo viên</p>
       </div>
