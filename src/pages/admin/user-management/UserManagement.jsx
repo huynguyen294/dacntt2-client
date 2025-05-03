@@ -35,7 +35,10 @@ const UserManagement = () => {
   const rowData = users.map((u) => ({ ...u, ...data.refs?.userEmployees?.[u.id] }));
 
   const loadingState = isLoading ? "loading" : "idle";
-  const filteredColumns = useMemo(() => columns.filter((col) => selectedColumns.has(col.uid)), [selectedColumns]);
+  const filteredColumns = useMemo(
+    () => columns.filter((col) => selectedColumns.has(col.uid)),
+    [columns, selectedColumns]
+  );
 
   const handleDeleteUser = async () => {
     if (!selectedUserId) return;
@@ -120,7 +123,7 @@ const teacherColumns = [
   ...commonColumns,
   { name: "Lương cơ bản", uid: "salary" },
   { name: "Loại lao động", uid: "employmentType", disableSort: true },
-  { name: "Chuyển môn", uid: "major", disableSort: true },
+  { name: "Chuyên môn", uid: "major", disableSort: true },
   { name: "Lớp đang dạy", uid: "classes", disableSort: true },
   { name: "Trạng thái", uid: "status", disableSort: true },
   { name: "Hành động", uid: "actions" },
@@ -130,7 +133,6 @@ const consultantColumns = [
   ...commonColumns,
   { name: "Lương cơ bản", uid: "salary" },
   { name: "Loại lao động", uid: "employmentType", disableSort: true },
-  { name: "Chuyển môn", uid: "major", disableSort: true },
   { name: "Trạng thái", uid: "status", disableSort: true },
   { name: "Hành động", uid: "actions" },
 ];
@@ -139,7 +141,6 @@ const financeOfficerColumns = [
   ...commonColumns,
   { name: "Lương cơ bản", uid: "salary", disableSort: true },
   { name: "Loại lao động", uid: "employmentType", disableSort: true },
-  { name: "Chuyển môn", uid: "major", disableSort: true },
   { name: "Trạng thái", uid: "status", disableSort: true },
   { name: "Hành động", uid: "actions" },
 ];
@@ -148,8 +149,8 @@ const commonSelectedColumns = ["index", "user", "email", "phoneNumber", "created
 const adminDefaultSelectedColumns = [...commonSelectedColumns, "role", "gender"];
 const studentDefaultSelectedColumns = [...commonSelectedColumns, "classes", "tuition", "phoneNumber"];
 const teacherDefaultSelectedColumns = [...commonSelectedColumns, "major", "classes", "salary", "status"];
-const consultantDefaultSelectedColumns = [...commonSelectedColumns, "major", "salary", "status"];
-const financeOfficerDefaultSelectedColumns = [...commonSelectedColumns, "major", "salary", "status"];
+const consultantDefaultSelectedColumns = [...commonSelectedColumns, "salary", "status"];
+const financeOfficerDefaultSelectedColumns = [...commonSelectedColumns, "salary", "status"];
 
 const columnsByRole = {
   _: { columns: adminColumns, defaultSelectedColumns: adminDefaultSelectedColumns },

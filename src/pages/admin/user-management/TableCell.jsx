@@ -25,6 +25,9 @@ const TableCell = ({ rowData, columnKey, rowIndex, onDelete = () => {} }) => {
   if (columnKey === "salary") {
     cellValue = localeString(cellValue) + "đ";
   }
+  if (columnKey === "tuition") {
+    cellValue = localeString(5000000) + "đ";
+  }
 
   switch (columnKey) {
     case "user":
@@ -44,6 +47,14 @@ const TableCell = ({ rowData, columnKey, rowIndex, onDelete = () => {} }) => {
           {cellValue}
         </Chip>
       );
+    case "classes":
+      if (!rowData.status || rowData.status === "Tạm nghĩ việc" || rowData.status === "Đã nghĩ việc") return null;
+      return (
+        <Chip className="capitalize" size="sm" variant="flat">
+          Tiếng Anh 1
+        </Chip>
+      );
+
     case "status": {
       const mapStatus = {
         "Đang làm việc": "success",

@@ -1,5 +1,5 @@
 import { DEFAULT_PAGER } from "@/constants";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import useDebounce from "./useDebounce";
 
 const useTable = ({ defaultSelectedColumns = [] }) => {
@@ -12,6 +12,10 @@ const useTable = ({ defaultSelectedColumns = [] }) => {
   const debounceQuery = useDebounce(query);
 
   const changePager = useCallback((prop, value) => setPager((prev) => ({ ...prev, [prop]: value })), []);
+
+  useEffect(() => {
+    setSelectedColumns(new Set(defaultSelectedColumns));
+  }, [defaultSelectedColumns]);
 
   return {
     setQuery,
