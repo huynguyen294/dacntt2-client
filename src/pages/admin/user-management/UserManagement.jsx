@@ -156,7 +156,7 @@ const columnsByRole = {
   student: { columns: studentColumns, defaultSelectedColumns: studentDefaultSelectedColumns },
   teacher: { columns: teacherColumns, defaultSelectedColumns: teacherDefaultSelectedColumns },
   consultant: { columns: consultantColumns, defaultSelectedColumns: consultantDefaultSelectedColumns },
-  "finance-officers": { columns: financeOfficerColumns, defaultSelectedColumns: financeOfficerDefaultSelectedColumns },
+  "finance-officer": { columns: financeOfficerColumns, defaultSelectedColumns: financeOfficerDefaultSelectedColumns },
 };
 
 export default UserManagement;

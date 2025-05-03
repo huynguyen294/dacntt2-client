@@ -37,7 +37,7 @@ const TableFilter = ({ role }) => {
         <div className="p-2 space-y-4">
           <CheckboxGroup value={roles} label="Vai trò" onValueChange={setRoles}>
             {USER_ROLES.map((r) => (
-              <Checkbox key={r} value={r} isDisabled={Boolean(role)}>
+              <Checkbox key={r} value={r} isDisabled={role !== "_"}>
                 {ROLE_LABELS[r]}
               </Checkbox>
             ))}
