@@ -59,6 +59,8 @@ export const convertImageSrc = (link) => ({ link, id: getCloudinaryPublicIdFromU
 
 export const currencyToNumber = (str = "") => parseInt(String(str).replaceAll(/[.,]/g, ""));
 
+export const localeString = (number) => Number(number || 0).toLocaleString("zh-CN");
+
 export const removeVietnameseTones = (str) => {
   const mapAccents = {
     à: "a",

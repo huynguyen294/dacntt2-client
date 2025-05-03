@@ -45,32 +45,36 @@ const TableHeader = ({ addBtnPath, addBtnText = "Thêm mới", filter }) => {
             selectionMode="single"
             variant="faded"
           >
-            {allColumns.map((col) => {
-              const selected = order.orderBy === col.uid;
-              return (
-                <DropdownItem
-                  hideSelectedIcon
-                  endContent={
-                    selected && (
-                      <ArrowDown
-                        size="15px"
-                        className={cn("transition-transform", order.order === "asc" && "rotate-180")}
-                      />
-                    )
-                  }
-                  key={col.uid}
-                  onPress={() => {
-                    if (selected) {
-                      setOrder((prev) => ({ ...prev, order: prev.order === "desc" ? "asc" : "desc" }));
-                    } else {
-                      setOrder({ orderBy: col.uid, order: "desc" });
+            {allColumns
+              .filter((c) => !c.disableSort)
+              .map((col) => {
+                const selected = order.orderBy === col.uid || order.orderBy === col.sortUid;
+
+                return (
+                  <DropdownItem
+                    hideSelectedIcon
+                    endContent={
+                      selected && (
+                        <ArrowDown
+                          size="15px"
+                          className={cn("transition-transform", order.order === "asc" && "rotate-180")}
+                        />
+                      )
                     }
-                  }}
-                >
-                  {col.name}
-                </DropdownItem>
-              );
-            })}
+                    key={col.uid}
+                    onPress={() => {
+                      if (selected) {
+                        setOrder((prev) => ({ ...prev, order: prev.order === "desc" ? "asc" : "desc" }));
+                      } else {
+                        const orderBy = col.sortUid || col.uid;
+                        setOrder({ orderBy, order: "desc" });
+                      }
+                    }}
+                  >
+                    {col.name}
+                  </DropdownItem>
+                );
+              })}
           </DropdownMenu>
         </Dropdown>
         <Dropdown showArrow>

@@ -27,7 +27,7 @@ const Table = ({ className, classNames = {}, renderCell = (row, columnKey) => ro
       </TableHeader>
       <TableBody
         emptyContent={
-          <div className="text-foreground-500 font-semibold flex gap-2 w-full justify-center">
+          <div className="text-foreground-500 font-semibold flex gap-2 w-full justify-center items-center">
             <Ban size="18px" />
             Không có dữ liệu
           </div>

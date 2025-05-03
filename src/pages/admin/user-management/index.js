@@ -15,7 +15,7 @@ export const financeOfficerManagementBreadcrumbItems = [
 ];
 
 export const breadcrumbItemsByRole = {
-  admin: userManagementBreadcrumbItems,
+  _: userManagementBreadcrumbItems,
   student: studentManagementBreadcrumbItems,
   teacher: teacherManagementBreadcrumbItems,
   consultant: consultantManagementBreadcrumbItems,

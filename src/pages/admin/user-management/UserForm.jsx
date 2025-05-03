@@ -1,12 +1,12 @@
 /* eslint-disable no-unused-vars */
-import { Collapse, Form, PasswordInput } from "@/components/common";
+import { Collapse, CurrencyInput, Form, PasswordInput } from "@/components/common";
 import { UserBasicFields } from "@/components";
 import { Select, SelectItem } from "@heroui/select";
 import { useState } from "react";
 import { Button } from "@heroui/button";
 import { Plus, RefreshCcw, Save } from "lucide-react";
 import { useForm, useNavigate } from "@/hooks";
-import { createUser, updateUser } from "@/apis";
+import { createUserWithRole, updateUserWithRole } from "@/apis";
 import { useQueryClient } from "@tanstack/react-query";
 import { addToast } from "@heroui/toast";
 import { convertImageSrc } from "@/utils";
@@ -16,11 +16,13 @@ import { Checkbox } from "@heroui/checkbox";
 import { Input, Textarea } from "@heroui/input";
 import { DatePicker } from "@heroui/date-picker";
 import { useParams } from "react-router";
+import { parseDate } from "@internationalized/date";
 
 const UserForm = ({ defaultValues = {}, editMode }) => {
   const { role: paramRole } = useParams();
   const { id: userId, imageUrl, password, ...removed } = defaultValues;
   removed.dateOfBirth = removed.dateOfBirth && format(removed.dateOfBirth, DATE_FORMAT);
+  removed.startDate = removed.startDate && format(removed.startDate, DATE_FORMAT);
   removed.password = "";
   removed.passwordConfirm = "";
 
@@ -33,7 +35,7 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
   const [imgUrl, setImgUrl] = useState(convertImageSrc(imageUrl));
 
   // handle for date
-  const form = useForm();
+  const form = useForm({ numberFields: ["salary"] });
   const { isError, isDirty, errors, actions } = form;
 
   const handleSubmit = async (data) => {
@@ -41,20 +43,20 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
 
     setRegistering(true);
     if (editMode) {
-      const result = await updateUser(userId, payload);
+      const result = await updateUserWithRole(userId, { ...defaultValues, ...payload }, paramRole);
       if (result.ok) {
         queryClient.invalidateQueries({ queryKey: ["users"] });
-        navigate("/admin/user-management/" + role);
+        navigate("/admin/user-management/" + paramRole);
       } else {
         addToast({ color: "danger", title: "Lỗi tạo tài khoản", description: result.message });
       }
       return;
     }
 
-    const result = await createUser(payload);
+    const result = await createUserWithRole(payload, paramRole);
     if (result.ok) {
       queryClient.invalidateQueries({ queryKey: ["users"] });
-      navigate("/admin/user-management/" + role);
+      navigate("/admin/user-management/" + paramRole);
     } else {
       addToast({ color: "danger", title: "Lỗi tạo tài khoản", description: result.message });
     }
@@ -62,7 +64,7 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
   };
 
   return (
-    <Form form={form} className="mt-3 space-y-4" onSubmit={handleSubmit}>
+    <Form numberFields={["salary"]} form={form} className="mt-3 space-y-4" onSubmit={handleSubmit}>
       <Collapse showDivider defaultExpanded variant="splitted" title="THÔNG TIN CƠ BẢN">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-start gap-4 pb-4">
           <UserBasicFields form={form} img={imgUrl} onImgChange={setImgUrl} defaultValues={defaultValues} />
@@ -111,7 +113,7 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
           </Select>
           <PasswordInput
             isDisabled={editMode && !resetPassword}
-            isRequired={resetPassword ? true : false}
+            isRequired={!editMode || resetPassword ? true : false}
             name="password"
             radius="sm"
             size="lg"
@@ -123,7 +125,7 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
           />
           <PasswordInput
             isDisabled={editMode && !resetPassword}
-            isRequired={resetPassword ? true : false}
+            isRequired={!editMode || resetPassword ? true : false}
             name="passwordConfirm"
             radius="sm"
             size="lg"
@@ -152,8 +154,9 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-start gap-4 pb-4">
             <Select
               autoFocus
-              name="employmentType"
               isRequired
+              name="employmentType"
+              defaultSelectedKeys={defaultValues.employmentType && new Set([defaultValues.employmentType])}
               onChange={actions.instantChange}
               size="lg"
               variant="bordered"
@@ -162,16 +165,17 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
               labelPlacement="outside"
               placeholder="Chính thức, thời vụ..."
             >
-              <SelectItem key={"Chính thức"}>Chính thức</SelectItem>
-              <SelectItem key={"Bán thời gian"}>Bán thời gian</SelectItem>
-              <SelectItem key={"Thời vụ"}>Thời vụ</SelectItem>
+              <SelectItem key={"Nhân viên chính thức"}>Nhân viên chính thức</SelectItem>
+              <SelectItem key={"Nhân viên bán thời gian"}>Nhân viên bán thời gian</SelectItem>
+              <SelectItem key={"Nhân viên thời vụ"}>Nhân viên thời vụ</SelectItem>
             </Select>
-            <Input
+            <CurrencyInput
               autoFocus
               isRequired
               name="salary"
               size="lg"
               variant="bordered"
+              defaultValue={defaultValues.salary || 0}
               label="Lương cơ bản"
               radius="sm"
               labelPlacement="outside"
@@ -179,7 +183,11 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
             />
             <DatePicker
               onChange={actions.instantChange}
-              // defaultValue={defaultValues.dateOfBirth && parseDate(format(defaultValues.dateOfBirth, DATE_FORMAT))}
+              defaultValue={
+                defaultValues.startDate
+                  ? parseDate(format(defaultValues.startDate, DATE_FORMAT))
+                  : parseDate(format(new Date(), DATE_FORMAT))
+              }
               name="startDate"
               calendarProps={{ showMonthAndYearPickers: true }}
               size="lg"
@@ -191,6 +199,7 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
             />
             <Input
               autoFocus
+              defaultValue={defaultValues.major}
               isRequired
               name="major"
               size="lg"
@@ -202,7 +211,7 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
             />
             <Input
               autoFocus
-              isRequired
+              defaultValue={defaultValues.certificates}
               name="certificates"
               size="lg"
               variant="bordered"
@@ -213,9 +222,10 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
             />
             <Select
               autoFocus
-              name="employmentType"
+              name="status"
               isRequired
               onChange={actions.instantChange}
+              defaultSelectedKeys={defaultValues.status ? new Set([defaultValues.status]) : new Set(["Đang làm việc"])}
               size="lg"
               variant="bordered"
               label="Trạng thái"
@@ -229,8 +239,8 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
             </Select>
             <Textarea
               autoFocus
-              isRequired
-              name="certificates"
+              defaultValue={defaultValues.note}
+              name="note"
               size="lg"
               variant="bordered"
               label="Ghi chú (nếu có)"

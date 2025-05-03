@@ -22,14 +22,14 @@ const Form = ({
       onSubmit={(e) => {
         e.preventDefault();
         const data = Object.fromEntries(new FormData(e.currentTarget));
+        form.numberFields.forEach((field) => (data[field] = +data[field]));
         onSubmit(data);
       }}
       onInput={(e) => {
         onInput(e);
         if (form) {
-          const { actions } = form;
           const formState = Object.fromEntries(new FormData(e.currentTarget));
-          actions.setFormState(formState);
+          form.actions.setFormState(formState);
           onChange(formState);
         }
       }}

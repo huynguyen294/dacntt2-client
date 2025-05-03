@@ -1,12 +1,14 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useEffect, useRef, useState } from "react";
 import useValidateForm from "./useValidateForm";
 
 const defaultOptions = {
   defaultValues: {},
+  numberFields: [],
 };
 
 const useForm = (options = defaultOptions) => {
-  const { defaultValues } = options;
+  const { defaultValues = defaultOptions.defaultValues, numberFields = defaultOptions.numberFields } = options;
   const { changeError, errors, changeErrors, clearError, clearErrors, isError } = useValidateForm();
   const [isDirty, setIsDirty] = useState(false);
   const formState = useRef({});
@@ -15,6 +17,7 @@ const useForm = (options = defaultOptions) => {
 
   const setFormState = useCallback(
     (newFormState) => {
+      numberFields.forEach((field) => (newFormState[field] = +newFormState[field]));
       formState.current = newFormState;
       const newDirty = compareDirty(newFormState, initState.current);
       if (newDirty !== isDirty) setIsDirty(newDirty);
@@ -39,6 +42,7 @@ const useForm = (options = defaultOptions) => {
   useEffect(() => {
     if (ref.current) {
       const data = Object.fromEntries(new FormData(ref.current));
+      numberFields.forEach((field) => (data[field] = +data[field]));
       initState.current = { ...data, ...defaultValues };
     }
   }, [defaultValues]);
@@ -48,6 +52,7 @@ const useForm = (options = defaultOptions) => {
     isDirty,
     isError,
     errors,
+    numberFields,
     actions: {
       instantChange,
       getDefaultValues,

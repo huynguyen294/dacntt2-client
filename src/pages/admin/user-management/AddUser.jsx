@@ -9,7 +9,7 @@ const AddUser = () => {
   return (
     <ModuleLayout
       breadcrumbItems={[
-        ...breadcrumbItemsByRole[role || "admin"],
+        ...breadcrumbItemsByRole[role],
         { label: "Thêm tài khoản", path: `/admin/user-management/${role}/add` },
       ]}
     >

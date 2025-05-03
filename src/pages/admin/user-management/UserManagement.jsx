@@ -1,44 +1,39 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { ModuleLayout } from "@/layouts";
-import { DATE_FORMAT, ROLE_PALLET } from "@/constants";
-import { Button } from "@heroui/button";
-import { Chip } from "@heroui/chip";
-import { Tooltip } from "@heroui/tooltip";
-import { User } from "@heroui/user";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { format } from "date-fns";
-import { Edit, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import { breadcrumbItemsByRole } from ".";
-import { deleteUserById, getUsers } from "@/apis";
-import { alpha } from "@/utils";
+import { deleteUserById, getUsersWithRole } from "@/apis";
 import { ConfirmDeleteDialog } from "@/components";
 import { useDisclosure } from "@heroui/modal";
 import { addToast } from "@heroui/toast";
 import { Table, TableFooter, TableHeader, TableProvider } from "@/components/common";
 import { useTable } from "@/hooks";
 import TableFilter from "./TableFilter";
+import TableCell from "./TableCell";
 
 const UserManagement = () => {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { role } = useParams();
+  const { columns, defaultSelectedColumns } = columnsByRole[role];
 
   const table = useTable({ defaultSelectedColumns });
   const { pager, filters, selectedColumns, debounceQuery, order, setPager } = table;
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [selectedUserId, setSelectedUserId] = useState(null);
-  const { role } = useParams();
 
   const roles = role !== "_" ? [role] : filters.roles;
   const roleKey = roles ? `r=${roles.join(",")}` : "";
   const queryFilterKey = `p=${pager.page},ps=${pager.pageSize},q=${debounceQuery},o=${order.order},ob=${order.orderBy},ca=${filters.createdAt}${roleKey}`;
   const { isLoading, data, isSuccess } = useQuery({
     queryKey: ["users", queryFilterKey],
-    queryFn: () => getUsers(pager, order, debounceQuery, { ...filters, roles }),
+    queryFn: () => getUsersWithRole(pager, order, debounceQuery, { ...filters, roles }, role),
   });
 
   const users = data?.users || [];
+  const rowData = users.map((u) => ({ ...u, ...data.refs?.userEmployees?.[u.id] }));
+
   const loadingState = isLoading ? "loading" : "idle";
   const filteredColumns = useMemo(() => columns.filter((col) => selectedColumns.has(col.uid)), [selectedColumns]);
 
@@ -53,72 +48,6 @@ const UserManagement = () => {
     onClose();
   };
 
-  const renderCell = (user, columnKey, index) => {
-    let cellValue = user[columnKey];
-    if (columnKey === "createdAt" || columnKey === "dateOfBirth") {
-      if (cellValue) cellValue = format(new Date(cellValue), DATE_FORMAT);
-    }
-    if (columnKey === "index") {
-      cellValue = index + 1 + (pager.page - 1) * pager.pageSize;
-    }
-
-    switch (columnKey) {
-      case "user":
-        return (
-          <User avatarProps={{ radius: "lg", src: user.imageUrl }} description={user.email} name={user.name}>
-            {user.email}
-          </User>
-        );
-      case "role":
-        return (
-          <Chip
-            className="capitalize bg-[var(--current-color)]"
-            size="sm"
-            variant="flat"
-            style={{ "--current-color": alpha(ROLE_PALLET[cellValue], 0.2) }}
-          >
-            {cellValue}
-          </Chip>
-        );
-      case "actions":
-        return (
-          <div className="relative flex items-center justify-center">
-            <Tooltip content="Edit user">
-              <Button
-                onPress={() => {
-                  navigate(`/admin/user-management/${role}/edit/${user.id}`);
-                }}
-                size="sm"
-                isIconOnly
-                radius="full"
-                variant="light"
-              >
-                <Edit size="18px" />
-              </Button>
-            </Tooltip>
-            <Tooltip color="danger" content="Delete user">
-              <Button
-                onClick={(e) => e.stopPropagation()}
-                onPress={() => {
-                  onOpen();
-                  setSelectedUserId(user.id);
-                }}
-                size="sm"
-                color="danger"
-                isIconOnly
-                radius="full"
-                variant="light"
-              >
-                <Trash2 size="18px" />
-              </Button>
-            </Tooltip>
-          </div>
-        );
-      default:
-        return cellValue;
-    }
-  };
-
   useEffect(() => {
     if (isSuccess && data?.pager) {
       setPager(data.pager);
@@ -127,7 +56,7 @@ const UserManagement = () => {
 
   return (
     <ModuleLayout key={role} breadcrumbItems={breadcrumbItemsByRole[role]}>
-      <TableProvider value={{ ...table, loadingState, allColumns: columns, rows: users, columns: filteredColumns }}>
+      <TableProvider value={{ ...table, loadingState, allColumns: columns, rows: rowData, columns: filteredColumns }}>
         <div className="px-10">
           <ConfirmDeleteDialog
             title="Xóa người dùng"
@@ -144,7 +73,19 @@ const UserManagement = () => {
           </div>
           <TableHeader filter={<TableFilter role={role} />} addBtnPath={`/admin/user-management/${role}/add`} />
         </div>
-        <Table renderCell={renderCell} />
+        <Table
+          renderCell={(rowData, columnKey, index) => (
+            <TableCell
+              rowData={rowData}
+              columnKey={columnKey}
+              rowIndex={index}
+              onDelete={(id) => {
+                setSelectedUserId(id);
+                onOpen();
+              }}
+            />
+          )}
+        />
         <div className="px-10 pb-6 flex justify-between">
           <TableFooter />
         </div>
@@ -153,38 +94,69 @@ const UserManagement = () => {
   );
 };
 
-const columns = [
-  { name: "STT", uid: "index" },
-  { name: "Tài khoản", uid: "user" },
-  { name: "Vai trò", uid: "role" },
+const commonColumns = [
+  { name: "STT", uid: "index", disableSort: true },
+  { name: "Tài khoản", uid: "user", sortUid: "name" },
+  { name: "Vai trò", uid: "role", disableSort: true },
   { name: "Email", uid: "email" },
   { name: "Ngày sinh", uid: "dateOfBirth" },
-  { name: "Giới tính", uid: "gender" },
-  { name: "Số điện thoại", uid: "phoneNumber" },
-  { name: "Địa chỉ", uid: "address" },
+  { name: "Giới tính", uid: "gender", disableSort: true },
+  { name: "Số điện thoại", uid: "phoneNumber", disableSort: true },
+  { name: "Địa chỉ", uid: "address", disableSort: true },
   { name: "Ngày đăng ký", uid: "createdAt" },
   { name: "Ngày cập nhật gần nhất", uid: "lastUpdatedAt" },
+];
+
+const adminColumns = [...commonColumns, { name: "Hành động", uid: "actions" }];
+
+const studentColumns = [
+  ...commonColumns,
+  { name: "Lớp đang học", uid: "classes", disableSort: true },
+  { name: "Học phí", uid: "tuition" },
+  { name: "Hành động", uid: "actions", disableSort: true },
+];
+
+const teacherColumns = [
+  ...commonColumns,
+  { name: "Lương cơ bản", uid: "salary" },
+  { name: "Loại lao động", uid: "employmentType", disableSort: true },
+  { name: "Chuyển môn", uid: "major", disableSort: true },
+  { name: "Lớp đang dạy", uid: "classes", disableSort: true },
+  { name: "Trạng thái", uid: "status", disableSort: true },
   { name: "Hành động", uid: "actions" },
 ];
 
-const defaultSelectedColumns = [
-  "index",
-  "name",
-  "user",
-  "role",
-  "email",
-  "gender",
-  "phoneNumber",
-  "createdAt",
-  "actions",
+const consultantColumns = [
+  ...commonColumns,
+  { name: "Lương cơ bản", uid: "salary" },
+  { name: "Loại lao động", uid: "employmentType", disableSort: true },
+  { name: "Chuyển môn", uid: "major", disableSort: true },
+  { name: "Trạng thái", uid: "status", disableSort: true },
+  { name: "Hành động", uid: "actions" },
 ];
 
+const financeOfficerColumns = [
+  ...commonColumns,
+  { name: "Lương cơ bản", uid: "salary", disableSort: true },
+  { name: "Loại lao động", uid: "employmentType", disableSort: true },
+  { name: "Chuyển môn", uid: "major", disableSort: true },
+  { name: "Trạng thái", uid: "status", disableSort: true },
+  { name: "Hành động", uid: "actions" },
+];
+
+const commonSelectedColumns = ["index", "user", "email", "phoneNumber", "createdAt", "actions"];
+const adminDefaultSelectedColumns = [...commonSelectedColumns, "role", "gender"];
+const studentDefaultSelectedColumns = [...commonSelectedColumns, "classes", "tuition", "phoneNumber"];
+const teacherDefaultSelectedColumns = [...commonSelectedColumns, "major", "classes", "salary", "status"];
+const consultantDefaultSelectedColumns = [...commonSelectedColumns, "major", "salary", "status"];
+const financeOfficerDefaultSelectedColumns = [...commonSelectedColumns, "major", "salary", "status"];
+
 const columnsByRole = {
-  admin: { columns: columns, defaultSelectedColumns: defaultSelectedColumns },
-  student: { columns: columns, defaultSelectedColumns: defaultSelectedColumns },
-  teacher: { columns: columns, defaultSelectedColumns: defaultSelectedColumns },
-  consultant: { columns: columns, defaultSelectedColumns: defaultSelectedColumns },
-  "finance-officers": { columns: columns, defaultSelectedColumns: defaultSelectedColumns },
+  _: { columns: adminColumns, defaultSelectedColumns: adminDefaultSelectedColumns },
+  student: { columns: studentColumns, defaultSelectedColumns: studentDefaultSelectedColumns },
+  teacher: { columns: teacherColumns, defaultSelectedColumns: teacherDefaultSelectedColumns },
+  consultant: { columns: consultantColumns, defaultSelectedColumns: consultantDefaultSelectedColumns },
+  "finance-officers": { columns: financeOfficerColumns, defaultSelectedColumns: financeOfficerDefaultSelectedColumns },
 };
 
 export default UserManagement;

@@ -1,23 +1,34 @@
-import { getServerErrorMessage, getUserById } from "@/apis";
+/* eslint-disable no-unused-vars */
+import { getServerErrorMessage, getUserByIdWithRole } from "@/apis";
 import { useParams } from "react-router";
 import { breadcrumbItemsByRole } from ".";
 import { ModuleLayout } from "@/layouts";
 import { useQuery } from "@tanstack/react-query";
-import UserForm from "./UserForm";
 import { Spinner } from "@heroui/spinner";
-import { Ban } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { addToast } from "@heroui/toast";
+import UserForm from "./UserForm";
 
 const EditUser = () => {
   const { role, userId } = useParams();
 
-  console.log({ role, userId });
-
   const { isLoading, data, isError, error } = useQuery({
     queryKey: ["users", userId],
-    queryFn: () => getUserById(userId),
+    queryFn: () => getUserByIdWithRole(userId, role),
   });
+
+  const defaultValues = useMemo(() => {
+    if (!data) return {};
+    const { password, ...userData } = data.user;
+    const employee = data.refs?.userEmployees?.[userData.id] || {};
+    const { id: employeeId, userId, ...employeeData } = employee;
+
+    return {
+      ...userData,
+      ...employeeData,
+      employeeId,
+    };
+  }, [data]);
 
   useEffect(() => {
     if (isError) addToast({ color: "danger", title: "Error!", description: getServerErrorMessage(error) });
@@ -26,7 +37,7 @@ const EditUser = () => {
   return (
     <ModuleLayout
       breadcrumbItems={[
-        ...breadcrumbItemsByRole[role || "admin"],
+        ...breadcrumbItemsByRole[role],
         { label: "Sửa tài khoản", path: `/admin/user-management/${role}/edit/${userId}` },
       ]}
     >
@@ -37,7 +48,7 @@ const EditUser = () => {
             <Spinner variant="wave" />
           </div>
         )}
-        {data?.user && <UserForm editMode defaultValues={data.user} />}
+        {data?.user && <UserForm editMode defaultValues={defaultValues} />}
       </div>
     </ModuleLayout>
   );
