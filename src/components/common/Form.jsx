@@ -8,6 +8,7 @@ const Form = ({
   onSubmit = () => {},
   onInput = () => {},
   onChange = () => {},
+  numberFields = [],
   className,
   validationBehavior = "native",
   ...other
@@ -22,7 +23,7 @@ const Form = ({
       onSubmit={(e) => {
         e.preventDefault();
         const data = Object.fromEntries(new FormData(e.currentTarget));
-        form.numberFields.forEach((field) => (data[field] = +data[field]));
+        (form?.numberFields || numberFields).forEach((field) => (data[field] = +data[field]));
         onSubmit(data);
       }}
       onInput={(e) => {
