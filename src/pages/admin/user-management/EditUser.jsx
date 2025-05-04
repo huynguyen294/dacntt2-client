@@ -17,19 +17,6 @@ const EditUser = () => {
     queryFn: () => getUserByIdWithRole(userId, role),
   });
 
-  const defaultValues = useMemo(() => {
-    if (!data) return {};
-    const { password, ...userData } = data.user;
-    const employee = data.refs?.userEmployees?.[userData.id] || {};
-    const { id: employeeId, userId, ...employeeData } = employee;
-
-    return {
-      ...userData,
-      ...employeeData,
-      employeeId,
-    };
-  }, [data]);
-
   useEffect(() => {
     if (isError) addToast({ color: "danger", title: "Error!", description: getServerErrorMessage(error) });
   }, [isError, error]);
@@ -37,8 +24,8 @@ const EditUser = () => {
   return (
     <ModuleLayout
       breadcrumbItems={[
-        ...breadcrumbItemsByRole[role],
-        { label: "Sửa tài khoản", path: `/admin/user-management/${role}/edit/${userId}` },
+        ...breadcrumbItemsByRole[role === "admin" ? "_" : role],
+        { label: "Sửa tài khoản", path: `/admin/user-management/${role === "admin" ? "_" : role}/edit/${userId}` },
       ]}
     >
       <div className="px-10 overflow-y-auto pb-10">
@@ -48,7 +35,7 @@ const EditUser = () => {
             <Spinner variant="wave" />
           </div>
         )}
-        {data?.user && <UserForm editMode defaultValues={defaultValues} />}
+        {data?.user && <UserForm editMode defaultValues={data.user} />}
       </div>
     </ModuleLayout>
   );

@@ -9,7 +9,7 @@ import { Radio, RadioGroup } from "@heroui/radio";
 import { useTableContext } from "@/components/common";
 
 const TableFilter = ({ role }) => {
-  const { filters, setFilters } = useTableContext();
+  const { filters, setFilters, changePager } = useTableContext();
 
   const [roles, setRoles] = useState(role !== "_" ? [role] : filters.roles || USER_ROLES);
   const [createdAt, setCreatedAt] = useState(filters.createdAt || "all");
@@ -61,6 +61,7 @@ const TableFilter = ({ role }) => {
                 const newFilters = {};
                 if (roles.length < USER_ROLES.length) newFilters.roles = roles;
                 if (createdAt !== "all") newFilters.createdAt = createdAt;
+                changePager("page", 1);
                 setFilters(newFilters);
               }}
               startContent={<CheckCheck size="15px" />}

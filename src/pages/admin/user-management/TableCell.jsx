@@ -59,8 +59,8 @@ const TableCell = ({ rowData, columnKey, rowIndex, onDelete = () => {} }) => {
     case "status": {
       const mapStatus = {
         "Đang làm việc": "success",
-        "Tạm nghĩ việc": "warning",
-        "Đã nghĩ việc": "danger",
+        "Tạm nghỉ việc": "warning",
+        "Đã nghỉ việc": "danger",
       };
       return (
         cellValue && (
@@ -76,7 +76,7 @@ const TableCell = ({ rowData, columnKey, rowIndex, onDelete = () => {} }) => {
           <Tooltip content="Edit user">
             <Button
               onPress={() => {
-                navigate(`/admin/user-management/${rowData.role}/edit/${rowData.id}`);
+                navigate(`/admin/user-management/${rowData.role === "admin" ? "_" : rowData.role}/edit/${rowData.id}`);
               }}
               size="sm"
               isIconOnly

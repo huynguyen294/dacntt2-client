@@ -28,13 +28,31 @@ const TableFooter = () => {
             </Button>
           </DropdownTrigger>
           <DropdownMenu selectedKeys={new Set([pager.pageSize.toString()])} selectionMode="single">
-            <DropdownItem key={10} onPress={() => changePager("pageSize", 10)}>
+            <DropdownItem
+              key={10}
+              onPress={() => {
+                changePager("pageSize", 10);
+                changePager("page", 1);
+              }}
+            >
               10
             </DropdownItem>
-            <DropdownItem key={20} onPress={() => changePager("pageSize", 20)}>
+            <DropdownItem
+              key={20}
+              onPress={() => {
+                changePager("pageSize", 20);
+                changePager("page", 1);
+              }}
+            >
               20
             </DropdownItem>
-            <DropdownItem key={50} onPress={() => changePager("pageSize", 50)}>
+            <DropdownItem
+              key={50}
+              onPress={() => {
+                changePager("pageSize", 50);
+                changePager("page", 1);
+              }}
+            >
               50
             </DropdownItem>
           </DropdownMenu>

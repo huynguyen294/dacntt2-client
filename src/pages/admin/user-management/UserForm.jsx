@@ -25,6 +25,7 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
   removed.startDate = removed.startDate && format(removed.startDate, DATE_FORMAT);
   removed.password = "";
   removed.passwordConfirm = "";
+  defaultValues = removed;
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -43,7 +44,8 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
 
     setRegistering(true);
     if (editMode) {
-      const result = await updateUserWithRole(userId, { ...defaultValues, ...payload }, data.role);
+      const { passwordConfirm, ...removed } = defaultValues;
+      const result = await updateUserWithRole(userId, { ...removed, ...payload }, data.role);
       if (result.ok) {
         queryClient.invalidateQueries({ queryKey: ["users"] });
         navigate("/admin/user-management/" + paramRole);
@@ -231,11 +233,11 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
               label="Trạng thái"
               radius="sm"
               labelPlacement="outside"
-              placeholder="Đang làm, đã nghĩ..."
+              placeholder="Đang làm, đã nghỉ..."
             >
               <SelectItem key={"Đang làm việc"}>Đang làm việc</SelectItem>
-              <SelectItem key={"Tạm nghĩ việc"}>Tạm nghĩ việc</SelectItem>
-              <SelectItem key={"Đã nghĩ việc"}>Đã nghĩ việc</SelectItem>
+              <SelectItem key={"Tạm nghỉ việc"}>Tạm nghỉ việc</SelectItem>
+              <SelectItem key={"Đã nghỉ việc"}>Đã nghỉ việc</SelectItem>
             </Select>
             <Textarea
               autoFocus

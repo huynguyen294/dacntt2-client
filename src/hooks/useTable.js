@@ -13,6 +13,12 @@ const useTable = ({ defaultSelectedColumns = [] }) => {
 
   const changePager = useCallback((prop, value) => setPager((prev) => ({ ...prev, [prop]: value })), []);
 
+  useEffect(() => {
+    if (debounceQuery) {
+      changePager("page", 1);
+    }
+  }, [changePager, debounceQuery]);
+
   const reset = useCallback(() => {
     setQuery("");
     setPager(DEFAULT_PAGER);
