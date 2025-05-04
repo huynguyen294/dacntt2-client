@@ -101,7 +101,6 @@ const commonColumns = [
   { name: "STT", uid: "index", disableSort: true },
   { name: "Tài khoản", uid: "user", sortUid: "name" },
   { name: "Vai trò", uid: "role", disableSort: true },
-  { name: "Email", uid: "email" },
   { name: "Ngày sinh", uid: "dateOfBirth" },
   { name: "Giới tính", uid: "gender", disableSort: true },
   { name: "Số điện thoại", uid: "phoneNumber", disableSort: true },

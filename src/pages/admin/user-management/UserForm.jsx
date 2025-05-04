@@ -43,7 +43,7 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
 
     setRegistering(true);
     if (editMode) {
-      const result = await updateUserWithRole(userId, { ...defaultValues, ...payload }, paramRole);
+      const result = await updateUserWithRole(userId, { ...defaultValues, ...payload }, data.role);
       if (result.ok) {
         queryClient.invalidateQueries({ queryKey: ["users"] });
         navigate("/admin/user-management/" + paramRole);
@@ -53,7 +53,7 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
       return;
     }
 
-    const result = await createUserWithRole(payload, paramRole);
+    const result = await createUserWithRole(payload, data.role);
     if (result.ok) {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       navigate("/admin/user-management/" + paramRole);
