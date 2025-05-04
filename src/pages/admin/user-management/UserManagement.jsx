@@ -145,9 +145,9 @@ const financeOfficerColumns = [
   { name: "Hành động", uid: "actions" },
 ];
 
-const commonSelectedColumns = ["index", "user", "email", "phoneNumber", "createdAt", "actions"];
-const adminDefaultSelectedColumns = [...commonSelectedColumns, "role", "gender"];
-const studentDefaultSelectedColumns = [...commonSelectedColumns, "classes", "tuition", "phoneNumber"];
+const commonSelectedColumns = ["index", "user", "phoneNumber", "createdAt", "actions"];
+const adminDefaultSelectedColumns = [...commonSelectedColumns, "role", "dateOfBirth", "gender"];
+const studentDefaultSelectedColumns = [...commonSelectedColumns, "classes", "tuition"];
 const teacherDefaultSelectedColumns = [...commonSelectedColumns, "major", "classes", "salary", "status"];
 const consultantDefaultSelectedColumns = [...commonSelectedColumns, "salary", "status"];
 const financeOfficerDefaultSelectedColumns = [...commonSelectedColumns, "salary", "status"];

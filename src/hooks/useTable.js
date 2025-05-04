@@ -13,15 +13,29 @@ const useTable = ({ defaultSelectedColumns = [] }) => {
 
   const changePager = useCallback((prop, value) => setPager((prev) => ({ ...prev, [prop]: value })), []);
 
+  const reset = useCallback(() => {
+    setQuery("");
+    setPager(DEFAULT_PAGER);
+    setOrder({ order: "desc", orderBy: "createdAt" });
+    setSelectedKeys(new Set([]));
+    setSelectedColumns(new Set(defaultSelectedColumns));
+    setFilters({});
+  }, [defaultSelectedColumns]);
+
   useEffect(() => {
     setSelectedColumns(new Set(defaultSelectedColumns));
-  }, [defaultSelectedColumns]);
+
+    return () => {
+      reset();
+    };
+  }, [reset, defaultSelectedColumns]);
 
   return {
     setQuery,
     pager,
     setPager,
     order,
+    reset,
     changePager,
     setOrder,
     selectedKeys,

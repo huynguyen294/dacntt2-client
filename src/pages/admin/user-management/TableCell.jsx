@@ -48,13 +48,14 @@ const TableCell = ({ rowData, columnKey, rowIndex, onDelete = () => {} }) => {
         </Chip>
       );
     case "classes":
-      if (!rowData.status || rowData.status === "Tạm nghĩ việc" || rowData.status === "Đã nghĩ việc") return null;
-      return (
-        <Chip className="capitalize" size="sm" variant="flat">
-          Tiếng Anh 1
-        </Chip>
-      );
-
+      if (rowData.role === "student" || rowData.status === "Đang làm việc") {
+        return (
+          <Chip className="capitalize" size="sm" variant="flat">
+            Tiếng Anh 1
+          </Chip>
+        );
+      }
+      return null;
     case "status": {
       const mapStatus = {
         "Đang làm việc": "success",
