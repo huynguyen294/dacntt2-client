@@ -60,7 +60,7 @@ const UserManagement = () => {
   return (
     <ModuleLayout key={role} breadcrumbItems={breadcrumbItemsByRole[role]}>
       <TableProvider value={{ ...table, loadingState, allColumns: columns, rows: rowData, columns: filteredColumns }}>
-        <div className="px-10">
+        <div className="px-2 sm:px-10">
           <ConfirmDeleteDialog
             title="Xóa người dùng"
             message="Người dùng này sẽ bị xóa vĩnh viễn khỏi hệ thống."
@@ -77,6 +77,7 @@ const UserManagement = () => {
           <TableHeader filter={<TableFilter role={role} />} addBtnPath={`/admin/user-management/${role}/add`} />
         </div>
         <Table
+          className="px-2 sm:px-10"
           renderCell={(rowData, columnKey, index) => (
             <TableCell
               rowData={rowData}
@@ -89,7 +90,7 @@ const UserManagement = () => {
             />
           )}
         />
-        <div className="px-10 pb-6 flex justify-between">
+        <div className="px-2 sm:px-10 pb-6 flex justify-between">
           <TableFooter />
         </div>
       </TableProvider>

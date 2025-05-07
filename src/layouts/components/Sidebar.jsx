@@ -73,15 +73,16 @@ const Sidebar = ({ className }) => {
     return (
       <Button
         size="lg"
+        fullWidth
+        disableRipple
+        disableAnimation
+        variant="light"
         className={cn(
           "justify-start font-semibold text-foreground-500 hover:!bg-primary/5",
           active && "text-primary",
           active && !isInSection && "bg-primary/10 hover:!bg-primary/10"
         )}
-        fullWidth
-        disableRipple
-        disableAnimation
-        variant="light"
+        isDisabled={item.disabled}
         startContent={
           isInSection ? (
             <CircleDot size={active ? "9px" : "7px"} strokeWidth={active ? 6 : 3} className="w-6" />
@@ -151,7 +152,7 @@ const userSidebarItems = {
     {
       section: "Tuyển sinh",
       sectionIcon: Podcast,
-      items: [{ label: "Tư vấn", path: "/admin/admission" }],
+      items: [{ label: "Tư vấn", path: "/admin/admissions" }],
     },
     {
       section: "Đào tạo",
@@ -160,21 +161,17 @@ const userSidebarItems = {
         { label: "Chứng chỉ", path: "/admin/certificates" },
         { label: "Khóa học", path: "/admin/courses" },
         { label: "Lớp học", path: "/admin/classes" },
+        { label: "Kỳ thi", path: "/admin/exams" },
+        { label: "Cài đặt đào tạo", path: "/admin/training-settings" },
       ],
     },
     {
       section: "Báo cáo",
       sectionIcon: ChartColumnBig,
       items: [
-        {
-          label: "Báo cáo tuyển sinh",
-          path: "/admin/admission-report",
-        },
-        {
-          label: "Báo cáo tài chính",
-          path: "/admin/finance-report",
-        },
-        { label: "Báo cáo đào tạo", path: "/admin/edu-report" },
+        { label: "Báo cáo tuyển sinh", path: "/admin/admission-report", disabled: true },
+        { label: "Báo cáo tài chính", path: "/admin/finance-report", disabled: true },
+        { label: "Báo cáo đào tạo", path: "/admin/edu-report", disabled: true },
       ],
     },
     {

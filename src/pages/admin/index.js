@@ -7,3 +7,4 @@ export { default as CourseManagement } from "./training-management/CourseManagem
 export { default as ExamScheduleManagement } from "./training-management/ExamScheduleManagement";
 export { default as CertificateManagement } from "./training-management/CertificateManagement";
 export { default as TrainingSettings } from "./training-management/TrainingSettings";
+export { default as AdmissionManagement } from "./admission-management/AdmissionManagement";

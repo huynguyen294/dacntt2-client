@@ -4,7 +4,18 @@ import { ToastProvider } from "@heroui/toast";
 
 import { useNavigate, useVerifyUser } from "./hooks";
 import { Login, Register } from "./pages/auth";
-import { AddUser, Admin, EditUser, UserManagement } from "./pages/admin";
+import {
+  AddUser,
+  Admin,
+  AdmissionManagement,
+  CertificateManagement,
+  ClassManagement,
+  CourseManagement,
+  EditUser,
+  ExamScheduleManagement,
+  TrainingSettings,
+  UserManagement,
+} from "./pages/admin";
 import { Teacher } from "./pages/teacher";
 import { Student } from "./pages/student";
 import { NotFound } from "./pages";
@@ -28,6 +39,12 @@ const App = () => {
           <Route path="user-management/:role" element={<UserManagement />} />
           <Route path="user-management/:role/add" element={<AddUser />} />
           <Route path="user-management/:role/edit/:userId" element={<EditUser />} />
+          <Route path="admissions" element={<AdmissionManagement />} />
+          <Route path="certificates" element={<CertificateManagement />} />
+          <Route path="courses" element={<CourseManagement />} />
+          <Route path="classes" element={<ClassManagement />} />
+          <Route path="exams" element={<ExamScheduleManagement />} />
+          <Route path="training-settings" element={<TrainingSettings />} />
         </Route>
 
         <Route path="teacher">

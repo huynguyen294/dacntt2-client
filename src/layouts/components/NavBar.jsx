@@ -27,21 +27,21 @@ const NavBar = ({ breadcrumbItems = [], hideMenuButton = false }) => {
 
   return (
     user && (
-      <HeroUiNavBar maxWidth="full" shouldHideOnScroll>
+      <HeroUiNavBar maxWidth="full" shouldHideOnScroll classNames={{ wrapper: "px-2 sm:px-6" }}>
         <SidebarDrawer isOpen={isOpen} onOpenChange={onOpenChange} />
         <NavbarContent justify="start" className="gap-1">
           <Button
             isIconOnly
             variant="light"
             radius="full"
-            className={cn("hidden sm:inline-flex", hideMenuButton && "inline-flex sm:hidden")}
+            className={cn(hideMenuButton && "inline-flex sm:hidden")}
             onPress={onOpen}
           >
             <Menu />
           </Button>
           <NavbarBrand>
             <Breadcrumbs
-              className="ml-2"
+              className="ml-2 hidden sm:block"
               underline="hover"
               size="lg"
               separator="/"

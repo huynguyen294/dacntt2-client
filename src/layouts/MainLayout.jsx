@@ -9,7 +9,7 @@ const MainLayout = ({ title, children, hideMenuButton }) => {
       <Sidebar className="hidden sm:flex" />
       <div className="flex-1 h-[100dvh] flex flex-col">
         <NavBar title={title} hideMenuButton={hideMenuButton} />
-        <div className="px-6 flex-1 overflow-y-auto">{children}</div>
+        <div className="px-2 sm:px-6 flex-1 overflow-y-auto">{children}</div>
       </div>
     </main>
   );

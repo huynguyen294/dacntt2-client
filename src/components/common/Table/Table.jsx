@@ -10,7 +10,7 @@ const Table = ({ className, classNames = {}, renderCell = (row, columnKey) => ro
   return (
     <HerioUiTable
       isHeaderSticky
-      className={cn("flex-1 overflow-y-auto px-10 py-2", className)}
+      className={cn("flex-1 overflow-y-auto py-2", className)}
       selectionMode="multiple"
       aria-label="Example table with custom cells"
       selectedKeys={selectedKeys}
