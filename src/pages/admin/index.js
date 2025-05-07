@@ -2,3 +2,8 @@ export { default as Admin } from "./Admin";
 export { default as UserManagement } from "./user-management/UserManagement";
 export { default as AddUser } from "./user-management/AddUser";
 export { default as EditUser } from "./user-management/EditUser";
+export { default as ClassManagement } from "./training-management/ClassManagement";
+export { default as CourseManagement } from "./training-management/CourseManagement";
+export { default as ExamScheduleManagement } from "./training-management/ExamScheduleManagement";
+export { default as CertificateManagement } from "./training-management/CertificateManagement";
+export { default as TrainingSettings } from "./training-management/TrainingSettings";

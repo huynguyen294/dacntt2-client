@@ -1,5 +1,5 @@
 import { ModuleLayout } from "@/layouts";
-import { breadcrumbItemsByRole } from ".";
+import { breadcrumbItemsByRole } from "./constants";
 import { useParams } from "react-router";
 import UserForm from "./UserForm";
 

@@ -3,15 +3,15 @@ import { ModuleLayout } from "@/layouts";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router";
-import { breadcrumbItemsByRole } from ".";
+import { breadcrumbItemsByRole } from "./constants";
 import { deleteUserById, getUsersWithRole } from "@/apis";
 import { ConfirmDeleteDialog } from "@/components";
 import { useDisclosure } from "@heroui/modal";
 import { addToast } from "@heroui/toast";
 import { Table, TableFooter, TableHeader, TableProvider } from "@/components/common";
 import { useTable } from "@/hooks";
-import TableFilter from "./TableFilter";
-import TableCell from "./TableCell";
+import TableFilter from "./components/TableFilter";
+import TableCell from "./components/TableCell";
 
 const UserManagement = () => {
   const queryClient = useQueryClient();

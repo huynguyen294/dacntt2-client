@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { getServerErrorMessage, getUserByIdWithRole } from "@/apis";
 import { useParams } from "react-router";
-import { breadcrumbItemsByRole } from ".";
+import { breadcrumbItemsByRole } from "./constants";
 import { ModuleLayout } from "@/layouts";
 import { useQuery } from "@tanstack/react-query";
 import { Spinner } from "@heroui/spinner";
@@ -24,8 +24,8 @@ const EditUser = () => {
   return (
     <ModuleLayout
       breadcrumbItems={[
-        ...breadcrumbItemsByRole[role === "admin" ? "_" : role],
-        { label: "Sửa tài khoản", path: `/admin/user-management/${role === "admin" ? "_" : role}/edit/${userId}` },
+        ...breadcrumbItemsByRole[role],
+        { label: "Sửa tài khoản", path: `/admin/user-management/${role}/edit/${userId}` },
       ]}
     >
       <div className="px-10 overflow-y-auto pb-10">
