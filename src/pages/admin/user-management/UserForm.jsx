@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Button } from "@heroui/button";
 import { Plus, RefreshCcw, Save } from "lucide-react";
 import { useForm, useNavigate } from "@/hooks";
-import { createUserWithRole, updateUserWithRole } from "@/apis";
+import { createUserWithRole, deleteImageById, saveImage, updateUserWithRole } from "@/apis";
 import { useQueryClient } from "@tanstack/react-query";
 import { addToast } from "@heroui/toast";
 import { convertImageSrc } from "@/utils";
@@ -34,6 +34,7 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
   const [registering, setRegistering] = useState(false);
   const [resetPassword, setResetPassword] = useState(false);
   const [imgUrl, setImgUrl] = useState(convertImageSrc(imageUrl));
+  const [deletedImg, setDeletedImg] = useState(null);
 
   // handle for date
   const form = useForm({ numberFields: ["salary"] });
@@ -43,6 +44,25 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
     const { passwordConfirm, ...payload } = data;
 
     setRegistering(true);
+    let resultImg;
+    if (imgUrl.file) {
+      resultImg = await saveImage(imgUrl, "avatar");
+      payload.imageUrl = resultImg.url;
+    } else if (deletedImg) {
+      resultImg = await deleteImageById(deletedImg);
+      payload.imageUrl = null;
+    }
+
+    if (!resultImg.ok) {
+      addToast({
+        color: "danger",
+        title: "Lưu ảnh thất bại!",
+        description: "Gặp sự cố khi lưu ảnh, vui lòng thử lại!",
+      });
+      setRegistering(false);
+      return;
+    }
+
     if (editMode) {
       const { passwordConfirm, ...removed } = defaultValues;
       const result = await updateUserWithRole(userId, { ...removed, ...payload }, data.role);
@@ -62,6 +82,7 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
     } else {
       addToast({ color: "danger", title: "Lỗi tạo tài khoản", description: result.message });
     }
+
     setRegistering(false);
   };
 
@@ -69,7 +90,13 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
     <Form numberFields={["salary"]} form={form} className="mt-3 space-y-4" onSubmit={handleSubmit}>
       <Collapse showDivider defaultExpanded variant="splitted" title="THÔNG TIN CƠ BẢN">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-start gap-4 pb-4">
-          <UserBasicFields form={form} img={imgUrl} onImgChange={setImgUrl} defaultValues={defaultValues} />
+          <UserBasicFields
+            form={form}
+            img={imgUrl}
+            onImgChange={setImgUrl}
+            onImgDelete={(id) => setDeletedImg(id)}
+            defaultValues={defaultValues}
+          />
         </div>
       </Collapse>
       <Collapse showDivider defaultExpanded variant="splitted" title="THÔNG TIN TÀI KHOẢN">

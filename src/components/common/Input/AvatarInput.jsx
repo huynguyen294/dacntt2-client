@@ -28,7 +28,7 @@ const AvatarInput = ({
     if (link?.includes("blob:")) URL.revokeObjectURL(link);
     inputRef.current.value = "";
     onChange(convertImageSrc());
-    onDelete();
+    onDelete(value.id);
   };
 
   const handleBeforeChange = (file, shouldReturnValue) => {

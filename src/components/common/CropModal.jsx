@@ -3,7 +3,7 @@ import { ModalBody, ModalFooter, Modal, ModalContent, ModalHeader } from "@herou
 import { Button } from "@heroui/button";
 import { Spinner } from "@heroui/spinner";
 import { ImageLoading } from ".";
-import getCroppedImg from "@/utils/imageCrop";
+import getCroppedImg from "@/utils/image";
 import Cropper from "react-easy-crop";
 
 const CropModal = ({ cancelable, isOpen, aspect, onOpenChange, onChange, onDelete, imageSrc }) => {

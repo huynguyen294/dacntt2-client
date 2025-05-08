@@ -8,17 +8,11 @@ import { DATE_FORMAT } from "@/constants";
 import { parseDate } from "@internationalized/date";
 
 //https://res.cloudinary.com/easybiov2/image/upload/v1742222204/ngocnhung05062000/hew2aof03eyxf3jgfpyt.jpg
-const UserBasicFields = ({ form, defaultValues, img = convertImageSrc(), onImgChange = () => {} }) => {
+const UserBasicFields = ({ form, defaultValues, img = convertImageSrc(), onImgChange = () => {}, onImgDelete }) => {
   return (
     <>
       <div className="row-span-2 flex justify-center items-center w-full">
-        <AvatarInput
-          className="mt-4"
-          value={img}
-          onChange={onImgChange}
-          variant="bordered"
-          onDelete={() => onImgChange(convertImageSrc())}
-        />
+        <AvatarInput className="mt-4" value={img} onChange={onImgChange} variant="bordered" onDelete={onImgDelete} />
       </div>
       <Input
         autoFocus

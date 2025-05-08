@@ -13,7 +13,7 @@ const AddUser = () => {
         { label: "Thêm tài khoản", path: `/admin/user-management/${role}/add` },
       ]}
     >
-      <div className="px-10 overflow-y-auto pb-10">
+      <div className="px-2 sm:px-10 overflow-y-auto pb-10">
         <p className="text-2xl font-bold pl-1">Thêm tài khoản</p>
         <UserForm />
       </div>

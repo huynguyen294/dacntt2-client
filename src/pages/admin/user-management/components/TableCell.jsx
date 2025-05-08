@@ -8,9 +8,11 @@ import { Tooltip } from "@heroui/tooltip";
 import { User } from "@heroui/user";
 import { format } from "date-fns";
 import { Edit, Trash2 } from "lucide-react";
+import { useParams } from "react-router";
 
 const TableCell = ({ rowData, columnKey, rowIndex, onDelete = () => {} }) => {
   const navigate = useNavigate();
+  const { role } = useParams();
   const { pager } = useTableContext();
 
   let cellValue = rowData[columnKey];
@@ -76,7 +78,11 @@ const TableCell = ({ rowData, columnKey, rowIndex, onDelete = () => {} }) => {
           <Tooltip content="Edit user">
             <Button
               onPress={() => {
-                navigate(`/admin/user-management/${rowData.role === "admin" ? "_" : rowData.role}/edit/${rowData.id}`);
+                navigate(
+                  `/admin/user-management/${role}/edit/${rowData.id}?role=${
+                    rowData.role === "admin" ? "_" : rowData.role
+                  }`
+                );
               }}
               size="sm"
               isIconOnly
