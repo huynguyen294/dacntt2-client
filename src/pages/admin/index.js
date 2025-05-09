@@ -5,7 +5,7 @@ export { default as EditUser } from "./user-management/EditUser";
 export { default as ClassManagement } from "./training-management/ClassManagement";
 export { default as CourseManagement } from "./training-management/CourseManagement";
 export { default as ExamScheduleManagement } from "./training-management/ExamScheduleManagement";
-export { default as CertificateManagement } from "./training-management/ClassManagement";
+export { default as CertificateManagement } from "./training-management/CertificateManagement";
 export { default as AddCertificate } from "./training-management/AddCertificate";
 export { default as EditCertificate } from "./training-management/EditCertificate";
 export { default as AddCourse } from "./training-management/AddCourse";
