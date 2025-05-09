@@ -152,7 +152,10 @@ const userSidebarItems = {
     {
       section: "Tuyển sinh",
       sectionIcon: Podcast,
-      items: [{ label: "Tư vấn", path: "/admin/admissions" }],
+      items: [
+        { label: "Đăng ký", path: "/admin/register-admission" },
+        { label: "Tư vấn", path: "/admin/admissions" },
+      ],
     },
     {
       section: "Đào tạo",
@@ -176,8 +179,8 @@ const userSidebarItems = {
     },
     {
       items: [
-        { label: "Trung tâm trợ giúp", path: "/admin/certificates", icon: CircleHelp },
-        { label: "Thông tin phần mềm", path: "/admin/courses", icon: Info },
+        { label: "Trung tâm trợ giúp", path: "/admin/contact", icon: CircleHelp },
+        { label: "Thông tin phần mềm", path: "/admin/about", icon: Info },
       ],
     },
   ],

@@ -44,6 +44,7 @@ const Collapse = ({
     >
       <AccordionItem
         key="1"
+        AccordionItem
         aria-label={title}
         title={title.toUpperCase()}
         keepContentMounted

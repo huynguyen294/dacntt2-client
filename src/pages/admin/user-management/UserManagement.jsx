@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { ModuleLayout } from "@/layouts";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { breadcrumbItemsByRole } from "./constants";
 import { deleteUserById, getUsersWithRole } from "@/apis";
@@ -18,8 +18,8 @@ const UserManagement = () => {
   const { role } = useParams();
   const { columns, defaultSelectedColumns } = columnsByRole[role];
 
-  const table = useTable({ defaultSelectedColumns });
-  const { pager, filters, selectedColumns, debounceQuery, order, setPager } = table;
+  const table = useTable({ allColumns: columns, defaultSelectedColumns });
+  const { pager, filters, debounceQuery, order, setPager } = table;
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [selectedUserId, setSelectedUserId] = useState(null);
 
@@ -32,13 +32,6 @@ const UserManagement = () => {
   });
 
   const users = data?.users || [];
-  const rowData = users.map((u) => ({ ...u, ...data.refs?.userEmployees?.[u.id] }));
-
-  const loadingState = isLoading ? "loading" : "idle";
-  const filteredColumns = useMemo(
-    () => columns.filter((col) => selectedColumns.has(col.uid)),
-    [columns, selectedColumns]
-  );
 
   const handleDeleteUser = async () => {
     if (!selectedUserId) return;
@@ -59,7 +52,7 @@ const UserManagement = () => {
 
   return (
     <ModuleLayout key={role} breadcrumbItems={breadcrumbItemsByRole[role]}>
-      <TableProvider value={{ ...table, loadingState, allColumns: columns, rows: rowData, columns: filteredColumns }}>
+      <TableProvider value={table}>
         <div className="px-2 sm:px-10">
           <ConfirmDeleteDialog
             title="Xóa người dùng"
@@ -74,10 +67,16 @@ const UserManagement = () => {
               <span className="bg-default-100 px-2 py-1 rounded-full text-[13px] font-normal ml-1">{pager.total}</span>
             </h3>
           </div>
-          <TableHeader filter={<TableFilter role={role} />} addBtnPath={`/admin/user-management/${role}/add`} />
+          <TableHeader
+            filter={<TableFilter role={role} />}
+            addBtnPath={`/admin/user-management/${role}/add`}
+            rowSize={data?.users?.length || 0}
+          />
         </div>
         <Table
           className="px-2 sm:px-10"
+          rows={users}
+          isLoading={isLoading}
           renderCell={(rowData, columnKey, index) => (
             <TableCell
               rowData={rowData}
@@ -110,13 +109,13 @@ const commonColumns = [
   { name: "Ngày cập nhật gần nhất", uid: "lastUpdatedAt" },
 ];
 
-const adminColumns = [...commonColumns, { name: "Hành động", uid: "actions" }];
+const adminColumns = [...commonColumns, { name: "Thao tác", uid: "actions" }];
 
 const studentColumns = [
   ...commonColumns,
   { name: "Lớp đang học", uid: "classes", disableSort: true },
   { name: "Học phí", uid: "tuition" },
-  { name: "Hành động", uid: "actions", disableSort: true },
+  { name: "Thao tác", uid: "actions", disableSort: true },
 ];
 
 const teacherColumns = [
@@ -126,7 +125,7 @@ const teacherColumns = [
   { name: "Chuyên môn", uid: "major", disableSort: true },
   { name: "Lớp đang dạy", uid: "classes", disableSort: true },
   { name: "Trạng thái", uid: "status", disableSort: true },
-  { name: "Hành động", uid: "actions" },
+  { name: "Thao tác", uid: "actions" },
 ];
 
 const consultantColumns = [
@@ -134,7 +133,7 @@ const consultantColumns = [
   { name: "Lương cơ bản", uid: "salary" },
   { name: "Loại lao động", uid: "employmentType", disableSort: true },
   { name: "Trạng thái", uid: "status", disableSort: true },
-  { name: "Hành động", uid: "actions" },
+  { name: "Thao tác", uid: "actions" },
 ];
 
 const financeOfficerColumns = [
@@ -142,7 +141,7 @@ const financeOfficerColumns = [
   { name: "Lương cơ bản", uid: "salary", disableSort: true },
   { name: "Loại lao động", uid: "employmentType", disableSort: true },
   { name: "Trạng thái", uid: "status", disableSort: true },
-  { name: "Hành động", uid: "actions" },
+  { name: "Thao tác", uid: "actions" },
 ];
 
 const commonSelectedColumns = ["index", "user", "phoneNumber", "createdAt", "actions"];

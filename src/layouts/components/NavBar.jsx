@@ -56,7 +56,7 @@ const NavBar = ({ breadcrumbItems = [], hideMenuButton = false }) => {
                 <BreadcrumbItem
                   onPress={() => {
                     if (index === breadcrumbItems.length - 1) return;
-                    navigate(path);
+                    path && navigate(path);
                   }}
                 >
                   {label}
@@ -84,7 +84,9 @@ const NavBar = ({ breadcrumbItems = [], hideMenuButton = false }) => {
                   variant="light"
                   radius="full"
                   className="px-1 py-0 pl-0"
-                  startContent={<Avatar src={user.imageUrl} name={user.name} size="sm" />}
+                  startContent={
+                    <Avatar src={(user.imageUrl || "").replace("upload", "upload/w_100")} name={user.name} size="sm" />
+                  }
                   endContent={<ChevronDown size="14px" className="mr-2" />}
                 >
                   {user.name}

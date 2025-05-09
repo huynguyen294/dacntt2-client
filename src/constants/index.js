@@ -15,3 +15,10 @@ export const ROLE_PALLET = {
   student: "#a8bbb0",
 };
 export const DEFAULT_PAGER = { total: 0, pageCount: 1, page: 1, pageSize: 20 };
+
+export const COURSE_LEVELS = {
+  1: "Sơ cấp",
+  2: "Trung cấp",
+  3: "Nâng cao",
+};
+export const COURSE_STATUSES = ["Đang mở", "Tạm đóng", "Không còn mở"];

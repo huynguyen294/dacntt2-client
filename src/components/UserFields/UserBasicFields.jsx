@@ -43,6 +43,7 @@ const UserBasicFields = ({ form, defaultValues, img = convertImageSrc(), onImgCh
       <Input
         defaultValue={defaultValues.email}
         name="email"
+        type="email"
         isRequired
         size="lg"
         variant="bordered"

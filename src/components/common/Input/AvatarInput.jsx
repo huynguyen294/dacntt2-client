@@ -8,6 +8,14 @@ import { Button } from "@heroui/button";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/dropdown";
 import { Camera, Pencil } from "lucide-react";
 
+const defaultClassNames = {
+  wrapper: "",
+  input: "",
+  label: "",
+  image: "",
+  addBtn: "",
+};
+
 const AvatarInput = ({
   aspect = 1,
   value = defaultValue,
@@ -51,7 +59,7 @@ const AvatarInput = ({
           <Button
             size="sm"
             variant="bordered"
-            className="absolute bottom-2 left-0 z-[2] bg-background"
+            className={cn("absolute bottom-2 left-0 z-[2] bg-background", classNames.addBtn)}
             startContent={<Pencil size="12px" />}
           >
             Sửa
@@ -113,13 +121,6 @@ const AvatarInput = ({
       />
     </div>
   );
-};
-
-const defaultClassNames = {
-  wrapper: "",
-  input: "",
-  label: "",
-  image: "",
 };
 
 const defaultValue = {

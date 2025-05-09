@@ -53,7 +53,7 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
       payload.imageUrl = null;
     }
 
-    if (!resultImg.ok) {
+    if (resultImg && !resultImg.ok) {
       addToast({
         color: "danger",
         title: "Lưu ảnh thất bại!",
@@ -87,7 +87,7 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
   };
 
   return (
-    <Form numberFields={["salary"]} form={form} className="mt-3 space-y-4" onSubmit={handleSubmit}>
+    <Form form={form} className="mt-3 space-y-4" onSubmit={handleSubmit}>
       <Collapse showDivider defaultExpanded variant="splitted" title="THÔNG TIN CƠ BẢN">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-start gap-4 pb-4">
           <UserBasicFields

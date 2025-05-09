@@ -8,9 +8,16 @@ import { cn } from "@/lib/utils";
 import { useNavigate } from "@/hooks";
 import { useTableContext } from "./context";
 
-const TableHeader = ({ addBtnPath, addBtnText = "Thêm mới", filter }) => {
+const defaultSearchPlaceholder = "Tìm theo tên, email, số điện thoại";
+const TableHeader = ({
+  rowSize = 0,
+  searchPlaceholder = defaultSearchPlaceholder,
+  addBtnPath,
+  addBtnText = "Thêm mới",
+  filter,
+}) => {
   const navigate = useNavigate();
-  const { rows, query, setQuery, order, setOrder, allColumns, selectedKeys, selectedColumns, setSelectedColumns } =
+  const { query, setQuery, order, setOrder, allColumns, selectedKeys, selectedColumns, setSelectedColumns } =
     useTableContext();
 
   return (
@@ -20,7 +27,7 @@ const TableHeader = ({ addBtnPath, addBtnText = "Thêm mới", filter }) => {
           size="sm"
           className="min-w-[300px]"
           classNames={{ input: "px-2" }}
-          placeholder="Tìm theo tên, email, số điện thoại"
+          placeholder={searchPlaceholder}
           endContent={<Search size="16px" />}
           value={query}
           onValueChange={setQuery}
@@ -98,7 +105,7 @@ const TableHeader = ({ addBtnPath, addBtnText = "Thêm mới", filter }) => {
           </DropdownMenu>
         </Dropdown>
         <Divider orientation="vertical" className="h-6 mx-1" />
-        <p className="whitespace-nowrap">{selectedKeys === "all" ? rows.length || 0 : selectedKeys.size} Đã chọn</p>
+        <p className="whitespace-nowrap">{selectedKeys === "all" ? rowSize || 0 : selectedKeys.size} Đã chọn</p>
         {(selectedKeys === "all" || selectedKeys.size > 0) && (
           <Button size="sm" variant="flat" className="font-semibold min-w-fit" endContent={<ChevronDown size="13px" />}>
             Thao tác nhiều

@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Spinner } from "@heroui/spinner";
 import { useEffect } from "react";
 import { addToast } from "@heroui/toast";
-import UserForm from "./UserForm";
+import UserForm from "./components/UserForm";
 
 const EditUser = () => {
   const [search] = useSearchParams();
@@ -19,7 +19,7 @@ const EditUser = () => {
   });
 
   useEffect(() => {
-    if (isError) addToast({ color: "danger", title: "Error!", description: getServerErrorMessage(error) });
+    if (isError) addToast({ color: "danger", title: "Lỗi!", description: getServerErrorMessage(error) });
   }, [isError, error]);
 
   return (

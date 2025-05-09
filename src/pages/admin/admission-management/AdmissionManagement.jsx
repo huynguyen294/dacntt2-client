@@ -1,5 +1,5 @@
 import { ModuleLayout } from "@/layouts";
-import { admissionManagementBreadcrumbItems } from "./contansts";
+import { admissionManagementBreadcrumbItems } from "./constants";
 
 const AdmissionManagement = () => {
   return (

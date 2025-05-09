@@ -34,7 +34,14 @@ const TableCell = ({ rowData, columnKey, rowIndex, onDelete = () => {} }) => {
   switch (columnKey) {
     case "user":
       return (
-        <User avatarProps={{ radius: "lg", src: rowData.imageUrl }} description={rowData.email} name={rowData.name}>
+        <User
+          avatarProps={{
+            radius: "lg",
+            src: (rowData.imageUrl || "").replace("upload", "upload/w_100"),
+          }}
+          description={rowData.email}
+          name={rowData.name}
+        >
           {rowData.email}
         </User>
       );

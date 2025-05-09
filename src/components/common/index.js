@@ -9,4 +9,6 @@ export { default as Table } from "./Table/Table";
 export { default as TableFooter } from "./Table/TableFooter";
 export { default as TableHeader } from "./Table/TableHeader";
 export { default as TableProvider } from "./Table/TableProvider";
+export { default as Section } from "./Section";
+export { default as Dot } from "./Dot";
 export * from "./Table/context";

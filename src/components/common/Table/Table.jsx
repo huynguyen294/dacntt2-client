@@ -4,8 +4,11 @@ import { Table as HerioUiTable, TableBody, TableCell, TableColumn, TableHeader, 
 import { Ban } from "lucide-react";
 import { useTableContext } from "./context";
 
-const Table = ({ className, classNames = {}, renderCell = (row, columnKey) => row[columnKey], ...other }) => {
-  const { selectedKeys, setSelectedKeys, loadingState, rows, columns } = useTableContext();
+const defaultCellRenderer = (row, columnKey, index) => row[columnKey];
+const Table = ({ className, rows, classNames = {}, isLoading, renderCell = defaultCellRenderer, ...other }) => {
+  const { selectedKeys, setSelectedKeys, columns } = useTableContext();
+
+  const loadingState = isLoading ? "loading" : "idle";
 
   return (
     <HerioUiTable
