@@ -87,7 +87,7 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
           </Select>
           <Select
             isRequired
-            name="shifts"
+            name="shiftId"
             isLoading={shiftLoading}
             onChange={actions.instantChange}
             defaultSelectedKeys={defaultValues.shifts ? new Set([defaultValues.shifts.toString()]) : new Set([])}

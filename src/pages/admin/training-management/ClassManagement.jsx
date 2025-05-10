@@ -22,9 +22,7 @@ const ClassManagement = () => {
     queryFn: () => getClasses(pager, order, debounceQuery, filters),
   });
 
-  console.log(data);
-
-  const handleDeleteCertificate = async () => {};
+  const handleDeleteClass = async () => {};
 
   useEffect(() => {
     if (isSuccess && data?.pager) {
@@ -41,7 +39,7 @@ const ClassManagement = () => {
             message="Lớp học này sẽ bị xóa vĩnh viễn khỏi hệ thống."
             isOpen={isOpen}
             onClose={onClose}
-            onDelete={handleDeleteCertificate}
+            onDelete={handleDeleteClass}
           />
           <div className="flex justify-between">
             <h3 className="text-2xl font-bold">
