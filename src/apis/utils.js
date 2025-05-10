@@ -14,11 +14,11 @@ export const getCommonParams = (pager, order, search, filters) => {
   const params = [];
   if (pager.pageSize) params.push("pageSize=" + pager.pageSize);
   if (pager.page) params.push("page=" + pager.page);
+  if (pager.paging) params.push("paging=" + pager.paging);
   if (search) params.push("searchQuery=" + search);
-  if (order) {
-    params.push("order=" + order.order);
-    params.push("orderBy=" + order.orderBy);
-  }
+  if (order.order) params.push("order=" + order.order);
+  if (order.orderBy) params.push("orderBy=" + order.orderBy);
+
   if (filters.createdAt) {
     const date = format(subDays(new Date(), filters.createdAt), DATE_FORMAT);
     params.push("filter=createdAt:gte:" + date);

@@ -47,7 +47,7 @@ export default {
               700: "#2451a3",
               800: "#1a3b77",
               900: "#11254b",
-              foreground: "#000",
+              foreground: "#fff",
               DEFAULT: "#377cfb",
             },
             success: {
@@ -61,7 +61,7 @@ export default {
               700: "#006e48",
               800: "#005034",
               900: "#003321",
-              foreground: "#000",
+              foreground: "#fff",
               DEFAULT: "#00a96e",
             },
             warning: {
@@ -89,7 +89,7 @@ export default {
               700: "#a6393f",
               800: "#792a2e",
               900: "#4d1a1d",
-              foreground: "#000",
+              foreground: "#fff",
               DEFAULT: "#ff5861",
             },
           },
@@ -126,7 +126,7 @@ export default {
               700: "#a0c1fd",
               800: "#c3d8fe",
               900: "#e6efff",
-              foreground: "#000",
+              foreground: "#fff",
               DEFAULT: "#377cfb",
             },
             success: {
@@ -140,7 +140,7 @@ export default {
               700: "#86d6ba",
               800: "#b3e5d4",
               900: "#dff4ed",
-              foreground: "#000",
+              foreground: "#fff",
               DEFAULT: "#00a96e",
             },
             warning: {
@@ -168,7 +168,7 @@ export default {
               700: "#ffb0b4",
               800: "#ffcdd0",
               900: "#ffeaeb",
-              foreground: "#000",
+              foreground: "#fff",
               DEFAULT: "#ff5861",
             },
           },

@@ -82,7 +82,7 @@ const TableCell = ({ rowData, columnKey, rowIndex, onDelete = () => {} }) => {
     case "actions":
       return (
         <div className="relative flex items-center justify-center">
-          <Tooltip content="Edit user">
+          <Tooltip content="Sửa người dùng">
             <Button
               onPress={() => {
                 navigate(
@@ -99,7 +99,7 @@ const TableCell = ({ rowData, columnKey, rowIndex, onDelete = () => {} }) => {
               <Edit size="18px" />
             </Button>
           </Tooltip>
-          <Tooltip color="danger" content="Delete user">
+          <Tooltip color="danger" content="Xóa người dùng">
             <Button
               onClick={(e) => e.stopPropagation()}
               onPress={() => onDelete(rowData.id)}

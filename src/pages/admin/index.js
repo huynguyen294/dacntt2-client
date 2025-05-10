@@ -11,6 +11,7 @@ export { default as EditCertificate } from "./training-management/EditCertificat
 export { default as AddCourse } from "./training-management/AddCourse";
 export { default as EditCourse } from "./training-management/EditCourse";
 export { default as AddClass } from "./training-management/AddClass";
+export { default as EditClass } from "./training-management/EditClass";
 
 export { default as TrainingSettings } from "./training-management/TrainingSettings";
 export { default as AdmissionManagement } from "./admission-management/AdmissionManagement";

@@ -11,6 +11,7 @@ import { deleteCourse, getCourses } from "@/apis/course";
 import CourseCell from "./components/CourseCell";
 import { addToast } from "@heroui/toast";
 import CourseFilter from "./components/CourseFilter";
+import { Button } from "@heroui/button";
 
 const CourseManagement = () => {
   const queryClient = useQueryClient();
@@ -98,6 +99,7 @@ const columns = [
   { name: "Tên khóa học", uid: "name" },
   { name: "Cấp độ", uid: "level" },
   { name: "Số buổi học", uid: "numberOfLessons" },
+  { name: "Số học sinh tối đa", uid: "numberOfStudents" },
   { name: "Học phí", uid: "tuitionFee" },
   { name: "Trạng thái", uid: "status" },
   { name: "Ngày cập nhật gần nhất", uid: "lastUpdatedAt" },
@@ -110,6 +112,7 @@ const defaultSelectedColumns = [
   "name",
   "level",
   "numberOfLessons",
+  "numberOfStudents",
   "tuitionFee",
   "status",
   "createdAt",

@@ -3,8 +3,12 @@ export const addCertificateBreadcrumbItems = [...certificatesManagementBreadcrum
 export const editCertificateBreadcrumbItems = [...certificatesManagementBreadcrumbItems, { label: "Sửa chứng chỉ" }];
 
 export const coursesManagementBreadcrumbItems = [{ label: "Khóa học", path: "/admin/courses" }];
-export const addCoursesBreadcrumbItems = [...coursesManagementBreadcrumbItems, { label: "Thêm khóa học" }];
-export const editCoursesBreadcrumbItems = [...coursesManagementBreadcrumbItems, { label: "Sửa khóa học" }];
+export const addCourseBreadcrumbItems = [...coursesManagementBreadcrumbItems, { label: "Thêm khóa học" }];
+export const editCourseBreadcrumbItems = [...coursesManagementBreadcrumbItems, { label: "Sửa khóa học" }];
+
 export const classesManagementBreadcrumbItems = [{ label: "Lớp học", path: "/admin/classes" }];
+export const addClassBreadcrumbItems = [...classesManagementBreadcrumbItems, { label: "Thêm lớp học" }];
+export const editClassBreadcrumbItems = [...classesManagementBreadcrumbItems, { label: "Sửa lớp học" }];
+
 export const examsManagementBreadcrumbItems = [{ label: "Kỳ thi", path: "/admin/exams" }];
 export const trainingSettingsBreadcrumbItems = [{ label: "Cài đặt đào tạo", path: "/admin/training-settings" }];

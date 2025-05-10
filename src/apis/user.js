@@ -2,16 +2,11 @@ import { getCommonParams, getServerErrorMessage } from "./utils";
 import { format, subDays } from "date-fns";
 import API from "./api";
 import { DATE_FORMAT } from "@/constants";
+import { getAppActions } from "@/state";
+import { cryptoDecrypt, cryptoEncrypt } from "@/utils";
 
 export const getUsers = async (pager, order, search, filters) => {
-  const params = [];
-  if (pager.pageSize) params.push("pageSize=" + pager.pageSize);
-  if (pager.page) params.push("page=" + pager.page);
-  if (search) params.push("searchQuery=" + search);
-  if (order) {
-    params.push("order=" + order.order);
-    params.push("orderBy=" + order.orderBy);
-  }
+  const params = getCommonParams(pager, order, search, filters);
   if (filters.roles) {
     params.push("filter=role:in:" + filters.roles.join(","));
   }
@@ -29,6 +24,9 @@ export const getUsersWithRole = async (pager, order, search, filters, role) => {
   if (filters.roles) {
     params.push("filter=role:in:" + filters.roles.join(","));
   }
+  if (filters.status) {
+    params.push("filter=status:eq:" + filters.status);
+  }
 
   const result = await API.get(`/api-v1/users/with-role/${role}?${params.join("&")}`);
   return result.data;
@@ -36,6 +34,21 @@ export const getUsersWithRole = async (pager, order, search, filters, role) => {
 
 export const getUserById = async (id) => {
   const result = await API.get(`/api-v1/users/${id}`);
+  return result.data;
+};
+
+export const refreshProfile = async () => {
+  let profile = cryptoDecrypt(localStorage.getItem("profile"));
+  if (!profile) return;
+  profile = JSON.parse(profile);
+
+  const appActions = getAppActions();
+  const result = await API.get(`/api-v1/users/${profile.id}`);
+
+  const user = { ...profile, ...result.data.user };
+  localStorage.setItem("profile", cryptoEncrypt(JSON.stringify(user)));
+  appActions.change({ user });
+
   return result.data;
 };
 
@@ -74,6 +87,12 @@ export const createUserWithRole = async (data, role) => {
 export const updateUserWithRole = async (id, newData, role) => {
   try {
     await API.patch(`/api-v1/users/${role}/${id}`, newData);
+
+    let profile = cryptoDecrypt(localStorage.getItem("profile"));
+    if (profile) {
+      profile = JSON.parse(profile);
+      if (profile.id === id) refreshProfile();
+    }
     return { ok: true };
   } catch (error) {
     return getServerErrorMessage(error);

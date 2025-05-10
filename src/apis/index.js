@@ -4,4 +4,6 @@ export * from "./user";
 export * from "./auth";
 export * from "./course";
 export * from "./certificate";
+export * from "./class";
+export * from "./shifts";
 export * from "./image";

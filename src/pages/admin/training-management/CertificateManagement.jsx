@@ -33,7 +33,7 @@ const CertificateManagement = () => {
       <TableProvider value={table}>
         <div className="px-2 sm:px-10">
           <ConfirmDeleteDialog
-            title="Xóa người dùng"
+            title="Xóa chứng chỉ"
             message="Chứng chỉ này sẽ bị xóa vĩnh viễn khỏi hệ thống."
             isOpen={isOpen}
             onClose={onClose}
@@ -67,8 +67,9 @@ const columns = [
   { name: "Số học sinh được cấp", uid: "numOfStudent" },
   { name: "Ngày cập nhật gần nhất", uid: "lastUpdatedAt", disableSort: true },
   { name: "Người cập nhật", uid: "lastUpdatedBy", disableSort: true },
+  { name: "Thao tác", uid: "actions", disableSort: true },
 ];
 
-const defaultSelectedColumns = ["index", "name", "numOfStudent", "lastUpdatedAt", "lastUpdatedBy"];
+const defaultSelectedColumns = ["index", "name", "numOfStudent", "lastUpdatedAt", "lastUpdatedBy", "actions"];
 
 export default CertificateManagement;

@@ -13,6 +13,7 @@ const useForm = (options = defaultOptions) => {
   const [isDirty, setIsDirty] = useState(false);
   const formState = useRef({});
   const initState = useRef(defaultValues);
+  const listenersRef = useRef({});
   const ref = useRef();
 
   const setFormState = useCallback(
@@ -28,6 +29,11 @@ const useForm = (options = defaultOptions) => {
   const reset = useCallback(() => {
     setIsDirty(false);
     clearErrors();
+
+    const listeners = listenersRef.current;
+    const callbacks = Object.values(listeners);
+    callbacks.forEach((cb) => cb(""));
+
     ref.current.reset();
     formState.current = initState.current;
   }, [clearErrors]);
@@ -37,6 +43,42 @@ const useForm = (options = defaultOptions) => {
   const instantChange = useCallback(
     () => setTimeout(() => ref.current.dispatchEvent(new Event("input", { bubbles: true }))),
     []
+  );
+
+  const subscribe = useCallback((name, callback) => {
+    const listeners = listenersRef.current;
+    listeners[name] = callback;
+
+    return () => (listeners[name] = null);
+  }, []);
+
+  const setValue = useCallback(
+    (field, value) => {
+      const listeners = listenersRef.current;
+
+      if (typeof field === "string") {
+        const callback = listeners[field];
+        if (!callback) {
+          throw new Error("This field is uncontrolled, please use Controller for it!");
+        }
+
+        callback(value);
+        instantChange();
+      }
+
+      if (typeof field === "object") {
+        const [[key, value]] = Object.entries(field);
+
+        const callback = listeners[key];
+        if (!callback) {
+          throw new Error("This field is uncontrolled, please use Controller for it!");
+        }
+
+        callback(value);
+        instantChange();
+      }
+    },
+    [instantChange]
   );
 
   useEffect(() => {
@@ -53,7 +95,9 @@ const useForm = (options = defaultOptions) => {
     isError,
     errors,
     numberFields,
+    subscribe,
     actions: {
+      setValue,
       instantChange,
       getDefaultValues,
       getFormState,

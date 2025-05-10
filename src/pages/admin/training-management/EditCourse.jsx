@@ -1,6 +1,6 @@
 import CourseForm from "./components/CourseForm";
 import { FormPage, ModuleLayout } from "@/layouts";
-import { editCoursesBreadcrumbItems } from "./constants";
+import { editCourseBreadcrumbItems } from "./constants";
 import { useParams } from "react-router";
 import { getCourseById, getServerErrorMessage } from "@/apis";
 import { useQuery } from "@tanstack/react-query";
@@ -21,7 +21,7 @@ const EditCourse = () => {
   }, [isError, error]);
 
   return (
-    <ModuleLayout breadcrumbItems={editCoursesBreadcrumbItems}>
+    <ModuleLayout breadcrumbItems={editCourseBreadcrumbItems}>
       <FormPage title="Sửa khóa học">
         {isLoading && (
           <div className="h-80 grid place-items-center">

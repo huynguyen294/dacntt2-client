@@ -8,13 +8,13 @@ import { Tooltip } from "@heroui/tooltip";
 import { format } from "date-fns";
 import { Edit, Trash2 } from "lucide-react";
 
-const CourseCell = ({ rowData, columnKey, rowIndex, onDelete = (id) => {} }) => {
+const ClassCell = ({ rowData, columnKey, rowIndex, onDelete = (id) => {} }) => {
   const { getRowIndex } = useTableContext();
   const navigate = useNavigate();
 
   let cellValue = rowData[columnKey];
 
-  const dateFields = ["createdAt", "dateOfBirth", "lastUpdatedAt"];
+  const dateFields = ["createdAt", "openingDay", "closingDay", "lastUpdatedAt"];
   if (dateFields.includes(columnKey)) {
     if (cellValue) cellValue = format(new Date(cellValue), DATE_FORMAT);
   }
@@ -40,7 +40,7 @@ const CourseCell = ({ rowData, columnKey, rowIndex, onDelete = (id) => {} }) => 
     case "actions":
       return (
         <div className="relative flex items-center justify-center">
-          <Tooltip content="Sửa khóa học">
+          <Tooltip content="Sửa lớp học">
             <Button
               onPress={() => navigate(`/admin/courses/edit/${rowData.id}`)}
               size="sm"
@@ -51,7 +51,7 @@ const CourseCell = ({ rowData, columnKey, rowIndex, onDelete = (id) => {} }) => 
               <Edit size="18px" />
             </Button>
           </Tooltip>
-          <Tooltip color="danger" content="Xóa khóa học">
+          <Tooltip color="danger" content="Xóa lớp học">
             <Button
               onClick={(e) => e.stopPropagation()}
               onPress={() => onDelete(rowData.id)}
@@ -72,4 +72,4 @@ const CourseCell = ({ rowData, columnKey, rowIndex, onDelete = (id) => {} }) => 
   }
 };
 
-export default CourseCell;
+export default ClassCell;

@@ -2,10 +2,11 @@ import { Route, Routes, useHref } from "react-router";
 import { HeroUIProvider } from "@heroui/system";
 import { ToastProvider } from "@heroui/toast";
 
-import { useNavigate, useVerifyUser } from "./hooks";
+import { useInitialization, useNavigate, useVerifyUser } from "./hooks";
 import { Login, Register } from "./pages/auth";
 import {
   AddCertificate,
+  AddClass,
   AddCourse,
   AddUser,
   Admin,
@@ -14,6 +15,7 @@ import {
   ClassManagement,
   CourseManagement,
   EditCertificate,
+  EditClass,
   EditCourse,
   EditUser,
   ExamScheduleManagement,
@@ -30,6 +32,7 @@ import "./App.css";
 const App = () => {
   const navigate = useNavigate();
   useVerifyUser();
+  useInitialization();
 
   return (
     <HeroUIProvider navigate={navigate} useHref={useHref}>
@@ -58,6 +61,8 @@ const App = () => {
           <Route path="courses/edit/:id" element={<EditCourse />} />
 
           <Route path="classes" element={<ClassManagement />} />
+          <Route path="classes/add" element={<AddClass />} />
+          <Route path="classes/edit/:id" element={<EditClass />} />
 
           <Route path="exams" element={<ExamScheduleManagement />} />
 

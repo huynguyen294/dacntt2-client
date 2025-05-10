@@ -52,12 +52,23 @@ const CourseForm = ({ defaultValues = {}, editMode }) => {
             name="name"
             size="lg"
             variant="bordered"
-            label="Tên Khóa học"
+            label="Tên khóa học"
             radius="sm"
             labelPlacement="outside"
             placeholder="Nhập tên khóa học"
           />
-
+          <Input
+            isRequired
+            defaultValue={defaultValues.numberOfStudents}
+            name="numberOfStudents"
+            size="lg"
+            variant="bordered"
+            label="Số lượng học viên"
+            type="number"
+            radius="sm"
+            labelPlacement="outside"
+            placeholder="Nhập số học viên"
+          />
           <Input
             isRequired
             defaultValue={defaultValues.numberOfLessons}
@@ -68,7 +79,7 @@ const CourseForm = ({ defaultValues = {}, editMode }) => {
             type="number"
             radius="sm"
             labelPlacement="outside"
-            placeholder="Nhập tên khóa học"
+            placeholder="Nhập số buổi học"
           />
           <CurrencyInput
             defaultValue={defaultValues.tuitionFee}
@@ -106,7 +117,6 @@ const CourseForm = ({ defaultValues = {}, editMode }) => {
             <SelectItem key={"2"}>{COURSE_LEVELS[2]}</SelectItem>
             <SelectItem key={"3"}>{COURSE_LEVELS[3]}</SelectItem>
           </Select>
-
           <Select
             autoFocus
             name="status"

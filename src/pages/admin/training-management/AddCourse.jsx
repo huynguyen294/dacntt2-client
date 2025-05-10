@@ -1,10 +1,10 @@
 import { FormPage, ModuleLayout } from "@/layouts";
-import { addCoursesBreadcrumbItems } from "./constants";
+import { addCourseBreadcrumbItems } from "./constants";
 import CourseForm from "./components/CourseForm";
 
 const AddCourse = () => {
   return (
-    <ModuleLayout breadcrumbItems={addCoursesBreadcrumbItems}>
+    <ModuleLayout breadcrumbItems={addCourseBreadcrumbItems}>
       <FormPage title="Thêm khóa học">
         <CourseForm />
       </FormPage>
