@@ -8,6 +8,7 @@ import {
   AddCertificate,
   AddClass,
   AddCourse,
+  AddExam,
   AddUser,
   Admin,
   AdmissionManagement,
@@ -17,8 +18,9 @@ import {
   EditCertificate,
   EditClass,
   EditCourse,
+  EditExam,
   EditUser,
-  ExamScheduleManagement,
+  ExamManagement,
   RegisterStudent,
   TrainingSettings,
   UserManagement,
@@ -64,7 +66,9 @@ const App = () => {
           <Route path="classes/add" element={<AddClass />} />
           <Route path="classes/edit/:id" element={<EditClass />} />
 
-          <Route path="exams" element={<ExamScheduleManagement />} />
+          <Route path="exams" element={<ExamManagement />} />
+          <Route path="exams/add" element={<AddExam />} />
+          <Route path="exams/edit/:id" element={<EditExam />} />
 
           <Route path="training-settings" element={<TrainingSettings />} />
         </Route>

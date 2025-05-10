@@ -1,19 +1,19 @@
-import CourseForm from "./components/CourseForm";
 import { FormPage, ModuleLayout } from "@/layouts";
 import { editCourseBreadcrumbItems } from "./constants";
 import { useParams } from "react-router";
-import { getCourseById, getServerErrorMessage } from "@/apis";
+import { examApi, getServerErrorMessage } from "@/apis";
 import { useQuery } from "@tanstack/react-query";
 import { addToast } from "@heroui/toast";
 import { useEffect } from "react";
 import { Spinner } from "@heroui/spinner";
+import ExamForm from "./components/ExamForm";
 
-const EditCourse = () => {
+const EditExam = () => {
   const { id } = useParams();
 
   const { isLoading, data, isError, error } = useQuery({
-    queryKey: ["courses", id],
-    queryFn: () => getCourseById(id),
+    queryKey: ["exams", id],
+    queryFn: () => examApi.getById(id),
   });
 
   useEffect(() => {
@@ -28,10 +28,10 @@ const EditCourse = () => {
             <Spinner variant="wave" />
           </div>
         )}
-        {data?.course && <CourseForm editMode defaultValues={data.course} />}
+        {data?.item && <ExamForm editMode defaultValues={data.item} />}
       </FormPage>
     </ModuleLayout>
   );
 };
 
-export default EditCourse;
+export default EditExam;

@@ -1,5 +1,48 @@
 import { DATE_FORMAT } from "@/constants";
 import { format, subDays } from "date-fns";
+import API from "./api";
+
+export const generateCrudApi = (key) => {
+  return {
+    get: async (pager, order, search, filters) => {
+      const params = getCommonParams(pager, order, search, filters);
+      const result = await API.get(`/api-v1/${key}?${params.join("&")}`);
+      return result.data;
+    },
+
+    getById: async (id) => {
+      const result = await API.get(`/api-v1/${key}/${id}`);
+      return result.data;
+    },
+
+    create: async (data) => {
+      try {
+        const result = await API.post(`/api-v1/${key}`, data);
+        return { ok: true, created: result.data.created };
+      } catch (error) {
+        return getServerErrorMessage(error);
+      }
+    },
+
+    update: async (id, newData) => {
+      try {
+        const result = await API.patch(`/api-v1/${key}/${id}`, newData);
+        return { ok: true, updated: result.data.updated };
+      } catch (error) {
+        return getServerErrorMessage(error);
+      }
+    },
+
+    delete: async (id) => {
+      try {
+        await API.delete(`/api-v1/${key}/${id}`);
+        return { ok: true };
+      } catch (error) {
+        return getServerErrorMessage(error);
+      }
+    },
+  };
+};
 
 export const getServerErrorMessage = (error) => {
   // const online = isOnline();

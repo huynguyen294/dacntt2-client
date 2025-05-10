@@ -3,6 +3,7 @@ import { AvatarInput, Form, Section } from "@/components/common";
 import { useForm, useNavigate } from "@/hooks";
 import { convertImageSrc } from "@/utils";
 import { Button } from "@heroui/button";
+import { DatePicker } from "@heroui/date-picker";
 import { Input } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
 import { addToast } from "@heroui/toast";

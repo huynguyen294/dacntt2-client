@@ -4,7 +4,7 @@ export { default as AddUser } from "./user-management/AddUser";
 export { default as EditUser } from "./user-management/EditUser";
 export { default as ClassManagement } from "./training-management/ClassManagement";
 export { default as CourseManagement } from "./training-management/CourseManagement";
-export { default as ExamScheduleManagement } from "./training-management/ExamScheduleManagement";
+export { default as ExamManagement } from "./training-management/ExamManagement";
 export { default as CertificateManagement } from "./training-management/CertificateManagement";
 export { default as AddCertificate } from "./training-management/AddCertificate";
 export { default as EditCertificate } from "./training-management/EditCertificate";
@@ -12,6 +12,8 @@ export { default as AddCourse } from "./training-management/AddCourse";
 export { default as EditCourse } from "./training-management/EditCourse";
 export { default as AddClass } from "./training-management/AddClass";
 export { default as EditClass } from "./training-management/EditClass";
+export { default as AddExam } from "./training-management/AddExam";
+export { default as EditExam } from "./training-management/EditExam";
 
 export { default as TrainingSettings } from "./training-management/TrainingSettings";
 export { default as AdmissionManagement } from "./admission-management/AdmissionManagement";

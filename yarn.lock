@@ -682,6 +682,22 @@
     "@react-types/datepicker" "3.11.0"
     "@react-types/shared" "3.28.0"
 
+"@heroui/date-input@^2.3.18":
+  version "2.3.18"
+  resolved "https://registry.yarnpkg.com/@heroui/date-input/-/date-input-2.3.18.tgz#0ebb256d0edea509d86110c06b77dca758e27334"
+  integrity sha512-G9RTgvu0L3DyqrmlqeaFN+xWcZaLgfAVJi8hh3tyP1K6VtlSi1+NfioeJ47HZabFy7balmQBioCK/Qg2iZqf3Q==
+  dependencies:
+    "@heroui/form" "2.1.18"
+    "@heroui/react-utils" "2.1.10"
+    "@heroui/shared-utils" "2.1.9"
+    "@internationalized/date" "3.8.0"
+    "@react-aria/datepicker" "3.14.2"
+    "@react-aria/i18n" "3.12.8"
+    "@react-aria/utils" "3.28.2"
+    "@react-stately/datepicker" "3.14.0"
+    "@react-types/datepicker" "3.12.0"
+    "@react-types/shared" "3.29.0"
+
 "@heroui/date-picker@^2.3.17":
   version "2.3.17"
   resolved "https://registry.yarnpkg.com/@heroui/date-picker/-/date-picker-2.3.17.tgz#1ca3382888ecda84c3b9bfdb0f2fa9c0a42fafde"
@@ -1843,6 +1859,30 @@
     "@react-types/shared" "^3.28.0"
     "@swc/helpers" "^0.5.0"
 
+"@react-aria/datepicker@3.14.2":
+  version "3.14.2"
+  resolved "https://registry.yarnpkg.com/@react-aria/datepicker/-/datepicker-3.14.2.tgz#db1efa94edc86b57950cf32cbfd252b206653fab"
+  integrity sha512-O7fdzcqIJ7i/+8SGYvx4tloTZgK4Ws8OChdbFcd2rZoRPqxM50M6J+Ota8hTet2wIhojUXnM3x2na3EvoucBXA==
+  dependencies:
+    "@internationalized/date" "^3.8.0"
+    "@internationalized/number" "^3.6.1"
+    "@internationalized/string" "^3.2.6"
+    "@react-aria/focus" "^3.20.2"
+    "@react-aria/form" "^3.0.15"
+    "@react-aria/i18n" "^3.12.8"
+    "@react-aria/interactions" "^3.25.0"
+    "@react-aria/label" "^3.7.17"
+    "@react-aria/spinbutton" "^3.6.14"
+    "@react-aria/utils" "^3.28.2"
+    "@react-stately/datepicker" "^3.14.0"
+    "@react-stately/form" "^3.1.3"
+    "@react-types/button" "^3.12.0"
+    "@react-types/calendar" "^3.7.0"
+    "@react-types/datepicker" "^3.12.0"
+    "@react-types/dialog" "^3.5.17"
+    "@react-types/shared" "^3.29.0"
+    "@swc/helpers" "^0.5.0"
+
 "@react-aria/dialog@3.5.23":
   version "3.5.23"
   resolved "https://registry.yarnpkg.com/@react-aria/dialog/-/dialog-3.5.23.tgz#54a475b59cb4777bfad26d424307570fe2b0c19b"
@@ -2470,7 +2510,7 @@
     "@react-types/shared" "^3.28.0"
     "@swc/helpers" "^0.5.0"
 
-"@react-stately/datepicker@^3.13.0":
+"@react-stately/datepicker@3.14.0", "@react-stately/datepicker@^3.13.0", "@react-stately/datepicker@^3.14.0":
   version "3.14.0"
   resolved "https://registry.yarnpkg.com/@react-stately/datepicker/-/datepicker-3.14.0.tgz#5f7e282d56e038ac0ef1b620fb9c1ff86253af57"
   integrity sha512-JSkQfKW0+WpPQyOOeRPBLwXkVfpTUwgZJDnHBCud5kEuQiFFyeAIbL57RNXc4AX2pzY3piQa6OHnjDGTfqClxQ==

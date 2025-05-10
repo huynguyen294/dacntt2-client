@@ -1,4 +1,5 @@
 export { default as API } from "./api";
+export { default as examApi } from "./exam";
 export * from "./utils";
 export * from "./user";
 export * from "./auth";

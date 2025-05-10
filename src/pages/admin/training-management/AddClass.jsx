@@ -5,7 +5,7 @@ import ClassForm from "./components/ClassForm";
 const AddClass = () => {
   return (
     <ModuleLayout breadcrumbItems={addClassBreadcrumbItems}>
-      <FormPage title="Thêm khóa học">
+      <FormPage title="Thêm lớp học">
         <ClassForm />
       </FormPage>
     </ModuleLayout>
