@@ -6,10 +6,12 @@ const Controller = ({ form, name, render = ({ value, setValue }) => null }) => {
   const [value, setValue] = useState();
   const ref = useRef();
 
+  console.log(value);
+
   useEffect(() => {
     const unsubscribe = form.subscribe(name, (newValue) => {
       setValue(newValue);
-      ref.current.dispatchEvent(new Event("change"));
+      if (ref.current) ref.current.dispatchEvent(new Event("change"));
     });
 
     return unsubscribe;

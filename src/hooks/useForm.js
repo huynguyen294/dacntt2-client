@@ -59,7 +59,7 @@ const useForm = (options = defaultOptions) => {
       if (typeof field === "string") {
         const callback = listeners[field];
         if (!callback) {
-          throw new Error("This field is uncontrolled, please use Controller for it!");
+          throw new Error(`${field} is uncontrolled, please use Controller for it!`);
         }
 
         callback(value);
@@ -67,14 +67,15 @@ const useForm = (options = defaultOptions) => {
       }
 
       if (typeof field === "object") {
-        const [[key, value]] = Object.entries(field);
+        Object.entries(field).forEach(([key, value]) => {
+          const callback = listeners[key];
+          if (!callback) {
+            throw new Error(`${key} is uncontrolled, please use Controller for it!`);
+          }
 
-        const callback = listeners[key];
-        if (!callback) {
-          throw new Error("This field is uncontrolled, please use Controller for it!");
-        }
+          callback(value);
+        });
 
-        callback(value);
         instantChange();
       }
     },

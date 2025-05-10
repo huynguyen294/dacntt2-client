@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { currencyToNumber } from "@/utils";
 import { NumberInput } from "@heroui/number-input";
@@ -10,8 +11,8 @@ const CurrencyInput = ({
   variant,
   classNames,
   startContent,
-  onChange = () => {},
-  onBlur = () => {},
+  onChange = ({ target: { value } }) => {},
+  onBlur = ({ target: { value } }) => {},
   isClearable = true,
   ...other
 }) => {

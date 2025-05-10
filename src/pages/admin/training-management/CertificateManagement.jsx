@@ -5,14 +5,18 @@ import { useTable } from "@/hooks";
 import { Table, TableFooter, TableHeader, TableProvider } from "@/components/common";
 import { ConfirmDeleteDialog } from "@/components";
 import { useDisclosure } from "@heroui/modal";
-import { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getCertificates } from "@/apis/certificate";
+import { useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { deleteCertificate, getCertificates } from "@/apis/certificate";
+import CertificateCell from "./components/CertificateCell";
+import { addToast } from "@heroui/toast";
 
 const CertificateManagement = () => {
+  const queryClient = useQueryClient();
   const table = useTable({ allColumns: columns, defaultSelectedColumns });
   const { pager, filters, debounceQuery, order, setPager } = table;
-  const { isOpen, onClose } = useDisclosure();
+  const { isOpen, onClose, onOpen } = useDisclosure();
+  const [selectedCertificateId, setSelectedCertificateId] = useState(null);
 
   const queryFilterKey = `p=${pager.page},ps=${pager.pageSize},q=${debounceQuery},o=${order.order},ob=${order.orderBy},ca=${filters.createdAt}`;
   const { isLoading, data, isSuccess } = useQuery({
@@ -20,7 +24,16 @@ const CertificateManagement = () => {
     queryFn: () => getCertificates(pager, order, debounceQuery, filters),
   });
 
-  const handleDeleteCertificate = async () => {};
+  const handleDeleteCertificate = async () => {
+    if (!selectedCertificateId) return;
+    const result = await deleteCertificate(selectedCertificateId);
+    if (!result.ok) {
+      addToast({ color: "danger", title: "Xóa thất bại!", description: result.message });
+    } else {
+      queryClient.invalidateQueries({ queryKey: ["certificates"] });
+    }
+    onClose();
+  };
 
   useEffect(() => {
     if (isSuccess && data?.pager) {
@@ -52,7 +65,22 @@ const CertificateManagement = () => {
             rowSize={data?.certificates?.length || 0}
           />
         </div>
-        <Table isLoading={isLoading} rows={data?.certificates || []} className="px-2 sm:px-10" />
+        <Table
+          isLoading={isLoading}
+          rows={data?.certificates || []}
+          className="px-2 sm:px-10"
+          renderCell={(row, columnKey, index) => (
+            <CertificateCell
+              rowData={row}
+              columnKey={columnKey}
+              rowIndex={index}
+              onDelete={(id) => {
+                setSelectedCertificateId(id);
+                onOpen();
+              }}
+            />
+          )}
+        />
         <div className="px-2 sm:px-10 pb-6 flex justify-between">
           <TableFooter />
         </div>
@@ -63,13 +91,27 @@ const CertificateManagement = () => {
 
 const columns = [
   { name: "STT", uid: "index", disableSort: true },
+  { name: "Ảnh", uid: "image" },
   { name: "Tên chứng chỉ", uid: "name" },
-  { name: "Số học sinh được cấp", uid: "numOfStudent" },
+  { name: "Kỹ năng", uid: "skill" },
+  { name: "Cấp độ", uid: "level" },
+  { name: "trạng thái", uid: "status", disableSort: true },
+  { name: "Số học sinh được cấp", uid: "numOfStudents" },
   { name: "Ngày cập nhật gần nhất", uid: "lastUpdatedAt", disableSort: true },
-  { name: "Người cập nhật", uid: "lastUpdatedBy", disableSort: true },
+  // { name: "Người cập nhật", uid: "lastUpdatedBy", disableSort: true },
   { name: "Thao tác", uid: "actions", disableSort: true },
 ];
 
-const defaultSelectedColumns = ["index", "name", "numOfStudent", "lastUpdatedAt", "lastUpdatedBy", "actions"];
+const defaultSelectedColumns = [
+  "index",
+  "image",
+  "name",
+  "skill",
+  "level",
+  "status",
+  "numOfStudents",
+  "lastUpdatedAt",
+  "actions",
+];
 
 export default CertificateManagement;

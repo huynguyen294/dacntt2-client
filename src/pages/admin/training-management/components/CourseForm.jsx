@@ -13,7 +13,7 @@ import { useState } from "react";
 const CourseForm = ({ defaultValues = {}, editMode }) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const form = useForm({ numberFields: ["level", "numberOfLessons", "tuitionFee"] });
+  const form = useForm({ numberFields });
   const { isError, isDirty, actions } = form;
   const [loading, setLoading] = useState(false);
 
@@ -23,7 +23,7 @@ const CourseForm = ({ defaultValues = {}, editMode }) => {
       const { id, ...removed } = defaultValues;
       const result = await updateCourse(id, { ...removed, ...data });
       if (result.ok) {
-        queryClient.invalidateQueries({ queryKey: ["course"] });
+        queryClient.invalidateQueries({ queryKey: ["courses"] });
         navigate("/admin/courses");
       } else {
         addToast({ color: "danger", title: "Lỗi khi tạo khóa học", description: result.message });
@@ -34,7 +34,7 @@ const CourseForm = ({ defaultValues = {}, editMode }) => {
     const result = await createCourse(data);
     console.log(result);
     if (result.ok) {
-      queryClient.invalidateQueries({ queryKey: ["course"] });
+      queryClient.invalidateQueries({ queryKey: ["courses"] });
       navigate("/admin/courses");
     } else {
       addToast({ color: "danger", title: "Lỗi khi sửa khóa học", description: result.message });
@@ -160,5 +160,7 @@ const CourseForm = ({ defaultValues = {}, editMode }) => {
     </Form>
   );
 };
+
+const numberFields = ["level", "numberOfLessons", "numberOfStudents", "tuitionFee"];
 
 export default CourseForm;

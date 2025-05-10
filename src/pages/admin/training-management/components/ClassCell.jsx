@@ -47,6 +47,7 @@ const ClassCell = ({ rowData, columnKey, rowIndex, onDelete = (id) => {} }) => {
               isIconOnly
               radius="full"
               variant="light"
+              isDisabled
             >
               <Edit size="18px" />
             </Button>

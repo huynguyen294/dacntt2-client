@@ -1,5 +1,5 @@
-import { getCourses, getShifts, getUsers, getUsersWithRole } from "@/apis";
-import { Collapse, CurrencyInput, Form, Section } from "@/components/common";
+import { getCourses, getShifts, getUsersWithRole } from "@/apis";
+import { Collapse, Controller, CurrencyInput, Form } from "@/components/common";
 import { COURSE_LEVELS, COURSE_STATUSES, DATE_FORMAT } from "@/constants";
 import { useForm } from "@/hooks";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
@@ -14,7 +14,7 @@ import { parseDate } from "@internationalized/date";
 import { DatePicker } from "@heroui/date-picker";
 
 const ClassForm = ({ editMode, defaultValues = {} }) => {
-  const form = useForm({ numberFields: ["level", "numberOfLessons", "tuitionFee"] });
+  const form = useForm({ numberFields });
   const { isError, isDirty, actions } = form;
   const [loading, setLoading] = useState(false);
 
@@ -52,6 +52,7 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
       <Collapse showDivider defaultExpanded variant="splitted" title="Thông tin cơ bản" className="w-full">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-start gap-4 pb-4">
           <Input
+            autoFocus
             name={"name"}
             defaultValue={defaultValues.name}
             isRequired
@@ -105,7 +106,6 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
               ))}
           </Select>
           <Autocomplete
-            autoFocus
             name="teacherId"
             isLoading={userLoading}
             onChange={actions.instantChange}
@@ -159,9 +159,25 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-start gap-4 pb-4">
           <Autocomplete
             autoFocus
-            name="level"
+            name="courseId"
             isLoading={courseLoading}
             onChange={actions.instantChange}
+            onSelectionChange={(courseId) => {
+              const found = courseData.courses.find((c) => c.id === Number(courseId));
+              if (found) {
+                const { tuitionFee, numberOfStudents, numberOfLessons, description, level } = found;
+                actions.setValue({ tuitionFee, numberOfStudents, numberOfLessons, description, level });
+              }
+              if (!courseId) {
+                actions.setValue({
+                  tuitionFee: undefined,
+                  numberOfStudents: undefined,
+                  numberOfLessons: undefined,
+                  description: undefined,
+                  level: undefined,
+                });
+              }
+            }}
             defaultSelectedKeys={defaultValues.level ? new Set([defaultValues.level.toString()]) : new Set([])}
             size="lg"
             variant="bordered"
@@ -173,66 +189,109 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
             {courseData?.courses &&
               courseData?.courses.map((course) => <AutocompleteItem key={course.id}>{course.name}</AutocompleteItem>)}
           </Autocomplete>
-          <CurrencyInput
-            defaultValue={defaultValues.tuitionFee}
-            isRequired
+          <Controller
+            form={form}
             name="tuitionFee"
-            size="lg"
-            variant="bordered"
-            label="Học phí"
-            radius="sm"
-            labelPlacement="outside"
-            placeholder="Nhập học phí"
+            render={({ value, setValue, name }) => (
+              <CurrencyInput
+                defaultValue={defaultValues.tuitionFee}
+                isRequired
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                name={name}
+                size="lg"
+                variant="bordered"
+                label="Học phí"
+                radius="sm"
+                labelPlacement="outside"
+                placeholder="Nhập học phí"
+              />
+            )}
           />
-          <Input
-            isRequired
-            defaultValue={defaultValues.numberOfStudents}
+          <Controller
+            form={form}
             name="numberOfStudents"
-            size="lg"
-            variant="bordered"
-            label="Số lượng học viên"
-            type="number"
-            radius="sm"
-            labelPlacement="outside"
-            placeholder="Nhập số học viên"
+            render={({ value, setValue, name, ref }) => (
+              <Input
+                ref={ref}
+                isRequired
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                defaultValue={defaultValues.numberOfStudents}
+                name={name}
+                size="lg"
+                variant="bordered"
+                label="Số lượng học viên"
+                type="number"
+                radius="sm"
+                labelPlacement="outside"
+                placeholder="Nhập số học viên"
+              />
+            )}
           />
-          <Input
-            isRequired
-            defaultValue={defaultValues.numberOfLessons}
+          <Controller
+            form={form}
             name="numberOfLessons"
-            size="lg"
-            variant="bordered"
-            label="Số buổi học"
-            type="number"
-            radius="sm"
-            labelPlacement="outside"
-            placeholder="Nhập số buổi học"
+            render={({ value, setValue, name, ref }) => (
+              <Input
+                ref={ref}
+                isRequired
+                name={name}
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                defaultValue={defaultValues.numberOfLessons}
+                size="lg"
+                variant="bordered"
+                label="Số buổi học"
+                type="number"
+                radius="sm"
+                labelPlacement="outside"
+                placeholder="Nhập số buổi học"
+              />
+            )}
           />
-          <Input
-            defaultValue={defaultValues.description}
+          <Controller
+            form={form}
             name="description"
-            size="lg"
-            variant="bordered"
-            label="Mô tả"
-            radius="sm"
-            labelPlacement="outside"
-            placeholder="Nhập mô tả ngắn"
+            render={({ value, setValue, name, ref }) => (
+              <Input
+                ref={ref}
+                size="lg"
+                name={name}
+                value={value || ""}
+                onChange={(e) => setValue(e.target.value)}
+                defaultValue={defaultValues.description}
+                variant="bordered"
+                label="Mô tả"
+                radius="sm"
+                labelPlacement="outside"
+                placeholder="Nhập mô tả ngắn"
+              />
+            )}
           />
-          <Select
+          <Controller
+            form={form}
             name="level"
-            onChange={actions.instantChange}
-            defaultSelectedKeys={defaultValues.level ? new Set([defaultValues.level.toString()]) : new Set([])}
-            size="lg"
-            variant="bordered"
-            label="Cấp độ"
-            radius="sm"
-            labelPlacement="outside"
-            placeholder="Sơ cấp, trung cấp..."
-          >
-            <SelectItem key={"1"}>{COURSE_LEVELS[1]}</SelectItem>
-            <SelectItem key={"2"}>{COURSE_LEVELS[2]}</SelectItem>
-            <SelectItem key={"3"}>{COURSE_LEVELS[3]}</SelectItem>
-          </Select>
+            render={({ value, setValue, name }) => (
+              <Select
+                selectedKeys={new Set(value ? [value.toString()] : [])}
+                onSelectionChange={(set) => setValue([...set][0])}
+                name={name}
+                onChange={actions.instantChange}
+                defaultSelectedKeys={new Set(defaultValues.level ? [defaultValues.level.toString()] : [])}
+                size="lg"
+                variant="bordered"
+                label="Cấp độ"
+                radius="sm"
+                labelPlacement="outside"
+                placeholder="Sơ cấp, trung cấp..."
+              >
+                <SelectItem key={"1"}>{COURSE_LEVELS[1]}</SelectItem>
+                <SelectItem key={"2"}>{COURSE_LEVELS[2]}</SelectItem>
+                <SelectItem key={"3"}>{COURSE_LEVELS[3]}</SelectItem>
+              </Select>
+            )}
+          />
         </div>
       </Collapse>
       <div className="space-x-4">
@@ -259,5 +318,7 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
     </Form>
   );
 };
+
+const numberFields = ["level", "numberOfLessons", "numberOfStudents", "tuitionFee"];
 
 export default ClassForm;
