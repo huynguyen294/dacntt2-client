@@ -2,6 +2,7 @@
 import { useTableContext } from "@/components/common";
 import { DATE_FORMAT } from "@/constants";
 import { useNavigate } from "@/hooks";
+import { convertImageSrc } from "@/utils";
 import { Button } from "@heroui/button";
 import { Chip } from "@heroui/chip";
 import { Tooltip } from "@heroui/tooltip";
@@ -56,7 +57,11 @@ const CertificateCell = ({ rowData, columnKey, rowIndex, onDelete = (id) => {} }
           <Tooltip color="danger" content="Xóa chứng chỉ">
             <Button
               onClick={(e) => e.stopPropagation()}
-              onPress={() => onDelete(rowData.id)}
+              onPress={() => {
+                let imageId;
+                if (rowData.imageUrl) imageId = convertImageSrc(rowData.imageUrl).id;
+                onDelete(rowData.id, imageId);
+              }}
               size="sm"
               color="danger"
               isIconOnly

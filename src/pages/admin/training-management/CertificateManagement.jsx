@@ -8,7 +8,7 @@ import { useDisclosure } from "@heroui/modal";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { addToast } from "@heroui/toast";
-import { certificateApi } from "@/apis";
+import { certificateApi, deleteImageById } from "@/apis";
 import CertificateCell from "./components/CertificateCell";
 
 const CertificateManagement = () => {
@@ -17,6 +17,7 @@ const CertificateManagement = () => {
   const { pager, filters, debounceQuery, order, setPager } = table;
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [selectedCertificateId, setSelectedCertificateId] = useState(null);
+  const [selectedImgId, setSelectedImgId] = useState(null);
 
   const queryFilterKey = `p=${pager.page},ps=${pager.pageSize},q=${debounceQuery},o=${order.order},ob=${order.orderBy},ca=${filters.createdAt}`;
   const { isLoading, data, isSuccess } = useQuery({
@@ -26,6 +27,8 @@ const CertificateManagement = () => {
 
   const handleDeleteCertificate = async () => {
     if (!selectedCertificateId) return;
+
+    if (selectedImgId) await deleteImageById(selectedImgId);
     const result = await certificateApi.delete(selectedCertificateId);
     if (!result.ok) {
       addToast({ color: "danger", title: "Xóa thất bại!", description: result.message });
@@ -74,7 +77,8 @@ const CertificateManagement = () => {
               rowData={row}
               columnKey={columnKey}
               rowIndex={index}
-              onDelete={(id) => {
+              onDelete={(id, imgId) => {
+                setSelectedImgId(imgId);
                 setSelectedCertificateId(id);
                 onOpen();
               }}

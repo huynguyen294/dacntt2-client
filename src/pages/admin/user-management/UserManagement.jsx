@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { breadcrumbItemsByRole } from "./constants";
-import { deleteUserById, getUsersWithRole } from "@/apis";
+import { deleteImageById, deleteUserById, getUsersWithRole } from "@/apis";
 import { ConfirmDeleteDialog } from "@/components";
 import { useDisclosure } from "@heroui/modal";
 import { addToast } from "@heroui/toast";
@@ -22,6 +22,7 @@ const UserManagement = () => {
   const { pager, filters, debounceQuery, order, setPager } = table;
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const [selectedImgId, setSelectedImgId] = useState(null);
 
   const roles = role !== "_" ? [role] : filters.roles;
   const roleKey = roles ? `r=${roles.join(",")}` : "";
@@ -35,6 +36,7 @@ const UserManagement = () => {
 
   const handleDeleteUser = async () => {
     if (!selectedUserId) return;
+    if (selectedImgId) await deleteImageById(selectedImgId);
     const result = await deleteUserById(selectedUserId);
     if (!result.ok) {
       addToast({ color: "danger", title: "Xóa thất bại!", description: result.message });
@@ -82,8 +84,9 @@ const UserManagement = () => {
               rowData={rowData}
               columnKey={columnKey}
               rowIndex={index}
-              onDelete={(id) => {
+              onDelete={(id, imageId) => {
                 setSelectedUserId(id);
+                setSelectedImgId(imageId);
                 onOpen();
               }}
             />

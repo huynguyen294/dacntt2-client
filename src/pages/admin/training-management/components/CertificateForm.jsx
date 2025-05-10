@@ -20,8 +20,6 @@ const CertificateForm = ({ defaultValues = {}, editMode }) => {
   const [imageUrl, setImageUrl] = useState(convertImageSrc(defaultValues.imageUrl));
   const [deletedImg, setDeletedImg] = useState(null);
 
-  console.log(imageUrl);
-
   const handleSubmit = async (data) => {
     setLoading(true);
 
