@@ -1,9 +1,8 @@
-import { createCertificate, deleteImageById, saveImage, updateCertificate } from "@/apis";
+import { certificateApi, deleteImageById, saveImage } from "@/apis";
 import { AvatarInput, Form, Section } from "@/components/common";
 import { useForm, useNavigate } from "@/hooks";
 import { convertImageSrc } from "@/utils";
 import { Button } from "@heroui/button";
-import { DatePicker } from "@heroui/date-picker";
 import { Input } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
 import { addToast } from "@heroui/toast";
@@ -18,11 +17,12 @@ const CertificateForm = ({ defaultValues = {}, editMode }) => {
   const queryClient = useQueryClient();
   const { isError, isDirty, actions } = form;
   const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState(convertImageSrc());
+  const [imageUrl, setImageUrl] = useState(convertImageSrc(defaultValues.imageUrl));
   const [deletedImg, setDeletedImg] = useState(null);
 
+  console.log(imageUrl);
+
   const handleSubmit = async (data) => {
-    data.imageUrl = imageUrl;
     setLoading(true);
 
     let resultImg;
@@ -46,7 +46,7 @@ const CertificateForm = ({ defaultValues = {}, editMode }) => {
 
     if (editMode) {
       const { id, ...removed } = defaultValues;
-      const result = await updateCertificate(id, { ...removed, ...data });
+      const result = await certificateApi.update(id, { ...removed, ...data });
       if (result.ok) {
         queryClient.invalidateQueries({ queryKey: ["certificates"] });
         navigate("/admin/certificates");
@@ -56,7 +56,7 @@ const CertificateForm = ({ defaultValues = {}, editMode }) => {
       return;
     }
 
-    const result = await createCertificate(data);
+    const result = await certificateApi.create(data);
     if (result.ok) {
       queryClient.invalidateQueries({ queryKey: ["certificates"] });
       navigate("/admin/certificates");
@@ -102,7 +102,7 @@ const CertificateForm = ({ defaultValues = {}, editMode }) => {
             placeholder="Nghe, nói,..."
           />
           <Input
-            defaultValue={defaultValues.skill}
+            defaultValue={defaultValues.level}
             name="level"
             size="lg"
             variant="bordered"

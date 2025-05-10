@@ -42,19 +42,18 @@ const CertificateCell = ({ rowData, columnKey, rowIndex, onDelete = (id) => {} }
     case "actions":
       return (
         <div className="relative flex items-center justify-center">
-          <Tooltip content="Sửa khóa học">
+          <Tooltip content="Sửa chứng chỉ">
             <Button
-              onPress={() => navigate(`/admin/courses/edit/${rowData.id}`)}
+              onPress={() => navigate(`/admin/certificates/edit/${rowData.id}`)}
               size="sm"
               isIconOnly
               radius="full"
               variant="light"
-              isDisabled
             >
               <Edit size="18px" />
             </Button>
           </Tooltip>
-          <Tooltip color="danger" content="Xóa khóa học">
+          <Tooltip color="danger" content="Xóa chứng chỉ">
             <Button
               onClick={(e) => e.stopPropagation()}
               onPress={() => onDelete(rowData.id)}

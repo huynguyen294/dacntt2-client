@@ -7,9 +7,9 @@ import { ConfirmDeleteDialog } from "@/components";
 import { useDisclosure } from "@heroui/modal";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteCertificate, getCertificates } from "@/apis/certificate";
-import CertificateCell from "./components/CertificateCell";
 import { addToast } from "@heroui/toast";
+import { certificateApi } from "@/apis";
+import CertificateCell from "./components/CertificateCell";
 
 const CertificateManagement = () => {
   const queryClient = useQueryClient();
@@ -21,12 +21,12 @@ const CertificateManagement = () => {
   const queryFilterKey = `p=${pager.page},ps=${pager.pageSize},q=${debounceQuery},o=${order.order},ob=${order.orderBy},ca=${filters.createdAt}`;
   const { isLoading, data, isSuccess } = useQuery({
     queryKey: ["certificates", queryFilterKey],
-    queryFn: () => getCertificates(pager, order, debounceQuery, filters),
+    queryFn: () => certificateApi.get(pager, order, debounceQuery, filters),
   });
 
   const handleDeleteCertificate = async () => {
     if (!selectedCertificateId) return;
-    const result = await deleteCertificate(selectedCertificateId);
+    const result = await certificateApi.delete(selectedCertificateId);
     if (!result.ok) {
       addToast({ color: "danger", title: "Xóa thất bại!", description: result.message });
     } else {
@@ -62,12 +62,12 @@ const CertificateManagement = () => {
             searchPlaceholder="Nhập tên chứng chỉ"
             filter={<div></div>}
             addBtnPath={`/admin/certificates/add`}
-            rowSize={data?.certificates?.length || 0}
+            rowSize={data?.rows?.length || 0}
           />
         </div>
         <Table
           isLoading={isLoading}
-          rows={data?.certificates || []}
+          rows={data?.rows || []}
           className="px-2 sm:px-10"
           renderCell={(row, columnKey, index) => (
             <CertificateCell

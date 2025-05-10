@@ -1,11 +1,11 @@
 import { FormPage, ModuleLayout } from "@/layouts";
-import { editCourseBreadcrumbItems } from "./constants";
 import { useParams } from "react-router";
 import { examApi, getServerErrorMessage } from "@/apis";
 import { useQuery } from "@tanstack/react-query";
 import { addToast } from "@heroui/toast";
 import { useEffect } from "react";
 import { Spinner } from "@heroui/spinner";
+import { editExamBreadcrumbItems } from "./constants";
 import ExamForm from "./components/ExamForm";
 
 const EditExam = () => {
@@ -21,8 +21,8 @@ const EditExam = () => {
   }, [isError, error]);
 
   return (
-    <ModuleLayout breadcrumbItems={editCourseBreadcrumbItems}>
-      <FormPage title="Sửa khóa học">
+    <ModuleLayout breadcrumbItems={editExamBreadcrumbItems}>
+      <FormPage title="Sửa kỳ thi">
         {isLoading && (
           <div className="h-80 grid place-items-center">
             <Spinner variant="wave" />

@@ -7,7 +7,7 @@ const Section = ({ title, className, classNames = defaultClassNames, children })
       <div
         data-slot="title"
         className={cn(
-          "w-full border-b-1 bg-default-50 text-medium font-semibold uppercase py-4 pb-2 px-4",
+          "w-full border-b-1.5 bg-default-50 text-medium font-semibold uppercase py-4 pb-2 px-4",
           classNames.title
         )}
       >

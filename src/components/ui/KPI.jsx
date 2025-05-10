@@ -34,7 +34,7 @@ const data = [
 
 export default function KPI() {
   return (
-    <dl className="grid w-full grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3">
+    <dl className="grid w-full grid-cols-1 gap-5 lg:grid-cols-2 xl:md:grid-cols-3">
       {data.map(({ title, value, change, changeType, icon, trendChipPosition }, index) => (
         <Card key={index} className="border border-transparent dark:border-default-100">
           <div className="flex p-4">
