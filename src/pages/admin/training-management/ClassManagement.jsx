@@ -6,11 +6,13 @@ import { Table, TableFooter, TableHeader, TableProvider } from "@/components/com
 import { ConfirmDeleteDialog } from "@/components";
 import { useDisclosure } from "@heroui/modal";
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getClasses } from "@/apis";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { classApi } from "@/apis";
 import ClassCell from "./components/ClassCell";
+import { addToast } from "@heroui/toast";
 
 const ClassManagement = () => {
+  const queryClient = useQueryClient();
   const table = useTable({ allColumns: columns, defaultSelectedColumns });
   const { pager, filters, debounceQuery, order, setPager } = table;
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -19,10 +21,19 @@ const ClassManagement = () => {
   const queryFilterKey = `p=${pager.page},ps=${pager.pageSize},q=${debounceQuery},o=${order.order},ob=${order.orderBy},ca=${filters.createdAt}`;
   const { isLoading, data, isSuccess } = useQuery({
     queryKey: ["classes", queryFilterKey],
-    queryFn: () => getClasses(pager, order, debounceQuery, filters),
+    queryFn: () => classApi.get(pager, order, debounceQuery, filters),
   });
 
-  const handleDeleteClass = async () => {};
+  const handleDeleteClass = async () => {
+    if (!selectedClassId) return;
+    const result = await classApi.delete(selectedClassId);
+    if (!result.ok) {
+      addToast({ color: "danger", title: "Xóa thất bại!", description: result.message });
+    } else {
+      queryClient.invalidateQueries({ queryKey: ["classes"] });
+    }
+    onClose();
+  };
 
   useEffect(() => {
     if (isSuccess && data?.pager) {
@@ -51,12 +62,12 @@ const ClassManagement = () => {
             searchPlaceholder="Nhập tên lớp học"
             filter={<div></div>}
             addBtnPath={`/admin/classes/add`}
-            rowSize={data?.classes?.length || 0}
+            rowSize={data?.rows?.length || 0}
           />
         </div>
         <Table
           isLoading={isLoading}
-          rows={data?.classes || []}
+          rows={data?.rows || []}
           className="px-2 sm:px-10"
           renderCell={(row, columnKey, index) => (
             <ClassCell

@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
-import { Collapse, CurrencyInput, Form, PasswordInput } from "@/components/common";
+import { Collapse, CurrencyInput, PasswordInput } from "@/components/common";
 import { UserBasicFields } from "@/components";
 import { Select, SelectItem } from "@heroui/select";
 import { useState } from "react";
 import { Button } from "@heroui/button";
 import { Plus, RefreshCcw, Save } from "lucide-react";
-import { useForm, useNavigate } from "@/hooks";
+import { useNavigate } from "@/hooks";
 import { createUserWithRole, deleteImageById, saveImage, updateUserWithRole } from "@/apis";
 import { useQueryClient } from "@tanstack/react-query";
 import { addToast } from "@heroui/toast";
@@ -17,6 +17,7 @@ import { Input, Textarea } from "@heroui/input";
 import { DatePicker } from "@heroui/date-picker";
 import { useParams } from "react-router";
 import { parseDate } from "@internationalized/date";
+import { useForm, Form } from "react-simple-formkit";
 
 const UserForm = ({ defaultValues = {}, editMode }) => {
   const { role: paramRole } = useParams();
@@ -80,7 +81,7 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       navigate("/admin/user-management/" + paramRole);
     } else {
-      addToast({ color: "danger", title: "Lỗi tạo tài khoản", description: result.message });
+      addToast({ color: "danger", title: "Lỗi sửa tài khoản", description: result.message });
     }
 
     setRegistering(false);
@@ -236,7 +237,7 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
               label="Chuyên môn"
               radius="sm"
               labelPlacement="outside"
-              placeholder="Toán, Tiếng Anh..."
+              placeholder="Tiếng Anh, Tin học..."
             />
             <Input
               autoFocus

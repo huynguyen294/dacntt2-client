@@ -42,12 +42,11 @@ const ClassCell = ({ rowData, columnKey, rowIndex, onDelete = (id) => {} }) => {
         <div className="relative flex items-center justify-center">
           <Tooltip content="Sửa lớp học">
             <Button
-              onPress={() => navigate(`/admin/courses/edit/${rowData.id}`)}
+              onPress={() => navigate(`/admin/classes/edit/${rowData.id}`)}
               size="sm"
               isIconOnly
               radius="full"
               variant="light"
-              isDisabled
             >
               <Edit size="18px" />
             </Button>

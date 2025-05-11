@@ -30,7 +30,7 @@ const ExamForm = ({ defaultValues = {}, editMode }) => {
         queryClient.invalidateQueries({ queryKey: ["exams"] });
         navigate("/admin/exams");
       } else {
-        addToast({ color: "danger", title: "Lỗi khi tạo kỳ thi", description: result.message });
+        addToast({ color: "danger", title: "Lỗi khi sửa kỳ thi", description: result.message });
       }
       return;
     }
@@ -40,7 +40,7 @@ const ExamForm = ({ defaultValues = {}, editMode }) => {
       queryClient.invalidateQueries({ queryKey: ["exams"] });
       navigate("/admin/exams");
     } else {
-      addToast({ color: "danger", title: "Lỗi khi sửa kỳ thi", description: result.message });
+      addToast({ color: "danger", title: "Lỗi khi tạo kỳ thi", description: result.message });
     }
     setLoading(false);
   };

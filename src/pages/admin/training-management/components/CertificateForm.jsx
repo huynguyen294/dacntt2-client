@@ -49,7 +49,7 @@ const CertificateForm = ({ defaultValues = {}, editMode }) => {
         queryClient.invalidateQueries({ queryKey: ["certificates"] });
         navigate("/admin/certificates");
       } else {
-        addToast({ color: "danger", title: "Lỗi khi tạo khóa học", description: result.message });
+        addToast({ color: "danger", title: "Lỗi khi sửa khóa học", description: result.message });
       }
       return;
     }
@@ -59,7 +59,7 @@ const CertificateForm = ({ defaultValues = {}, editMode }) => {
       queryClient.invalidateQueries({ queryKey: ["certificates"] });
       navigate("/admin/certificates");
     } else {
-      addToast({ color: "danger", title: "Lỗi khi sửa khóa học", description: result.message });
+      addToast({ color: "danger", title: "Lỗi khi tạo khóa học", description: result.message });
     }
     setLoading(false);
   };

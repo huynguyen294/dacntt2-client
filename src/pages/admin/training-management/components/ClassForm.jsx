@@ -1,19 +1,23 @@
-import { getCourses, getShifts, getUsersWithRole } from "@/apis";
-import { Collapse, Controller, CurrencyInput, Form } from "@/components/common";
+import { classApi, getCourses, getShifts, getUsersWithRole } from "@/apis";
+import { Collapse, CurrencyInput } from "@/components/common";
 import { COURSE_LEVELS, COURSE_STATUSES, DATE_FORMAT } from "@/constants";
-import { useForm } from "@/hooks";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { Plus, RefreshCcw, Save } from "lucide-react";
 import { useState } from "react";
 import { parseDate } from "@internationalized/date";
 import { DatePicker } from "@heroui/date-picker";
+import { useForm, Form, Controller } from "react-simple-formkit";
+import { useNavigate } from "@/hooks";
+import { addToast } from "@heroui/toast";
 
 const ClassForm = ({ editMode, defaultValues = {} }) => {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const form = useForm({ numberFields });
   const { isError, isDirty, actions } = form;
   const [loading, setLoading] = useState(false);
@@ -42,8 +46,28 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
   });
 
   const handleSubmit = async (data) => {
-    console.log(data);
     setLoading(true);
+
+    if (editMode) {
+      const { id, ...removed } = defaultValues;
+      const result = await classApi.update(id, { ...removed, ...data });
+      if (result.ok) {
+        queryClient.invalidateQueries({ queryKey: ["classes"] });
+        navigate("/admin/classes");
+      } else {
+        addToast({ color: "danger", title: "Lỗi khi sửa lớp học", description: result.message });
+      }
+      return;
+    }
+
+    const result = await classApi.create(data);
+    if (result.ok) {
+      queryClient.invalidateQueries({ queryKey: ["classes"] });
+      navigate("/admin/classes");
+    } else {
+      addToast({ color: "danger", title: "Lỗi khi tạo lớp học", description: result.message });
+    }
+
     setLoading(false);
   };
 
@@ -63,34 +87,43 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
             labelPlacement="outside"
             placeholder="Nhập tên lớp học"
           />
-          <Select
-            isRequired
+          <Controller
             name="weekDays"
-            selectionMode="multiple"
-            isLoading={shiftLoading}
-            onChange={actions.instantChange}
-            defaultSelectedKeys={defaultValues.weekDays ? new Set([defaultValues.weekDays.split(",")]) : new Set([])}
-            size="lg"
-            variant="bordered"
-            label="Ngày học"
-            radius="sm"
-            labelPlacement="outside"
-            placeholder="Chọn ngày học"
-          >
-            <SelectItem key="2">Thứ 2</SelectItem>
-            <SelectItem key="3">Thứ 3</SelectItem>
-            <SelectItem key="4">Thứ 4</SelectItem>
-            <SelectItem key="5">Thứ 5</SelectItem>
-            <SelectItem key="6">Thứ 6</SelectItem>
-            <SelectItem key="7">Thứ 7</SelectItem>
-            <SelectItem key="CN">Chủ nhật</SelectItem>
-          </Select>
+            defaultValue={defaultValues.weekDays}
+            render={({ ref, name, defaultValue, value, setValue }) => (
+              <Select
+                ref={ref}
+                name={name}
+                value={new Set(value ? value.split(",") : [])}
+                isRequired
+                selectionMode="multiple"
+                isLoading={shiftLoading}
+                onChange={actions.instantChange}
+                onSelectionChange={(keys) => setValue([...keys].join(","))}
+                defaultSelectedKeys={new Set(defaultValue ? defaultValue.split(",") : [])}
+                size="lg"
+                variant="bordered"
+                label="Ngày học"
+                radius="sm"
+                labelPlacement="outside"
+                placeholder="Chọn ngày học"
+              >
+                <SelectItem key="2">Thứ 2</SelectItem>
+                <SelectItem key="3">Thứ 3</SelectItem>
+                <SelectItem key="4">Thứ 4</SelectItem>
+                <SelectItem key="5">Thứ 5</SelectItem>
+                <SelectItem key="6">Thứ 6</SelectItem>
+                <SelectItem key="7">Thứ 7</SelectItem>
+                <SelectItem key="CN">Chủ nhật</SelectItem>
+              </Select>
+            )}
+          />
           <Select
             isRequired
             name="shiftId"
             isLoading={shiftLoading}
             onChange={actions.instantChange}
-            defaultSelectedKeys={defaultValues.shifts ? new Set([defaultValues.shifts.toString()]) : new Set([])}
+            defaultSelectedKeys={defaultValues.shiftId ? new Set([defaultValues.shiftId.toString()]) : new Set([])}
             size="lg"
             variant="bordered"
             label="Ca học"
@@ -105,20 +138,30 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
                 </SelectItem>
               ))}
           </Select>
-          <Autocomplete
+          <Controller
             name="teacherId"
-            isLoading={userLoading}
-            onChange={actions.instantChange}
-            defaultSelectedKeys={defaultValues.teacherId ? new Set([defaultValues.teacherId.toString()]) : new Set([])}
-            size="lg"
-            variant="bordered"
-            label="Giáo viên phụ trách"
-            radius="sm"
-            labelPlacement="outside"
-            placeholder="Chọn giáo viên"
-          >
-            {userData?.users && userData?.users.map((u) => <AutocompleteItem key={u.id}>{u.name}</AutocompleteItem>)}
-          </Autocomplete>
+            defaultValue={defaultValues.teacherId && defaultValues.teacherId.toString()}
+            render={({ ref, name, defaultValue, value, setValue }) => (
+              <Autocomplete
+                ref={ref}
+                size="lg"
+                radius="sm"
+                name={name}
+                value={value}
+                variant="bordered"
+                label="Giáo viên phụ trách"
+                labelPlacement="outside"
+                placeholder="Chọn giáo viên"
+                isLoading={userLoading}
+                onChange={actions.instantChange}
+                onSelectionChange={setValue}
+                defaultSelectedKey={defaultValue}
+              >
+                {userData?.users &&
+                  userData?.users.map((u) => <AutocompleteItem key={u.id.toString()}>{u.name}</AutocompleteItem>)}
+              </Autocomplete>
+            )}
+          />
           <DatePicker
             isRequired
             onChange={actions.instantChange}
@@ -153,48 +196,73 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
             labelPlacement="outside"
             classNames={{ label: "-mt-1" }}
           />
+          <Select
+            size="lg"
+            radius="sm"
+            name="status"
+            onChange={actions.instantChange}
+            defaultSelectedKeys={new Set(defaultValues.status ? [defaultValues.status] : [COURSE_STATUSES[0]])}
+            variant="bordered"
+            label="Trạng thái"
+            labelPlacement="outside"
+            placeholder="Đang mở, Tạm đóng..."
+          >
+            {COURSE_STATUSES.map((status) => (
+              <SelectItem key={status}>{status}</SelectItem>
+            ))}
+          </Select>
         </div>
       </Collapse>
       <Collapse showDivider defaultExpanded variant="splitted" title="Thông tin khóa học" className="w-full">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-start gap-4 pb-4">
-          <Autocomplete
-            autoFocus
-            name="courseId"
-            isLoading={courseLoading}
-            onChange={actions.instantChange}
-            onSelectionChange={(courseId) => {
-              const found = courseData.courses.find((c) => c.id === Number(courseId));
-              if (found) {
-                const { tuitionFee, numberOfStudents, numberOfLessons, description, level } = found;
-                actions.setValue({ tuitionFee, numberOfStudents, numberOfLessons, description, level });
-              }
-              if (!courseId) {
-                actions.setValue({
-                  tuitionFee: undefined,
-                  numberOfStudents: undefined,
-                  numberOfLessons: undefined,
-                  description: undefined,
-                  level: undefined,
-                });
-              }
-            }}
-            defaultSelectedKeys={defaultValues.level ? new Set([defaultValues.level.toString()]) : new Set([])}
-            size="lg"
-            variant="bordered"
-            label="Khóa học"
-            radius="sm"
-            labelPlacement="outside"
-            placeholder="Chọn khóa học"
-          >
-            {courseData?.courses &&
-              courseData?.courses.map((course) => <AutocompleteItem key={course.id}>{course.name}</AutocompleteItem>)}
-          </Autocomplete>
           <Controller
-            form={form}
+            name="courseId"
+            defaultValue={defaultValues.courseId && defaultValues.courseId.toString()}
+            render={({ ref, name, defaultValue, setValue, value }) => (
+              <Autocomplete
+                ref={ref}
+                name={name}
+                value={value}
+                isLoading={courseLoading}
+                onChange={actions.instantChange}
+                defaultSelectedKey={defaultValue}
+                onSelectionChange={(courseId) => {
+                  setValue(courseId);
+                  const found = courseData.courses.find((c) => c.id === Number(courseId));
+                  if (found) {
+                    const { tuitionFee, numberOfStudents, numberOfLessons, description, level } = found;
+                    actions.setValue({ tuitionFee, numberOfStudents, numberOfLessons, description, level });
+                  }
+                  if (!courseId) {
+                    actions.setValue({
+                      tuitionFee: undefined,
+                      numberOfStudents: undefined,
+                      numberOfLessons: undefined,
+                      description: undefined,
+                      level: undefined,
+                    });
+                  }
+                }}
+                size="lg"
+                variant="bordered"
+                label="Khóa học"
+                radius="sm"
+                labelPlacement="outside"
+                placeholder="Chọn lớp học"
+              >
+                {courseData?.courses &&
+                  courseData?.courses.map((course) => (
+                    <AutocompleteItem key={course.id}>{course.name}</AutocompleteItem>
+                  ))}
+              </Autocomplete>
+            )}
+          />
+          <Controller
             name="tuitionFee"
-            render={({ value, setValue, name }) => (
+            defaultValue={defaultValues.tuitionFee}
+            render={({ value, setValue, name, defaultValue }) => (
               <CurrencyInput
-                defaultValue={defaultValues.tuitionFee}
+                defaultValue={defaultValue}
                 isRequired
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
@@ -209,15 +277,15 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
             )}
           />
           <Controller
-            form={form}
             name="numberOfStudents"
-            render={({ value, setValue, name, ref }) => (
+            defaultValue={defaultValues.numberOfStudents}
+            render={({ value, setValue, name, ref, defaultValue }) => (
               <Input
                 ref={ref}
                 isRequired
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
-                defaultValue={defaultValues.numberOfStudents}
+                defaultValue={defaultValue}
                 name={name}
                 size="lg"
                 variant="bordered"
@@ -230,16 +298,16 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
             )}
           />
           <Controller
-            form={form}
             name="numberOfLessons"
-            render={({ value, setValue, name, ref }) => (
+            defaultValue={defaultValues.numberOfLessons}
+            render={({ value, setValue, name, ref, defaultValue }) => (
               <Input
                 ref={ref}
                 isRequired
                 name={name}
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
-                defaultValue={defaultValues.numberOfLessons}
+                defaultValue={defaultValue}
                 size="lg"
                 variant="bordered"
                 label="Số buổi học"
@@ -251,16 +319,16 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
             )}
           />
           <Controller
-            form={form}
             name="description"
-            render={({ value, setValue, name, ref }) => (
+            defaultValue={defaultValues.description}
+            render={({ value, setValue, name, ref, defaultValue }) => (
               <Input
                 ref={ref}
                 size="lg"
                 name={name}
                 value={value || ""}
                 onChange={(e) => setValue(e.target.value)}
-                defaultValue={defaultValues.description}
+                defaultValue={defaultValue}
                 variant="bordered"
                 label="Mô tả"
                 radius="sm"
@@ -270,15 +338,16 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
             )}
           />
           <Controller
-            form={form}
             name="level"
-            render={({ value, setValue, name }) => (
+            defaultValue={defaultValues.level}
+            render={({ value, setValue, name, defaultValue, ref }) => (
               <Select
+                ref={ref}
                 selectedKeys={new Set(value ? [value.toString()] : [])}
                 onSelectionChange={(set) => setValue([...set][0])}
                 name={name}
                 onChange={actions.instantChange}
-                defaultSelectedKeys={new Set(defaultValues.level ? [defaultValues.level.toString()] : [])}
+                defaultSelectedKeys={new Set(defaultValue ? [defaultValue.toString()] : [])}
                 size="lg"
                 variant="bordered"
                 label="Cấp độ"
@@ -319,6 +388,6 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
   );
 };
 
-const numberFields = ["level", "numberOfLessons", "numberOfStudents", "tuitionFee"];
+const numberFields = ["level", "numberOfLessons", "numberOfStudents", "tuitionFee", "teacherId", "shiftId", "courseId"];
 
 export default ClassForm;

@@ -26,7 +26,7 @@ const CourseForm = ({ defaultValues = {}, editMode }) => {
         queryClient.invalidateQueries({ queryKey: ["courses"] });
         navigate("/admin/courses");
       } else {
-        addToast({ color: "danger", title: "Lỗi khi tạo khóa học", description: result.message });
+        addToast({ color: "danger", title: "Lỗi khi sửa khóa học", description: result.message });
       }
       return;
     }
@@ -37,7 +37,7 @@ const CourseForm = ({ defaultValues = {}, editMode }) => {
       queryClient.invalidateQueries({ queryKey: ["courses"] });
       navigate("/admin/courses");
     } else {
-      addToast({ color: "danger", title: "Lỗi khi sửa khóa học", description: result.message });
+      addToast({ color: "danger", title: "Lỗi khi tạo khóa học", description: result.message });
     }
     setLoading(false);
   };
@@ -47,6 +47,7 @@ const CourseForm = ({ defaultValues = {}, editMode }) => {
       <Section title="Thông tin khóa học" className="w-full">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-start gap-4 pb-4">
           <Input
+            autoFocus
             defaultValue={defaultValues.name}
             isRequired
             name="name"
@@ -118,7 +119,6 @@ const CourseForm = ({ defaultValues = {}, editMode }) => {
             <SelectItem key={"3"}>{COURSE_LEVELS[3]}</SelectItem>
           </Select>
           <Select
-            autoFocus
             name="status"
             isRequired
             onChange={actions.instantChange}
