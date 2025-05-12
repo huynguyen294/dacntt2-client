@@ -1,5 +1,5 @@
 import { signIn } from "@/apis";
-import { Form, PasswordInput } from "@/components/common";
+import { PasswordInput } from "@/components/common";
 import { AuthLayout } from "@/layouts";
 import { useNavigate } from "@/hooks";
 import { faGoogle } from "@fortawesome/free-brands-svg-icons";
@@ -9,23 +9,21 @@ import { Divider } from "@heroui/divider";
 import { Input } from "@heroui/input";
 import { Link } from "@heroui/link";
 import { useState } from "react";
+import { Form, useForm } from "react-simple-formkit";
+import { addToast } from "@heroui/toast";
 
 const Login = () => {
   const navigate = useNavigate();
   const [signing, setSigning] = useState(false);
-  const [error, setError] = useState({});
+
+  const form = useForm();
+  const { isDirty, isError, errors, actions } = form;
 
   const handleLogin = async (data) => {
     setSigning(true);
     const result = await signIn(data, navigate);
     if (!result.ok) {
-      const validate = {};
-      if (result.status === 404) {
-        validate.email = result.message;
-      } else {
-        validate.password = result.message;
-      }
-      setError(validate);
+      addToast({ classNames: { base: "dark" }, color: "danger", title: "Lỗi!", description: result.message });
     }
     setSigning(false);
   };
@@ -37,32 +35,39 @@ const Login = () => {
           <div className="flex flex-col gap-1">
             <h1 className="text-foreground-500 text-large font-medium">Đăng nhập</h1>
           </div>
-          <Form className="flex flex-col gap-3" validationBehavior="native" onSubmit={handleLogin}>
+          <Form form={form} className="flex flex-col gap-3" onSubmit={handleLogin}>
             <Input
-              isInvalid={Boolean(error.email)}
-              errorMessage={error.email}
+              autoFocus
+              isInvalid={Boolean(errors.email)}
+              errorMessage={errors.email}
               isRequired
               label="Email"
               name="email"
               type="email"
               variant="bordered"
-              onBlur={() => setError("")}
+              onBlur={actions.checkValidity}
             />
             <PasswordInput
-              isInvalid={Boolean(error.password)}
-              errorMessage={error.password}
+              isInvalid={Boolean(errors.password)}
+              errorMessage={errors.password}
               isRequired
               label="Mật khẩu"
               name="password"
               variant="bordered"
-              onBlur={() => setError("")}
+              onBlur={actions.checkValidity}
             />
             <div className="flex w-full items-center justify-between px-1 py-2">
               <Link className="text-default-500" size="sm" onPress={() => navigate("/forget-password")}>
                 Quên mật khẩu?
               </Link>
             </div>
-            <Button isLoading={signing} className="w-full" color="primary" type="submit">
+            <Button
+              isDisabled={!isDirty || isError}
+              isLoading={signing}
+              className="w-full"
+              color="primary"
+              type="submit"
+            >
               Đăng nhập
             </Button>
           </Form>

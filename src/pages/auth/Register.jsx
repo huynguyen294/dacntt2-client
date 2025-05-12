@@ -1,32 +1,26 @@
-import { signUp } from "@/apis";
-import { Form, PasswordInput } from "@/components/common";
+import { checkEmailAvailable, signUp } from "@/apis";
+import { PasswordInput } from "@/components/common";
 import { useNavigate } from "@/hooks";
 import { AuthLayout } from "@/layouts";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Link } from "@heroui/link";
+import { Spinner } from "@heroui/spinner";
 import { addToast } from "@heroui/toast";
 import { useState } from "react";
+import { Form, useForm } from "react-simple-formkit";
 
 const Register = () => {
   const navigate = useNavigate();
-  const [errors, setErrors] = useState({});
   const [registering, setRegistering] = useState(false);
+  const [emailChecking, setEmailChecking] = useState(false);
 
-  const changeError = (object) => {
-    setErrors((prev) => ({ ...prev, ...object }));
-  };
-
-  const clearError = (field) => {
-    setErrors((prev) => ({ ...prev, [field]: null }));
-  };
+  const form = useForm();
+  const { isDirty, isError, actions, errors } = form;
 
   const handleSubmit = async (data) => {
     const { passwordConfirm, firstName, lastName, ...payload } = data;
-    if (payload.password !== passwordConfirm) {
-      changeError({ passwordConfirm: "Mật khẩu không khớp" });
-      return;
-    }
+    if (payload.password !== passwordConfirm) return;
 
     setRegistering(true);
     payload.name = `${lastName} ${firstName}`;
@@ -46,6 +40,7 @@ const Register = () => {
         description: result.message,
       });
     }
+
     setRegistering(false);
   };
 
@@ -56,12 +51,41 @@ const Register = () => {
           <div className="flex flex-col gap-1">
             <h1 className="text-foreground-500 text-large font-medium">Đăng ký</h1>
           </div>
-          <Form className="flex flex-col gap-3" validationBehavior="native" onSubmit={handleSubmit}>
+          <Form form={form} className="flex flex-col gap-3" onSubmit={handleSubmit}>
             <div className="flex gap-1 w-full">
-              <Input isRequired label="Tên" name="firstName" type="text" variant="bordered" />
-              <Input isRequired label="Họ" name="lastName" variant="bordered" />
+              <Input
+                autoFocus
+                isRequired
+                label="Tên"
+                name="firstName"
+                type="text"
+                variant="bordered"
+                onBlur={actions.checkValidity}
+              />
+              <Input isRequired label="Họ" name="lastName" variant="bordered" onBlur={actions.checkValidity} />
             </div>
-            <Input isRequired label="Email" name="email" type="email" variant="bordered" />
+            <Input
+              isRequired
+              label="Email"
+              name="email"
+              type="email"
+              variant="bordered"
+              isInvalid={Boolean(errors.email)}
+              errorMessage={errors.email}
+              endContent={emailChecking && <Spinner size="sm" />}
+              onBlur={async (e) => {
+                let error = null;
+                error = actions.getFieldValidity(e);
+                if (error) return actions.changeError("email", error);
+
+                const value = e.target.value;
+                setEmailChecking(true);
+                const result = await checkEmailAvailable(value);
+                if (!result.ok) error = result.message;
+                actions.changeError("email", error);
+                setEmailChecking(false);
+              }}
+            />
             <PasswordInput isRequired label="Mật khẩu" name="password" variant="bordered" />
             <PasswordInput
               isRequired
@@ -70,9 +94,22 @@ const Register = () => {
               variant="bordered"
               isInvalid={Boolean(errors.passwordConfirm)}
               errorMessage={errors.passwordConfirm}
-              onBlur={() => clearError("passwordConfirm")}
+              onBlur={(e) => {
+                let error = null;
+                const value = e.target.value;
+                const password = actions.getFormState().password;
+                if (value !== password) error = "Mật khẩu không khớp";
+                actions.changeError("passwordConfirm", error);
+              }}
             />
-            <Button isLoading={registering} className="w-full" color="primary" type="submit" size="lg">
+            <Button
+              isDisabled={!isDirty || isError}
+              isLoading={registering}
+              className="w-full"
+              color="primary"
+              type="submit"
+              size="lg"
+            >
               Đăng ký
             </Button>
           </Form>

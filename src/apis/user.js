@@ -98,3 +98,16 @@ export const updateUserWithRole = async (id, newData, role) => {
     return getServerErrorMessage(error);
   }
 };
+
+export const checkEmailAvailable = async (email) => {
+  try {
+    const result = await API.get(`/api-v1/users/check-email/` + email);
+    if (result.data.exists) {
+      return { ok: false, message: "Email đã tồn tại!" };
+    }
+
+    return { ok: true };
+  } catch (error) {
+    return getServerErrorMessage(error);
+  }
+};
