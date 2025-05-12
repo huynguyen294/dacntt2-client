@@ -4,8 +4,10 @@ import { generateCrudApi, getCommonParams } from "./utils";
 const commonApi = generateCrudApi("classes");
 const classApi = {
   ...commonApi,
-  get: async (pager, order, search, filters) => {
+  get: async (pager, order, search, filters, otherParams) => {
     const params = getCommonParams(pager, order, search, filters);
+    params.push(...otherParams);
+
     if (filters.levels) {
       params.push("filter=level:in:" + filters.levels.join(","));
     }

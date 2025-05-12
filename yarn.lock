@@ -4555,10 +4555,10 @@ react-router@^7.5.0:
     set-cookie-parser "^2.6.0"
     turbo-stream "2.4.0"
 
-react-simple-formkit@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/react-simple-formkit/-/react-simple-formkit-1.0.2.tgz#2053e6263f6e6320012e191f1d0d38eabf394084"
-  integrity sha512-BVhnYHBMUs/NFY9WKruoPWPDAwoLcnDp89oAUlgFI4HGgEpmVoTfyvvifUzM4QRxo+i2ljd5ClZXxYJh5akkUQ==
+react-simple-formkit@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/react-simple-formkit/-/react-simple-formkit-1.0.7.tgz#2a6653adf1c1b50169ea44099b1d3b88a4a034ce"
+  integrity sha512-926PbWdZEzY4qBVB+j3OtLfQC8Y/hUF6tEZjmWc1FaVAADJZ51olMpneNmbLLQ33NOgTpCkkfKrN3EV7KzyVxQ==
 
 react-textarea-autosize@^8.5.3:
   version "8.5.9"

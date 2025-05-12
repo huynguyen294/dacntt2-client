@@ -45,6 +45,30 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
     queryFn: () => getShifts({ paging: "false" }, { orderBy: "name", order: "asc" }, null, {}),
   });
 
+  const handleChange = (data) => {
+    const courseId = data.courseId;
+    const found = courseId && courseData.courses.find((c) => c.id === Number(courseId));
+
+    if (found) {
+      const { tuitionFee, numberOfStudents, numberOfLessons, description, level } = found;
+      actions.setValue({ tuitionFee, numberOfStudents, numberOfLessons, description, level }, null, {
+        shouldOnChange: false,
+      });
+    } else {
+      actions.setValue(
+        {
+          tuitionFee: undefined,
+          numberOfStudents: undefined,
+          numberOfLessons: undefined,
+          description: undefined,
+          level: undefined,
+        },
+        null,
+        { shouldOnChange: false }
+      );
+    }
+  };
+
   const handleSubmit = async (data) => {
     setLoading(true);
 
@@ -72,7 +96,7 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
   };
 
   return (
-    <Form form={form} onSubmit={handleSubmit} className="w-full space-y-4">
+    <Form form={form} onSubmit={handleSubmit} onChange={handleChange} className="w-full space-y-4">
       <Collapse showDivider defaultExpanded variant="splitted" title="Thông tin cơ bản" className="w-full">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-start gap-4 pb-4">
           <Input
@@ -226,23 +250,7 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
                 isLoading={courseLoading}
                 onChange={actions.instantChange}
                 defaultSelectedKey={defaultValue}
-                onSelectionChange={(courseId) => {
-                  setValue(courseId);
-                  const found = courseData.courses.find((c) => c.id === Number(courseId));
-                  if (found) {
-                    const { tuitionFee, numberOfStudents, numberOfLessons, description, level } = found;
-                    actions.setValue({ tuitionFee, numberOfStudents, numberOfLessons, description, level });
-                  }
-                  if (!courseId) {
-                    actions.setValue({
-                      tuitionFee: undefined,
-                      numberOfStudents: undefined,
-                      numberOfLessons: undefined,
-                      description: undefined,
-                      level: undefined,
-                    });
-                  }
-                }}
+                onSelectionChange={setValue}
                 size="lg"
                 variant="bordered"
                 label="Khóa học"

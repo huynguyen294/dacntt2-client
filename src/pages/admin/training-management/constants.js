@@ -13,4 +13,5 @@ export const editClassBreadcrumbItems = [...classesManagementBreadcrumbItems, { 
 export const examsManagementBreadcrumbItems = [{ label: "Kỳ thi", path: "/admin/exams" }];
 export const addExamBreadcrumbItems = [...examsManagementBreadcrumbItems, { label: "Thêm kỳ thi" }];
 export const editExamBreadcrumbItems = [...examsManagementBreadcrumbItems, { label: "Sửa kỳ thi" }];
+
 export const trainingSettingsBreadcrumbItems = [{ label: "Cài đặt đào tạo", path: "/admin/training-settings" }];

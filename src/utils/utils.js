@@ -1,5 +1,7 @@
 import Compressor from "compressorjs";
 
+export const timeFormat = (text) => text.slice(0, 5);
+
 const maxSize = 2 * 1024 * 1024; // 2MB
 export const compressImg = async (file) => {
   let quality = Number((maxSize / file.size).toFixed(1));

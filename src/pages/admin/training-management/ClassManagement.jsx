@@ -21,7 +21,7 @@ const ClassManagement = () => {
   const queryFilterKey = `p=${pager.page},ps=${pager.pageSize},q=${debounceQuery},o=${order.order},ob=${order.orderBy},ca=${filters.createdAt}`;
   const { isLoading, data, isSuccess } = useQuery({
     queryKey: ["classes", queryFilterKey],
-    queryFn: () => classApi.get(pager, order, debounceQuery, filters),
+    queryFn: () => classApi.get(pager, order, debounceQuery, filters, ["refs=true"]),
   });
 
   const handleDeleteClass = async () => {
@@ -71,6 +71,7 @@ const ClassManagement = () => {
           className="px-2 sm:px-10"
           renderCell={(row, columnKey, index) => (
             <ClassCell
+              dataRefs={data?.refs}
               rowData={row}
               columnKey={columnKey}
               rowIndex={index}
@@ -92,10 +93,10 @@ const ClassManagement = () => {
 const columns = [
   { name: "STT", uid: "index", disableSort: true },
   { name: "Tên lớp học", uid: "name" },
-  { name: "Giáo viên phụ trách", uid: "teacherId" },
+  { name: "Giáo viên phụ trách", uid: "teacherId", disableSort: true },
   { name: "Lịch học", uid: "weekDays" },
-  { name: "Khóa học", uid: "courseId" },
-  { name: "Ca học", uid: "shifts" },
+  { name: "Khóa học", uid: "courseId", disableSort: true },
+  { name: "Ca học", uid: "shiftId", disableSort: true },
   { name: "Số buổi học", uid: "numberOfLessons" },
   { name: "Số học sinh tối đa", uid: "numberOfStudents" },
   { name: "Ngày khai giảng", uid: "openingDay" },
@@ -113,7 +114,7 @@ const defaultSelectedColumns = [
   "name",
   "teacherId",
   "weekDays",
-  "shifts",
+  "shiftId",
   "numberOfLessons",
   "numberOfStudents",
   "openingDay",

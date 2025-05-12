@@ -1,16 +1,19 @@
+/* eslint-disable no-unused-vars */
 import { useTableContext } from "@/components/common";
 import { COURSE_LEVELS, DATE_FORMAT } from "@/constants";
 import { useNavigate } from "@/hooks";
-import { localeString } from "@/utils";
+import { localeString, timeFormat } from "@/utils";
 import { Button } from "@heroui/button";
 import { Chip } from "@heroui/chip";
 import { Tooltip } from "@heroui/tooltip";
 import { format } from "date-fns";
 import { Edit, Trash2 } from "lucide-react";
 
-const ClassCell = ({ rowData, columnKey, rowIndex, onDelete = (id) => {} }) => {
+const ClassCell = ({ dataRefs, rowData, columnKey, rowIndex, onDelete = (id) => {} }) => {
   const { getRowIndex } = useTableContext();
   const navigate = useNavigate();
+
+  const { users, shifts, courses } = dataRefs || { users: {}, shifts: {}, courses: {} };
 
   let cellValue = rowData[columnKey];
 
@@ -26,6 +29,22 @@ const ClassCell = ({ rowData, columnKey, rowIndex, onDelete = (id) => {} }) => {
   }
   if (columnKey === "level") {
     cellValue = COURSE_LEVELS[cellValue];
+  }
+  if (columnKey === "teacherId") {
+    cellValue = users[cellValue].name || "";
+  }
+  if (columnKey === "courseId") {
+    cellValue = courses[cellValue].name || "";
+  }
+  if (columnKey === "shiftId") {
+    let text = "";
+    if (shifts[cellValue]) {
+      text = `${shifts[cellValue].name} (${timeFormat(shifts[cellValue].startTime)} - ${timeFormat(
+        shifts[cellValue].endTime
+      )})`;
+    }
+
+    cellValue = text;
   }
 
   switch (columnKey) {
