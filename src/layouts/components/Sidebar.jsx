@@ -153,8 +153,8 @@ const userSidebarItems = {
       section: "Tuyển sinh",
       sectionIcon: Podcast,
       items: [
-        { label: "Đăng ký", path: "/admin/register-admission" },
-        { label: "Tư vấn", path: "/admin/admissions" },
+        { label: "Đăng ký ứng viên", path: "/admin/register-admission" },
+        { label: "Quản lý ứng viên", path: "/admin/admissions" },
       ],
     },
     {

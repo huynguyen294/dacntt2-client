@@ -6,17 +6,30 @@ import { convertImageSrc } from "@/utils";
 import { format } from "date-fns";
 import { DATE_FORMAT } from "@/constants";
 import { parseDate } from "@internationalized/date";
+import { cn } from "@/lib/utils";
 
 //https://res.cloudinary.com/easybiov2/image/upload/v1742222204/ngocnhung05062000/hew2aof03eyxf3jgfpyt.jpg
-const UserBasicFields = ({ form, defaultValues, img = convertImageSrc(), onImgChange = () => {}, onImgDelete }) => {
+const UserBasicFields = ({
+  form,
+  hideImage,
+  defaultValues,
+  img = convertImageSrc(),
+  onImgChange = () => {},
+  classNames = {},
+  onImgDelete,
+  autoFocus = true,
+}) => {
   return (
     <>
-      <div className="row-span-2 flex justify-center items-center w-full">
-        <AvatarInput className="mt-4" value={img} onChange={onImgChange} variant="bordered" onDelete={onImgDelete} />
-      </div>
+      {!hideImage && (
+        <div className="row-span-2 flex justify-center items-center w-full">
+          <AvatarInput className="mt-4" value={img} onChange={onImgChange} variant="bordered" onDelete={onImgDelete} />
+        </div>
+      )}
       <Input
-        autoFocus
+        autoFocus={autoFocus}
         defaultValue={defaultValues.name}
+        onBlur={form.actions.checkValidity}
         isRequired
         name="name"
         size="lg"
@@ -33,6 +46,7 @@ const UserBasicFields = ({ form, defaultValues, img = convertImageSrc(), onImgCh
         variant="bordered"
         label="Giới tính"
         radius="sm"
+        placeholder="Chọn giới tính"
         labelPlacement="outside"
         onChange={form.actions.instantChange}
       >
@@ -51,6 +65,7 @@ const UserBasicFields = ({ form, defaultValues, img = convertImageSrc(), onImgCh
         radius="sm"
         labelPlacement="outside"
         placeholder="example@gmail.com"
+        onBlur={form.actions.checkValidity}
       />
       <Input
         defaultValue={defaultValues.phoneNumber}
@@ -81,9 +96,9 @@ const UserBasicFields = ({ form, defaultValues, img = convertImageSrc(), onImgCh
         variant="bordered"
         label="Địa chỉ"
         radius="sm"
-        className="col-span-1 lg:col-span-2"
+        className={cn("col-span-1 lg:col-span-2", classNames.address)}
         labelPlacement="outside"
-        placeholder="Số nhà..."
+        placeholder="Số nhà, Phường, Huyện, Tỉnh..."
       />
     </>
   );

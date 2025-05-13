@@ -86,7 +86,13 @@ const Register = () => {
                 setEmailChecking(false);
               }}
             />
-            <PasswordInput isRequired label="Mật khẩu" name="password" variant="bordered" />
+            <PasswordInput
+              isRequired
+              label="Mật khẩu"
+              name="password"
+              variant="bordered"
+              onBlur={actions.checkValidity}
+            />
             <PasswordInput
               isRequired
               label="Nhập lại mật khẩu"
@@ -96,6 +102,9 @@ const Register = () => {
               errorMessage={errors.passwordConfirm}
               onBlur={(e) => {
                 let error = null;
+                error = actions.getFieldValidity(e);
+                if (error) return actions.changeError("passwordConfirm", error);
+
                 const value = e.target.value;
                 const password = actions.getFormState().password;
                 if (value !== password) error = "Mật khẩu không khớp";

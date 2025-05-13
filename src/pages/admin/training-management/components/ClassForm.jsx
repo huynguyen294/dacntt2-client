@@ -1,4 +1,4 @@
-import { classApi, getCourses, getShifts, getUsersWithRole } from "@/apis";
+import { classApi, getCourses, getUsersWithRole } from "@/apis";
 import { Collapse, CurrencyInput } from "@/components/common";
 import { COURSE_LEVELS, COURSE_STATUSES, DATE_FORMAT } from "@/constants";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
@@ -14,6 +14,7 @@ import { DatePicker } from "@heroui/date-picker";
 import { useForm, Form, Controller } from "react-simple-formkit";
 import { useNavigate } from "@/hooks";
 import { addToast } from "@heroui/toast";
+import shiftApi from "@/apis/shift";
 
 const ClassForm = ({ editMode, defaultValues = {} }) => {
   const queryClient = useQueryClient();
@@ -42,7 +43,7 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
 
   const { data: shiftData, isLoading: shiftLoading } = useQuery({
     queryKey: ["shifts"],
-    queryFn: () => getShifts({ paging: "false" }, { orderBy: "name", order: "asc" }, null, {}),
+    queryFn: () => shiftApi.get({ paging: "false" }, { orderBy: "name", order: "asc" }, null, {}),
   });
 
   const handleChange = (data) => {

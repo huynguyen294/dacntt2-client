@@ -1,2 +1,2 @@
-export const admissionManagementBreadcrumbItems = [{ label: "Tư vấn", path: "/admin/admissions" }];
-export const registerBreadcrumbItems = [{ label: "Đăng ký", path: "/admin/register-admission" }];
+export const admissionManagementBreadcrumbItems = [{ label: "Quản lý ứng viên", path: "/admin/admissions" }];
+export const registerBreadcrumbItems = [{ label: "Đăng ký ứng viên", path: "/admin/register-admission" }];
