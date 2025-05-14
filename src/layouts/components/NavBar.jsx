@@ -54,6 +54,7 @@ const NavBar = ({ breadcrumbItems = [], hideMenuButton = false }) => {
               </BreadcrumbItem>
               {breadcrumbItems.map(({ path, label }, index) => (
                 <BreadcrumbItem
+                  key={label}
                   onPress={() => {
                     if (index === breadcrumbItems.length - 1) return;
                     path && navigate(path);
@@ -83,23 +84,38 @@ const NavBar = ({ breadcrumbItems = [], hideMenuButton = false }) => {
                   size="sm"
                   variant="light"
                   radius="full"
-                  className="px-1 py-0 pl-0"
+                  className="px-0 sm:px-1 py-0 pl-0 min-w-6 sm:min-w-auto"
                   startContent={
-                    <Avatar src={(user.imageUrl || "").replace("upload", "upload/w_100")} name={user.name} size="sm" />
+                    <Avatar
+                      className="hidden sm:block"
+                      src={(user.imageUrl || "").replace("upload", "upload/w_100")}
+                      name={user.name}
+                      size="sm"
+                    />
                   }
-                  endContent={<ChevronDown size="14px" className="mr-2" />}
+                  endContent={<ChevronDown size="14px" className="mr-2 hidden sm:block" />}
                 >
-                  {user.name}
+                  <span className="hidden sm:block">{user.name}</span>
+                  <Avatar
+                    className="block sm:hidden"
+                    src={(user.imageUrl || "").replace("upload", "upload/w_100")}
+                    name={user.name}
+                    size="sm"
+                  />
                 </Button>
               </DropdownTrigger>
               <DropdownMenu aria-label="Profile Actions" variant="flat">
-                <DropdownItem key="profile" className="h-14 gap-2">
+                <DropdownItem key="user" className="h-14 gap-2">
                   <User avatarProps={{ src: user.imageUrl }} name={user.name} description={user.email} />
                 </DropdownItem>
-                <DropdownItem startContent={<UserPen size="16px" />} key="settings">
+                <DropdownItem
+                  startContent={<UserPen size="16px" />}
+                  key="profile"
+                  onPress={() => navigate(`/${user.role}/profile`)}
+                >
                   Hồ sơ
                 </DropdownItem>
-                <DropdownItem startContent={<Info size="16px" />} key="settings">
+                <DropdownItem startContent={<Info size="16px" />} key="contact">
                   Liên hệ
                 </DropdownItem>
                 <DropdownItem startContent={<LogOut size="16px" />} key="logout" color="danger" onPress={handleLogout}>

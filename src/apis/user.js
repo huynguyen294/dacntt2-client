@@ -99,11 +99,28 @@ export const updateUserWithRole = async (id, newData, role) => {
   }
 };
 
+export const updateUser = async (id, newData, resetPassword) => {
+  const appActions = getAppActions();
+
+  try {
+    const result = await API.patch(`/api-v1/users/${id}?` + (resetPassword ? "resetPassword=true" : ""), newData);
+
+    let profile = cryptoDecrypt(localStorage.getItem("profile"));
+    profile = JSON.parse(profile);
+    const user = { ...profile, ...result.data.updatedUser };
+    localStorage.setItem("profile", cryptoEncrypt(JSON.stringify(user)));
+    appActions.change("user", user);
+    return { ok: true };
+  } catch (error) {
+    return getServerErrorMessage(error);
+  }
+};
+
 export const checkEmailAvailable = async (email) => {
   try {
     const result = await API.get(`/api-v1/users/check-email/` + email);
     if (result.data.exists) {
-      return { ok: false, message: "Email đã tồn tại!" };
+      return { ok: false, message: "Email này đã đăng ký!" };
     }
 
     return { ok: true };

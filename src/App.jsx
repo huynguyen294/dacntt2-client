@@ -27,7 +27,7 @@ import {
 } from "./pages/admin";
 import { Teacher } from "./pages/teacher";
 import { Student } from "./pages/student";
-import { NotFound } from "./pages";
+import { NotFound, Profile } from "./pages";
 
 import "./App.css";
 
@@ -43,6 +43,7 @@ const App = () => {
       <Routes>
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
+        <Route path=":role/profile" element={<Profile />} />
 
         <Route path="admin">
           <Route index element={<Admin />} />

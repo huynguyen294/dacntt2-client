@@ -7,6 +7,9 @@ import { format } from "date-fns";
 import { DATE_FORMAT } from "@/constants";
 import { parseDate } from "@internationalized/date";
 import { cn } from "@/lib/utils";
+import { checkEmailAvailable } from "@/apis";
+import { useState } from "react";
+import { Spinner } from "@heroui/spinner";
 
 //https://res.cloudinary.com/easybiov2/image/upload/v1742222204/ngocnhung05062000/hew2aof03eyxf3jgfpyt.jpg
 const UserBasicFields = ({
@@ -19,6 +22,8 @@ const UserBasicFields = ({
   onImgDelete,
   autoFocus = true,
 }) => {
+  const [emailChecking, setEmailChecking] = useState(false);
+
   return (
     <>
       {!hideImage && (
@@ -55,7 +60,6 @@ const UserBasicFields = ({
         <SelectItem key="Khác">Khác</SelectItem>
       </Select>
       <Input
-        defaultValue={defaultValues.email}
         name="email"
         type="email"
         isRequired
@@ -65,7 +69,22 @@ const UserBasicFields = ({
         radius="sm"
         labelPlacement="outside"
         placeholder="example@gmail.com"
-        onBlur={form.actions.checkValidity}
+        isInvalid={Boolean(form.errors?.email)}
+        errorMessage={form.errors?.email}
+        defaultValue={defaultValues.email}
+        endContent={emailChecking && <Spinner size="sm" />}
+        onBlur={async (e) => {
+          let error = null;
+          error = form.actions.getFieldValidity(e);
+          if (error) return form.actions.changeError("email", error);
+
+          const value = e.target.value;
+          setEmailChecking(true);
+          const result = await checkEmailAvailable(value);
+          if (!result.ok) error = result.message;
+          form.actions.changeError("email", error);
+          setEmailChecking(false);
+        }}
       />
       <Input
         defaultValue={defaultValues.phoneNumber}
