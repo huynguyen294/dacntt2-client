@@ -10,7 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { userApi } from "@/apis";
 import { Button } from "@heroui/button";
 import { Tooltip } from "@heroui/tooltip";
-import { Trash2 } from "lucide-react";
+import { Ban, Trash2 } from "lucide-react";
 
 const UserDetailModal = ({ user, onOpenChange }) => {
   const { isLoading, data } = useQuery({
@@ -160,6 +160,17 @@ const UserDetailModal = ({ user, onOpenChange }) => {
                         }}
                       />
                     </TableProvider>
+                  </div>
+                )}
+
+                {user.role === "student" && (
+                  <div className="rounded-large border p-3 sm:p-4 py-6 gap-4">
+                    <p className="font-bold">Lịch sử thanh toán học phí</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 w-full mt-4 space-y-3">
+                      <div className="col-span-1 sm:col-span-2 h-20 flex justify-center items-center">
+                        <Ban size="12px" className="mr-1" /> Không có dữ liệu
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
