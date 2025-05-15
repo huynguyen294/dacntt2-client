@@ -14,6 +14,7 @@ const TableHeader = ({
   searchPlaceholder = defaultSearchPlaceholder,
   addBtnPath,
   addBtnText = "Thêm mới",
+  multiAction = MultipleAction,
   filter,
 }) => {
   const navigate = useNavigate();
@@ -106,11 +107,7 @@ const TableHeader = ({
         </Dropdown>
         <Divider orientation="vertical" className="h-6 mx-1" />
         <p className="whitespace-nowrap">{selectedKeys === "all" ? rowSize || 0 : selectedKeys.size} Đã chọn</p>
-        {(selectedKeys === "all" || selectedKeys.size > 0) && (
-          <Button size="sm" variant="flat" className="font-semibold min-w-fit" endContent={<ChevronDown size="13px" />}>
-            Thao tác nhiều
-          </Button>
-        )}
+        {(selectedKeys === "all" || selectedKeys.size > 0) && multiAction}
       </div>
       <Button
         className="font-semibold min-w-fit"
@@ -123,5 +120,11 @@ const TableHeader = ({
     </div>
   );
 };
+
+const MultipleAction = () => (
+  <Button size="sm" variant="flat" className="font-semibold min-w-fit" endContent={<ChevronDown size="13px" />}>
+    Thao tác nhiều
+  </Button>
+);
 
 export default TableHeader;

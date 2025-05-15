@@ -8,7 +8,7 @@ import { PasswordInput, Section } from "@/components/common";
 import { Checkbox } from "@heroui/checkbox";
 import { Button } from "@heroui/button";
 import { RefreshCcw, Save } from "lucide-react";
-import { deleteImageById, saveImage, updateUser } from "@/apis";
+import { imageApi, userApi } from "@/apis";
 import { addToast } from "@heroui/toast";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -30,10 +30,10 @@ const ProfileForm = ({ onReload }) => {
     setSaving(true);
     let resultImg;
     if (imgUrl.file) {
-      resultImg = await saveImage(imgUrl, "avatar");
+      resultImg = await imageApi.save(imgUrl, "avatar");
       payload.imageUrl = resultImg.url;
     } else if (deletedImg) {
-      resultImg = await deleteImageById(deletedImg);
+      resultImg = await imageApi.delete(deletedImg);
       payload.imageUrl = null;
     }
 
@@ -48,7 +48,7 @@ const ProfileForm = ({ onReload }) => {
     }
 
     const { accessToken, ...userData } = user;
-    const result = await updateUser(user.id, { ...userData, ...payload }, resetPassword);
+    const result = await userApi.updateProfile(user.id, { ...userData, ...payload }, resetPassword);
     if (result.ok) {
       queryClient.invalidateQueries({ queryKey: ["users", user.id] });
       onReload(new Date().toString());

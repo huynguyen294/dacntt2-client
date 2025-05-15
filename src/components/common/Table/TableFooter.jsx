@@ -60,6 +60,7 @@ const TableFooter = () => {
         <Button
           size="sm"
           variant="flat"
+          className="hidden md:inline-flex"
           isDisabled={pager.page === 1}
           onPress={() => changePager("page", pager.page - 1)}
         >
@@ -68,6 +69,7 @@ const TableFooter = () => {
         <Button
           size="sm"
           variant="flat"
+          className="hidden md:inline-flex"
           isDisabled={pager.page === pager.pageCount}
           onPress={() => changePager("page", pager.page + 1)}
         >

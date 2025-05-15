@@ -1,4 +1,4 @@
-import { checkEmailAvailable, signUp } from "@/apis";
+import { userApi } from "@/apis";
 import { PasswordInput } from "@/components/common";
 import { useNavigate } from "@/hooks";
 import { AuthLayout } from "@/layouts";
@@ -24,7 +24,7 @@ const Register = () => {
 
     setRegistering(true);
     payload.name = `${lastName} ${firstName}`;
-    const result = await signUp(payload);
+    const result = await userApi.signUp(payload);
     if (result.ok) {
       addToast({
         classNames: { base: "dark" },
@@ -80,7 +80,7 @@ const Register = () => {
 
                 const value = e.target.value;
                 setEmailChecking(true);
-                const result = await checkEmailAvailable(value);
+                const result = await userApi.checkEmailAvailable(value);
                 if (!result.ok) error = result.message;
                 actions.changeError("email", error);
                 setEmailChecking(false);

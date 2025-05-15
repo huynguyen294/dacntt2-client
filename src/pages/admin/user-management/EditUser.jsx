@@ -1,4 +1,5 @@
-import { getServerErrorMessage, getUserByIdWithRole } from "@/apis";
+import UserForm from "./components/UserForm";
+import { getServerErrorMessage, userApi } from "@/apis";
 import { useParams, useSearchParams } from "react-router";
 import { breadcrumbItemsByRole } from "./constants";
 import { ModuleLayout } from "@/layouts";
@@ -6,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Spinner } from "@heroui/spinner";
 import { useEffect } from "react";
 import { addToast } from "@heroui/toast";
-import UserForm from "./components/UserForm";
+import { EMPLOYEE_ROLES } from "@/constants";
 
 const EditUser = () => {
   const [search] = useSearchParams();
@@ -15,7 +16,7 @@ const EditUser = () => {
 
   const { isLoading, data, isError, error } = useQuery({
     queryKey: ["users", userId],
-    queryFn: () => getUserByIdWithRole(userId, userRole),
+    queryFn: () => userApi.getById(userId, { refs: EMPLOYEE_ROLES.includes(userRole) }),
   });
 
   useEffect(() => {
@@ -36,7 +37,7 @@ const EditUser = () => {
             <Spinner variant="wave" />
           </div>
         )}
-        {data?.user && <UserForm editMode defaultValues={data.user} />}
+        {data?.item && <UserForm editMode defaultValues={data.item} />}
       </div>
     </ModuleLayout>
   );

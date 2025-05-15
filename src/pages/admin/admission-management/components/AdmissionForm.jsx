@@ -1,4 +1,5 @@
-import { getUsersWithRole } from "@/apis";
+/* eslint-disable no-unused-vars */
+import { userApi } from "@/apis";
 import { UserBasicFields } from "@/components";
 import { Section } from "@/components/common";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
@@ -6,7 +7,7 @@ import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
 import { useQuery } from "@tanstack/react-query";
-import { MoveRight, Plus, RefreshCcw, Save } from "lucide-react";
+import { RefreshCcw, Save } from "lucide-react";
 import { useState } from "react";
 import { Controller, Form, useForm } from "react-simple-formkit";
 
@@ -19,7 +20,7 @@ const AdmissionForm = ({ defaultValues = {}, editMode }) => {
   const { data: userData, isLoading: userLoading } = useQuery({
     queryKey: ["all-users", "consultant"],
     queryFn: () =>
-      getUsersWithRole(
+      userApi.get(
         { paging: "false" },
         { orderBy: "name", order: "asc" },
         null,

@@ -8,7 +8,7 @@ import { useDisclosure } from "@heroui/modal";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { addToast } from "@heroui/toast";
-import { certificateApi, deleteImageById } from "@/apis";
+import { certificateApi, imageApi } from "@/apis";
 import CertificateCell from "./components/CertificateCell";
 
 const CertificateManagement = () => {
@@ -28,7 +28,7 @@ const CertificateManagement = () => {
   const handleDeleteCertificate = async () => {
     if (!selectedCertificateId) return;
 
-    if (selectedImgId) await deleteImageById(selectedImgId);
+    if (selectedImgId) await imageApi.delete(selectedImgId);
     const result = await certificateApi.delete(selectedCertificateId);
     if (!result.ok) {
       addToast({ color: "danger", title: "Xóa thất bại!", description: result.message });

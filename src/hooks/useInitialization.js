@@ -1,9 +1,9 @@
-import { refreshProfile } from "@/apis";
+import { userApi } from "@/apis";
 import { useEffect } from "react";
 
 const useInitialization = () => {
   useEffect(() => {
-    refreshProfile();
+    userApi.refreshProfile();
   }, []);
 
   return null;

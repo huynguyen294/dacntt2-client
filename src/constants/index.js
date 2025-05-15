@@ -22,3 +22,4 @@ export const COURSE_LEVELS = {
   3: "Nâng cao",
 };
 export const COURSE_STATUSES = ["Đang mở", "Tạm đóng", "Không còn mở"];
+export const EMPLOYEE_ROLES = ["consultant", "finance-officer", "teacher"];

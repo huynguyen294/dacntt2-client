@@ -1,9 +1,7 @@
 import API from "./api";
-import { generateCrudApi, getCommonParams } from "./utils";
+import { getCommonParams } from "./utils";
 
-const commonApi = generateCrudApi("classes");
-const classApi = {
-  ...commonApi,
+const otherClassApis = {
   get: async (pager, order, search, filters, otherParams) => {
     const params = getCommonParams(pager, order, search, filters);
     params.push(...otherParams);
@@ -19,4 +17,4 @@ const classApi = {
   },
 };
 
-export default classApi;
+export default otherClassApis;

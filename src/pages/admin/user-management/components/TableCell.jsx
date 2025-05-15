@@ -1,19 +1,23 @@
+import { UserDetailModal } from "@/components";
 import { useTableContext } from "@/components/common";
 import { DATE_FORMAT, ROLE_PALLET } from "@/constants";
 import { useNavigate } from "@/hooks";
 import { alpha, convertImageSrc, localeString } from "@/utils";
 import { Button } from "@heroui/button";
 import { Chip } from "@heroui/chip";
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/dropdown";
+import { useDisclosure } from "@heroui/modal";
 import { Tooltip } from "@heroui/tooltip";
 import { User } from "@heroui/user";
 import { format } from "date-fns";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit, Ellipsis, Eye, Info, Shapes, Trash2 } from "lucide-react";
 import { useParams } from "react-router";
 
 const TableCell = ({ rowData, columnKey, rowIndex, onDelete = () => {} }) => {
   const navigate = useNavigate();
   const { role } = useParams();
   const { pager } = useTableContext();
+  const { isOpen, onOpenChange, onOpen } = useDisclosure();
 
   let cellValue = rowData[columnKey];
 
@@ -82,7 +86,13 @@ const TableCell = ({ rowData, columnKey, rowIndex, onDelete = () => {} }) => {
     case "actions":
       return (
         <div className="relative flex items-center justify-center">
-          <Tooltip content="Sửa người dùng">
+          {isOpen && <UserDetailModal user={rowData} onOpenChange={onOpenChange} />}
+          <Tooltip content="Chi tiết">
+            <Button onPress={onOpen} size="sm" isIconOnly radius="full" variant="light">
+              <Eye size="19px" />
+            </Button>
+          </Tooltip>
+          <Tooltip content="Chỉnh sửa">
             <Button
               onPress={() => {
                 navigate(
@@ -99,7 +109,7 @@ const TableCell = ({ rowData, columnKey, rowIndex, onDelete = () => {} }) => {
               <Edit size="18px" />
             </Button>
           </Tooltip>
-          <Tooltip color="danger" content="Xóa người dùng">
+          <Tooltip color="danger" content="Xóa">
             <Button
               onClick={(e) => e.stopPropagation()}
               onPress={() => {

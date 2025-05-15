@@ -1,4 +1,4 @@
-import { classApi, getCourses, getUsersWithRole } from "@/apis";
+import { classApi, courseApi, shiftApi, userApi } from "@/apis";
 import { Collapse, CurrencyInput } from "@/components/common";
 import { COURSE_LEVELS, COURSE_STATUSES, DATE_FORMAT } from "@/constants";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
@@ -14,7 +14,6 @@ import { DatePicker } from "@heroui/date-picker";
 import { useForm, Form, Controller } from "react-simple-formkit";
 import { useNavigate } from "@/hooks";
 import { addToast } from "@heroui/toast";
-import shiftApi from "@/apis/shift";
 
 const ClassForm = ({ editMode, defaultValues = {} }) => {
   const queryClient = useQueryClient();
@@ -26,19 +25,13 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
   const { data: userData, isLoading: userLoading } = useQuery({
     queryKey: ["all-users"],
     queryFn: () =>
-      getUsersWithRole(
-        { paging: "false" },
-        { orderBy: "name", order: "asc" },
-        null,
-        { status: "Đang làm việc" },
-        "teacher"
-      ),
+      userApi.get({ paging: "false" }, { orderBy: "name", order: "asc" }, null, { status: "Đang làm việc" }, "teacher"),
   });
 
   const { data: courseData, isLoading: courseLoading } = useQuery({
     queryKey: ["courses"],
     queryFn: () =>
-      getCourses({ paging: "false" }, { orderBy: "name", order: "asc" }, null, { status: COURSE_STATUSES[0] }),
+      courseApi.get({ paging: "false" }, { orderBy: "name", order: "asc" }, null, { status: COURSE_STATUSES[0] }),
   });
 
   const { data: shiftData, isLoading: shiftLoading } = useQuery({
@@ -156,8 +149,8 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
             labelPlacement="outside"
             placeholder="Chọn ca học"
           >
-            {shiftData?.shifts &&
-              shiftData.shifts.map((s) => (
+            {shiftData?.rows &&
+              shiftData.rows.map((s) => (
                 <SelectItem key={s.id.toString()}>
                   {`${s.name} (${s.startTime.slice(0, 5)} - ${s.endTime.slice(0, 5)})`}
                 </SelectItem>
@@ -182,8 +175,8 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
                 onSelectionChange={setValue}
                 defaultSelectedKey={defaultValue}
               >
-                {userData?.users &&
-                  userData?.users.map((u) => <AutocompleteItem key={u.id.toString()}>{u.name}</AutocompleteItem>)}
+                {userData?.rows &&
+                  userData?.rows.map((u) => <AutocompleteItem key={u.id.toString()}>{u.name}</AutocompleteItem>)}
               </Autocomplete>
             )}
           />
@@ -259,10 +252,8 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
                 labelPlacement="outside"
                 placeholder="Chọn lớp học"
               >
-                {courseData?.courses &&
-                  courseData?.courses.map((course) => (
-                    <AutocompleteItem key={course.id}>{course.name}</AutocompleteItem>
-                  ))}
+                {courseData?.rows &&
+                  courseData?.rows.map((course) => <AutocompleteItem key={course.id}>{course.name}</AutocompleteItem>)}
               </Autocomplete>
             )}
           />

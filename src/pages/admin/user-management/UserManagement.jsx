@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { breadcrumbItemsByRole } from "./constants";
-import { deleteImageById, deleteUserById, getUsersWithRole } from "@/apis";
+import { imageApi, userApi } from "@/apis";
 import { ConfirmDeleteDialog } from "@/components";
 import { useDisclosure } from "@heroui/modal";
 import { addToast } from "@heroui/toast";
@@ -12,6 +12,7 @@ import { Table, TableFooter, TableHeader, TableProvider } from "@/components/com
 import { useTable } from "@/hooks";
 import TableFilter from "./components/TableFilter";
 import TableCell from "./components/TableCell";
+import MultipleActions from "./components/MultipleActions";
 
 const UserManagement = () => {
   const queryClient = useQueryClient();
@@ -29,15 +30,13 @@ const UserManagement = () => {
   const queryFilterKey = `p=${pager.page},ps=${pager.pageSize},q=${debounceQuery},o=${order.order},ob=${order.orderBy},ca=${filters.createdAt}${roleKey}`;
   const { isLoading, data, isSuccess } = useQuery({
     queryKey: ["users", queryFilterKey],
-    queryFn: () => getUsersWithRole(pager, order, debounceQuery, { ...filters, roles }, role),
+    queryFn: () => userApi.get(pager, order, debounceQuery, { ...filters, roles }, role),
   });
-
-  const users = data?.users || [];
 
   const handleDeleteUser = async () => {
     if (!selectedUserId) return;
-    if (selectedImgId) await deleteImageById(selectedImgId);
-    const result = await deleteUserById(selectedUserId);
+    if (selectedImgId) await imageApi.delete(selectedImgId);
+    const result = await userApi.delete(selectedUserId);
     if (!result.ok) {
       addToast({ color: "danger", title: "Xóa thất bại!", description: result.message });
     } else {
@@ -71,13 +70,14 @@ const UserManagement = () => {
           </div>
           <TableHeader
             filter={<TableFilter role={role} />}
+            multiAction={<MultipleActions />}
             addBtnPath={`/admin/user-management/${role}/add`}
-            rowSize={data?.users?.length || 0}
+            rowSize={data?.rows?.length || 0}
           />
         </div>
         <Table
           className="px-2 sm:px-10"
-          rows={users}
+          rows={data?.rows || []}
           isLoading={isLoading}
           renderCell={(rowData, columnKey, index) => (
             <TableCell

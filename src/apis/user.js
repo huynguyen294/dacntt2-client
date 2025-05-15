@@ -5,39 +5,35 @@ import { DATE_FORMAT } from "@/constants";
 import { getAppActions } from "@/state";
 import { cryptoDecrypt, cryptoEncrypt } from "@/utils";
 
-export const getUsers = async (pager, order, search, filters) => {
-  const params = getCommonParams(pager, order, search, filters);
-  if (filters.roles) {
-    params.push("filter=role:in:" + filters.roles.join(","));
-  }
-  if (filters.createdAt) {
-    const date = format(subDays(new Date(), filters.createdAt), DATE_FORMAT);
-    params.push("filter=createdAt:gte:" + date);
-  }
-
-  const result = await API.get(`/api-v1/users?${params.join("&")}`);
-  return result.data;
-};
-
-export const getUsersWithRole = async (pager, order, search, filters, role) => {
+const getUsers = async (pager, order, search, filters, role) => {
   const params = getCommonParams(pager, order, search, filters);
   if (filters.roles) {
     params.push("filter=role:in:" + filters.roles.join(","));
   }
   if (filters.status) {
-    params.push("filter=status:eq:" + filters.status);
+    params.push("filter=status:in:" + filters.status);
   }
+  if (filters.createdAt) {
+    const date = format(subDays(new Date(), filters.createdAt), DATE_FORMAT);
+    params.push("filter=createdAt:gte:" + date);
+  }
+  // not a filter
+  if (role) params.push("role=" + role);
 
-  const result = await API.get(`/api-v1/users/with-role/${role}?${params.join("&")}`);
+  const result = await API.get(`/api-v1/users?${params.join("&")}`);
   return result.data;
 };
 
-export const getUserById = async (id) => {
-  const result = await API.get(`/api-v1/users/${id}`);
+const getUserById = async (id, { role, refs }) => {
+  const params = [];
+  if (role) params.push("role=" + role);
+  if (refs) params.push("refs=true");
+
+  const result = await API.get(`/api-v1/users/${id}?${params.join("&")}`);
   return result.data;
 };
 
-export const refreshProfile = async () => {
+const refreshProfile = async () => {
   let profile = cryptoDecrypt(localStorage.getItem("profile"));
   if (!profile) return;
   profile = JSON.parse(profile);
@@ -52,12 +48,7 @@ export const refreshProfile = async () => {
   return result.data;
 };
 
-export const getUserByIdWithRole = async (id, role) => {
-  const result = await API.get(`/api-v1/users/${role}/${id}`);
-  return result.data;
-};
-
-export const deleteUserById = async (id) => {
+const deleteUserById = async (id) => {
   try {
     await API.delete(`/api-v1/users/${id}`);
     return { ok: true };
@@ -66,7 +57,7 @@ export const deleteUserById = async (id) => {
   }
 };
 
-export const signUp = async (data) => {
+const signUp = async (data) => {
   try {
     await API.post(`/api-v1/users/sign-up`, data);
     return { ok: true };
@@ -75,18 +66,24 @@ export const signUp = async (data) => {
   }
 };
 
-export const createUserWithRole = async (data, role) => {
+const createUser = async (data, role) => {
   try {
-    await API.post(`/api-v1/users/${role}`, data);
+    const params = [];
+    if (role) params.push("role=" + role);
+
+    await API.post(`/api-v1/users?${params.join("&")}`, data);
     return { ok: true };
   } catch (error) {
     return getServerErrorMessage(error);
   }
 };
 
-export const updateUserWithRole = async (id, newData, role) => {
+const updateUser = async (id, newData, { role = "", resetPassword = false }) => {
   try {
-    await API.patch(`/api-v1/users/${role}/${id}`, newData);
+    const params = [];
+    if (role) params.push("role=" + role);
+    if (resetPassword) params.push("resetPassword=true");
+    await API.patch(`/api-v1/users/${id}?${params.join("&")}`, newData);
 
     let profile = cryptoDecrypt(localStorage.getItem("profile"));
     if (profile) {
@@ -99,15 +96,17 @@ export const updateUserWithRole = async (id, newData, role) => {
   }
 };
 
-export const updateUser = async (id, newData, resetPassword) => {
+const updateProfile = async (id, newData, resetPassword) => {
   const appActions = getAppActions();
 
   try {
-    const result = await API.patch(`/api-v1/users/${id}?` + (resetPassword ? "resetPassword=true" : ""), newData);
+    const params = [];
+    if (resetPassword) params.push("resetPassword=true");
+    const result = await API.patch(`/api-v1/users/${id}?${params.join("&")}`, newData);
 
     let profile = cryptoDecrypt(localStorage.getItem("profile"));
     profile = JSON.parse(profile);
-    const user = { ...profile, ...result.data.updatedUser };
+    const user = { ...profile, ...result.data.updated };
     localStorage.setItem("profile", cryptoEncrypt(JSON.stringify(user)));
     appActions.change("user", user);
     return { ok: true };
@@ -116,7 +115,7 @@ export const updateUser = async (id, newData, resetPassword) => {
   }
 };
 
-export const checkEmailAvailable = async (email) => {
+const checkEmailAvailable = async (email) => {
   try {
     const result = await API.get(`/api-v1/users/check-email/` + email);
     if (result.data.exists) {
@@ -127,4 +126,16 @@ export const checkEmailAvailable = async (email) => {
   } catch (error) {
     return getServerErrorMessage(error);
   }
+};
+
+export default {
+  create: createUser,
+  get: getUsers,
+  getById: getUserById,
+  update: updateUser,
+  updateProfile,
+  delete: deleteUserById,
+  signUp,
+  checkEmailAvailable,
+  refreshProfile,
 };

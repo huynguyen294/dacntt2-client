@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Button } from "@heroui/button";
 import { Plus, RefreshCcw, Save } from "lucide-react";
 import { useNavigate } from "@/hooks";
-import { createUserWithRole, deleteImageById, saveImage, updateUserWithRole } from "@/apis";
+import { imageApi, userApi } from "@/apis";
 import { useQueryClient } from "@tanstack/react-query";
 import { addToast } from "@heroui/toast";
 import { convertImageSrc } from "@/utils";
@@ -47,10 +47,10 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
     setRegistering(true);
     let resultImg;
     if (imgUrl.file) {
-      resultImg = await saveImage(imgUrl, "avatar");
+      resultImg = await imageApi.save(imgUrl, "avatar");
       payload.imageUrl = resultImg.url;
     } else if (deletedImg) {
-      resultImg = await deleteImageById(deletedImg);
+      resultImg = await imageApi.delete(deletedImg);
       payload.imageUrl = null;
     }
 
@@ -64,9 +64,10 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
       return;
     }
 
+    const { role } = data;
     if (editMode) {
       const { passwordConfirm, ...removed } = defaultValues;
-      const result = await updateUserWithRole(userId, { ...removed, ...payload }, data.role);
+      const result = await userApi.update(userId, { ...removed, ...payload }, { role });
       if (result.ok) {
         queryClient.invalidateQueries({ queryKey: ["users"] });
         navigate("/admin/user-management/" + paramRole);
@@ -76,7 +77,7 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
       return;
     }
 
-    const result = await createUserWithRole(payload, data.role);
+    const result = await userApi.create(payload, { role });
     if (result.ok) {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       navigate("/admin/user-management/" + paramRole);

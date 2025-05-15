@@ -1,4 +1,4 @@
-import { createCourse, updateCourse } from "@/apis";
+import { courseApi } from "@/apis";
 import { CurrencyInput, Dot, Form, Section } from "@/components/common";
 import { COURSE_LEVELS, COURSE_STATUSES } from "@/constants";
 import { useForm, useNavigate } from "@/hooks";
@@ -21,7 +21,7 @@ const CourseForm = ({ defaultValues = {}, editMode }) => {
     setLoading(true);
     if (editMode) {
       const { id, ...removed } = defaultValues;
-      const result = await updateCourse(id, { ...removed, ...data });
+      const result = await courseApi.update(id, { ...removed, ...data });
       if (result.ok) {
         queryClient.invalidateQueries({ queryKey: ["courses"] });
         navigate("/admin/courses");
@@ -31,8 +31,7 @@ const CourseForm = ({ defaultValues = {}, editMode }) => {
       return;
     }
 
-    const result = await createCourse(data);
-    console.log(result);
+    const result = await courseApi.create(data);
     if (result.ok) {
       queryClient.invalidateQueries({ queryKey: ["courses"] });
       navigate("/admin/courses");

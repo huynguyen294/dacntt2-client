@@ -2,7 +2,7 @@ import API from "./api";
 import { convertBase64 } from "@/utils";
 import { getServerErrorMessage } from "./utils";
 
-export const createImage = async (base64, folder) => {
+const createImage = async (base64, folder) => {
   try {
     await API.post(`/api-v1/images`, { base64, folder });
     return { ok: true };
@@ -11,7 +11,7 @@ export const createImage = async (base64, folder) => {
   }
 };
 
-export const updateImage = async (id, base64) => {
+const updateImage = async (id, base64) => {
   try {
     await API.patch(`/api-v1/images/${id}`, { base64 });
     return { ok: true };
@@ -20,7 +20,7 @@ export const updateImage = async (id, base64) => {
   }
 };
 
-export const saveImage = async ({ id, file, link }, folder = null) => {
+const saveImage = async ({ id, file, link }, folder = null) => {
   if (!file) return { ok: true, url: link };
 
   try {
@@ -38,11 +38,18 @@ export const saveImage = async ({ id, file, link }, folder = null) => {
   }
 };
 
-export const deleteImageById = async (id) => {
+const deleteImageById = async (id) => {
   try {
     await API.delete(`/api-v1/images/${id}`);
     return { ok: true };
   } catch (error) {
     return getServerErrorMessage(error);
   }
+};
+
+export default {
+  create: createImage,
+  update: updateImage,
+  save: saveImage,
+  delete: deleteImageById,
 };

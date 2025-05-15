@@ -2,7 +2,7 @@ import CourseForm from "./components/CourseForm";
 import { FormPage, ModuleLayout } from "@/layouts";
 import { editCourseBreadcrumbItems } from "./constants";
 import { useParams } from "react-router";
-import { getCourseById, getServerErrorMessage } from "@/apis";
+import { courseApi, getServerErrorMessage } from "@/apis";
 import { useQuery } from "@tanstack/react-query";
 import { addToast } from "@heroui/toast";
 import { useEffect } from "react";
@@ -13,7 +13,7 @@ const EditCourse = () => {
 
   const { isLoading, data, isError, error } = useQuery({
     queryKey: ["courses", id],
-    queryFn: () => getCourseById(id),
+    queryFn: () => courseApi.getById(id),
   });
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const EditCourse = () => {
             <Spinner variant="wave" />
           </div>
         )}
-        {data?.course && <CourseForm editMode defaultValues={data.course} />}
+        {data?.item && <CourseForm editMode defaultValues={data.item} />}
       </FormPage>
     </ModuleLayout>
   );

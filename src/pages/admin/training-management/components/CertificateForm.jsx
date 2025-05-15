@@ -1,4 +1,4 @@
-import { certificateApi, deleteImageById, saveImage } from "@/apis";
+import { certificateApi, imageApi } from "@/apis";
 import { AvatarInput, Form, Section } from "@/components/common";
 import { useForm, useNavigate } from "@/hooks";
 import { convertImageSrc } from "@/utils";
@@ -25,10 +25,10 @@ const CertificateForm = ({ defaultValues = {}, editMode }) => {
 
     let resultImg;
     if (imageUrl.file) {
-      resultImg = await saveImage(imageUrl, "certificate");
+      resultImg = await imageApi.save(imageUrl, "certificate");
       data.imageUrl = resultImg.url;
     } else if (deletedImg) {
-      resultImg = await deleteImageById(deletedImg);
+      resultImg = await imageApi.update(deletedImg);
       data.imageUrl = null;
     }
 

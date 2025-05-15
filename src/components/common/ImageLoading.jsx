@@ -10,10 +10,10 @@ const ImageLoading = ({ src, children }) => {
       img.src = src;
     };
 
-    preload();
+    src && preload();
   }, [src]);
 
-  return children(ready ? "" : "image-loading");
+  return children(ready || !src ? "" : "image-loading");
 };
 
 export default memo(ImageLoading);

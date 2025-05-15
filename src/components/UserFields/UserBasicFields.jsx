@@ -7,7 +7,7 @@ import { format } from "date-fns";
 import { DATE_FORMAT } from "@/constants";
 import { parseDate } from "@internationalized/date";
 import { cn } from "@/lib/utils";
-import { checkEmailAvailable } from "@/apis";
+import { userApi } from "@/apis";
 import { useState } from "react";
 import { Spinner } from "@heroui/spinner";
 
@@ -80,7 +80,7 @@ const UserBasicFields = ({
 
           const value = e.target.value;
           setEmailChecking(true);
-          const result = await checkEmailAvailable(value);
+          const result = await userApi.checkEmailAvailable(value);
           if (!result.ok) error = result.message;
           form.actions.changeError("email", error);
           setEmailChecking(false);

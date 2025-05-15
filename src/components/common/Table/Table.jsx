@@ -5,16 +5,29 @@ import { Ban } from "lucide-react";
 import { useTableContext } from "./context";
 
 const defaultCellRenderer = (row, columnKey, index) => row[columnKey];
-const Table = ({ className, rows, classNames = {}, isLoading, renderCell = defaultCellRenderer, ...other }) => {
+const Table = ({
+  className,
+  rows,
+  classNames = {},
+  isLoading,
+  renderCell = defaultCellRenderer,
+  selectionMode = "multiple",
+  isHeaderSticky = true,
+  ...other
+}) => {
   const { selectedKeys, setSelectedKeys, columns } = useTableContext();
 
   const loadingState = isLoading ? "loading" : "idle";
 
   return (
     <HerioUiTable
-      isHeaderSticky
-      className={cn("flex-1 overflow-y-auto py-2", className)}
-      selectionMode="multiple"
+      color="primary"
+      isHeaderSticky={isHeaderSticky}
+      className={cn(
+        "flex-1 overflow-y-auto py-2 [&_td[data-selected=true]]:font-semibold before:[&_td[data-selected=true]]:bg-primary/10 before:[&_td[data-selected=true]]:block before:[&_tr_td]:hidden [&_tr[data-hover=true]_td]:bg-default-100",
+        className
+      )}
+      selectionMode={selectionMode}
       aria-label="Example table with custom cells"
       selectedKeys={selectedKeys}
       onSelectionChange={setSelectedKeys}
@@ -38,10 +51,10 @@ const Table = ({ className, rows, classNames = {}, isLoading, renderCell = defau
         loadingContent={<Spinner variant="wave" />}
         loadingState={loadingState}
       >
-        {rows.map((user, rowIdx) => (
-          <TableRow key={user.id}>
+        {rows.map((row, rowIdx) => (
+          <TableRow key={row.id}>
             {columns.map((col, colIdx) => (
-              <TableCell key={`${rowIdx}-${colIdx}`}>{renderCell(user, col.uid, rowIdx)}</TableCell>
+              <TableCell key={`${rowIdx}-${colIdx}`}>{renderCell(row, col.uid, rowIdx)}</TableCell>
             ))}
           </TableRow>
         ))}

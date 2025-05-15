@@ -1,4 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import CourseCell from "./components/CourseCell";
+import CourseFilter from "./components/CourseFilter";
 import { ModuleLayout } from "@/layouts";
 import { coursesManagementBreadcrumbItems } from "./constants";
 import { useTable } from "@/hooks";
@@ -7,11 +9,8 @@ import { ConfirmDeleteDialog } from "@/components";
 import { useDisclosure } from "@heroui/modal";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteCourse, getCourses } from "@/apis/course";
-import CourseCell from "./components/CourseCell";
 import { addToast } from "@heroui/toast";
-import CourseFilter from "./components/CourseFilter";
-import { Button } from "@heroui/button";
+import { courseApi } from "@/apis";
 
 const CourseManagement = () => {
   const queryClient = useQueryClient();
@@ -26,12 +25,12 @@ const CourseManagement = () => {
 
   const { isLoading, data, isSuccess } = useQuery({
     queryKey: ["courses", queryFilterKey],
-    queryFn: () => getCourses(pager, order, debounceQuery, filters),
+    queryFn: () => courseApi.get(pager, order, debounceQuery, filters),
   });
 
   const handleDeleteCourse = async () => {
     if (!selectedCourseId) return;
-    const result = await deleteCourse(selectedCourseId);
+    const result = await courseApi.delete(selectedCourseId);
     if (!result.ok) {
       addToast({ color: "danger", title: "Xóa thất bại!", description: result.message });
     } else {
@@ -67,12 +66,12 @@ const CourseManagement = () => {
             searchPlaceholder="Nhập tên khóa học"
             filter={<CourseFilter />}
             addBtnPath={`/admin/courses/add`}
-            rowSize={data?.courses?.length || 0}
+            rowSize={data?.rows?.length || 0}
           />
         </div>
         <Table
           isLoading={isLoading}
-          rows={data?.courses || []}
+          rows={data?.rows || []}
           className="px-2 sm:px-10"
           renderCell={(row, columnKey, index) => (
             <CourseCell
