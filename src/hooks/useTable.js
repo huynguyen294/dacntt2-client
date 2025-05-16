@@ -3,7 +3,10 @@ import { DEFAULT_PAGER } from "@/constants";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import useDebounce from "./useDebounce";
 
-const useTable = ({ defaultSelectedColumns = [], allColumns = [] }) => {
+const tableDefaultSelectedColumns = [];
+const tableAllColumns = [];
+
+const useTable = ({ defaultSelectedColumns = tableDefaultSelectedColumns, allColumns = tableAllColumns } = {}) => {
   const [query, setQuery] = useState("");
   const [pager, setPager] = useState(DEFAULT_PAGER);
   const [order, setOrder] = useState({ order: "desc", orderBy: "createdAt" });

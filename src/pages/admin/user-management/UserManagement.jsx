@@ -30,7 +30,7 @@ const UserManagement = () => {
   const queryFilterKey = `p=${pager.page},ps=${pager.pageSize},q=${debounceQuery},o=${order.order},ob=${order.orderBy},ca=${filters.createdAt}${roleKey}`;
   const { isLoading, data, isSuccess } = useQuery({
     queryKey: ["users", queryFilterKey],
-    queryFn: () => userApi.get(pager, order, debounceQuery, { ...filters, roles }, role),
+    queryFn: () => userApi.get(pager, order, debounceQuery, { ...filters, roles }, { role }),
   });
 
   const handleDeleteUser = async () => {

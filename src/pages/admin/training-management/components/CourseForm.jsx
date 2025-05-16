@@ -121,7 +121,9 @@ const CourseForm = ({ defaultValues = {}, editMode }) => {
             name="status"
             isRequired
             onChange={actions.instantChange}
-            defaultSelectedKeys={defaultValues.status ? new Set([defaultValues.status]) : new Set([COURSE_STATUSES[0]])}
+            defaultSelectedKeys={
+              defaultValues.status ? new Set([defaultValues.status]) : new Set([COURSE_STATUSES.active])
+            }
             size="lg"
             variant="bordered"
             label="Trạng thái"
@@ -129,7 +131,7 @@ const CourseForm = ({ defaultValues = {}, editMode }) => {
             labelPlacement="outside"
             placeholder="Đang mở, Tạm đóng..."
           >
-            {COURSE_STATUSES.map((status) => (
+            {Object.values(COURSE_STATUSES).map((status) => (
               <SelectItem key={status}>{status}</SelectItem>
             ))}
           </Select>

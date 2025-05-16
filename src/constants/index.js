@@ -15,11 +15,30 @@ export const ROLE_PALLET = {
   student: "#a8bbb0",
 };
 export const DEFAULT_PAGER = { total: 0, pageCount: 1, page: 1, pageSize: 20 };
-
 export const COURSE_LEVELS = {
   1: "Sơ cấp",
   2: "Trung cấp",
   3: "Nâng cao",
 };
-export const COURSE_STATUSES = ["Đang mở", "Tạm đóng", "Không còn mở"];
+export const COURSE_STATUSES = {
+  active: "Đang mở",
+  onHold: "Tạm đóng",
+  stopped: "Không còn mở",
+};
+
+export const EMPLOYEE_STATUS = {
+  active: "Đang làm việc",
+  onHold: "Tạm nghỉ việc",
+  stopped: "Đã nghỉ việc",
+};
+
 export const EMPLOYEE_ROLES = ["consultant", "finance-officer", "teacher"];
+
+export const ADMISSION_STATUSES = {
+  pending: "Chờ tư vấn",
+  working: "Đang tư vấn",
+  accepted: "Đã đồng ý",
+  rejected: "Đã hủy",
+};
+
+export const ORDER_BY_NAME = { orderBy: "name", order: "asc" };

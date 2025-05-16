@@ -23,20 +23,28 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
   const [loading, setLoading] = useState(false);
 
   const { data: userData, isLoading: userLoading } = useQuery({
-    queryKey: ["all-users"],
+    queryKey: ["users", "as-options"],
     queryFn: () =>
-      userApi.get({ paging: "false" }, { orderBy: "name", order: "asc" }, null, { status: "Đang làm việc" }, "teacher"),
+      userApi.get(
+        { paging: "false" },
+        { orderBy: "name", order: "asc" },
+        null,
+        { status: "Đang làm việc" },
+        { role: "teacher", otherParams: ["fields=:basic"] }
+      ),
   });
 
   const { data: courseData, isLoading: courseLoading } = useQuery({
-    queryKey: ["courses"],
+    queryKey: ["courses", "as-options"],
     queryFn: () =>
-      courseApi.get({ paging: "false" }, { orderBy: "name", order: "asc" }, null, { status: COURSE_STATUSES[0] }),
+      courseApi.get({ paging: "false" }, { orderBy: "name", order: "asc" }, null, { status: COURSE_STATUSES.active }, [
+        "fields=:basic",
+      ]),
   });
 
   const { data: shiftData, isLoading: shiftLoading } = useQuery({
-    queryKey: ["shifts"],
-    queryFn: () => shiftApi.get({ paging: "false" }, { orderBy: "name", order: "asc" }, null, {}),
+    queryKey: ["shifts", "as-options"],
+    queryFn: () => shiftApi.get({ paging: "false" }, { orderBy: "name", order: "asc" }, null, {}, ["fields=:basic"]),
   });
 
   const handleChange = (data) => {
@@ -219,13 +227,13 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
             radius="sm"
             name="status"
             onChange={actions.instantChange}
-            defaultSelectedKeys={new Set(defaultValues.status ? [defaultValues.status] : [COURSE_STATUSES[0]])}
+            defaultSelectedKeys={new Set(defaultValues.status ? [defaultValues.status] : [COURSE_STATUSES.active])}
             variant="bordered"
             label="Trạng thái"
             labelPlacement="outside"
             placeholder="Đang mở, Tạm đóng..."
           >
-            {COURSE_STATUSES.map((status) => (
+            {Object.values(COURSE_STATUSES).map((status) => (
               <SelectItem key={status}>{status}</SelectItem>
             ))}
           </Select>

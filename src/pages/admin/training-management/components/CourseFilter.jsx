@@ -45,7 +45,7 @@ const CourseFilter = () => {
           </CheckboxGroup>
           <RadioGroup value={status} label="Trạng thái" onValueChange={setStatus}>
             <Radio value="all">Tất cả</Radio>
-            {COURSE_STATUSES.map((status) => (
+            {Object.values(COURSE_STATUSES).map((status) => (
               <Radio key={status} value={status}>
                 {status}
               </Radio>

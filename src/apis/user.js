@@ -5,7 +5,7 @@ import { DATE_FORMAT } from "@/constants";
 import { getAppActions } from "@/state";
 import { cryptoDecrypt, cryptoEncrypt } from "@/utils";
 
-const getUsers = async (pager, order, search, filters, role) => {
+const getUsers = async (pager, order, search, filters, { role, otherParams = [] } = {}) => {
   const params = getCommonParams(pager, order, search, filters);
   if (filters.roles) {
     params.push("filter=role:in:" + filters.roles.join(","));
@@ -19,12 +19,13 @@ const getUsers = async (pager, order, search, filters, role) => {
   }
   // not a filter
   if (role) params.push("role=" + role);
+  params.push(...otherParams);
 
   const result = await API.get(`/api-v1/users?${params.join("&")}`);
   return result.data;
 };
 
-const getUserById = async (id, { role, refs }) => {
+const getUserById = async (id, { role, refs } = {}) => {
   const params = [];
   if (role) params.push("role=" + role);
   if (refs) params.push("refs=true");

@@ -20,6 +20,7 @@ const UserBasicFields = ({
   onImgChange = () => {},
   classNames = {},
   onImgDelete,
+  disableCheckMail = false,
   autoFocus = true,
 }) => {
   const [emailChecking, setEmailChecking] = useState(false);
@@ -79,11 +80,14 @@ const UserBasicFields = ({
           if (error) return form.actions.changeError("email", error);
 
           const value = e.target.value;
-          setEmailChecking(true);
-          const result = await userApi.checkEmailAvailable(value);
-          if (!result.ok) error = result.message;
+          if (!disableCheckMail) {
+            setEmailChecking(true);
+            const result = await userApi.checkEmailAvailable(value);
+            if (!result.ok) error = result.message;
+            setEmailChecking(false);
+          }
+
           form.actions.changeError("email", error);
-          setEmailChecking(false);
         }}
       />
       <Input

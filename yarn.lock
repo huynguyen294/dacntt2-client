@@ -915,7 +915,7 @@
     "@react-types/shared" "3.28.0"
     "@tanstack/react-virtual" "3.11.3"
 
-"@heroui/listbox@2.3.18":
+"@heroui/listbox@2.3.18", "@heroui/listbox@^2.3.18":
   version "2.3.18"
   resolved "https://registry.yarnpkg.com/@heroui/listbox/-/listbox-2.3.18.tgz#4b264f06a48ea7355b663c473c79f7178de82d7e"
   integrity sha512-CQRp6Lsyq5iqSSTitFmwoBjWff8nEyqLW17yA3UDZNQfUX2g8F/tPfFmDiRQzKykpQTOZ1MhT0SietQHfyv8Eg==

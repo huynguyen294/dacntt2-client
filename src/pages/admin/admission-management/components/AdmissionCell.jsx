@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useTableContext } from "@/components/common";
-import { DATE_FORMAT } from "@/constants";
+import { ADMISSION_STATUSES, DATE_FORMAT } from "@/constants";
 import { useNavigate } from "@/hooks";
 import { Button } from "@heroui/button";
 import { Chip } from "@heroui/chip";
@@ -8,9 +8,11 @@ import { Tooltip } from "@heroui/tooltip";
 import { format } from "date-fns";
 import { Edit, Trash2 } from "lucide-react";
 
-const AdmissionCell = ({ rowData, columnKey, rowIndex, onDelete = (id) => {} }) => {
+const AdmissionCell = ({ rowData, refs, columnKey, rowIndex, onDelete = (id) => {} }) => {
   const { getRowIndex } = useTableContext();
   const navigate = useNavigate();
+
+  const { users = {}, classes = {}, courses = {} } = refs || {};
 
   let cellValue = rowData[columnKey];
 
@@ -21,11 +23,25 @@ const AdmissionCell = ({ rowData, columnKey, rowIndex, onDelete = (id) => {} }) 
   if (columnKey === "index") {
     cellValue = getRowIndex(rowIndex + 1);
   }
+  if (columnKey === "consultantId") {
+    cellValue = users[cellValue]?.name;
+  }
+  if (columnKey === "expectedClassId") {
+    cellValue = classes[cellValue]?.name;
+  }
+  if (columnKey === "expectedCourseId") {
+    cellValue = courses[cellValue]?.name;
+  }
 
   switch (columnKey) {
     case "status": {
+      let color = "default";
+      if (cellValue === ADMISSION_STATUSES.accepted) color = "success";
+      if (cellValue === ADMISSION_STATUSES.working) color = "warning";
+      if (cellValue === ADMISSION_STATUSES.rejected) color = "danger";
+
       return (
-        <Chip size="sm" variant="flat">
+        <Chip size="sm" variant="flat" color={color}>
           {cellValue}
         </Chip>
       );
@@ -35,7 +51,7 @@ const AdmissionCell = ({ rowData, columnKey, rowIndex, onDelete = (id) => {} }) 
         <div className="relative flex items-center justify-center">
           <Tooltip content="Sửa ứng viên">
             <Button
-              onPress={() => navigate(`/admin/certificates/edit/${rowData.id}`)}
+              onPress={() => navigate(`/admin/register-admission?step=1&admissionId=${rowData.id}`)}
               size="sm"
               isIconOnly
               radius="full"

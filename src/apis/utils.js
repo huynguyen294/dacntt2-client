@@ -4,8 +4,10 @@ import API from "./api";
 
 export const generateCrudApi = (key) => {
   return {
-    get: async (pager, order, search, filters) => {
+    get: async (pager, order, search, filters, otherParams = []) => {
       const params = getCommonParams(pager, order, search, filters);
+      params.push(...otherParams);
+
       const result = await API.get(`/api-v1/${key}?${params.join("&")}`);
       return result.data;
     },
@@ -57,13 +59,14 @@ export const getCommonParams = (pager, order, search, filters) => {
   const params = [];
   if (pager.pageSize) params.push("pageSize=" + pager.pageSize);
   if (pager.page) params.push("page=" + pager.page);
-  if (pager.paging) params.push("paging=" + pager.paging);
+  if (!pager.pageSize && !pager.page) params.push("paging=false");
   if (search) params.push("searchQuery=" + search);
   if (order.order) params.push("order=" + order.order);
   if (order.orderBy) params.push("orderBy=" + order.orderBy);
 
-  if (filters.createdAt) {
-    const date = format(subDays(new Date(), filters.createdAt), DATE_FORMAT);
+  const { createdAt } = filters;
+  if (createdAt) {
+    const date = format(subDays(new Date(), createdAt), DATE_FORMAT);
     params.push("filter=createdAt:gte:" + date);
   }
 

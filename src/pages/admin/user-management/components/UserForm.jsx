@@ -11,7 +11,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { addToast } from "@heroui/toast";
 import { convertImageSrc } from "@/utils";
 import { format } from "date-fns";
-import { DATE_FORMAT, ROLE_LABELS, ROLE_PALLET, USER_ROLES } from "@/constants";
+import { DATE_FORMAT, EMPLOYEE_STATUS, ROLE_LABELS, ROLE_PALLET, USER_ROLES } from "@/constants";
 import { Checkbox } from "@heroui/checkbox";
 import { Input, Textarea } from "@heroui/input";
 import { DatePicker } from "@heroui/date-picker";
@@ -256,7 +256,9 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
               name="status"
               isRequired
               onChange={actions.instantChange}
-              defaultSelectedKeys={defaultValues.status ? new Set([defaultValues.status]) : new Set(["Đang làm việc"])}
+              defaultSelectedKeys={
+                defaultValues.status ? new Set([defaultValues.status]) : new Set([EMPLOYEE_STATUS.active])
+              }
               size="lg"
               variant="bordered"
               label="Trạng thái"
@@ -264,9 +266,9 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
               labelPlacement="outside"
               placeholder="Đang làm, đã nghỉ..."
             >
-              <SelectItem key={"Đang làm việc"}>Đang làm việc</SelectItem>
-              <SelectItem key={"Tạm nghỉ việc"}>Tạm nghỉ việc</SelectItem>
-              <SelectItem key={"Đã nghỉ việc"}>Đã nghỉ việc</SelectItem>
+              {Object.values(EMPLOYEE_STATUS).map((status) => (
+                <SelectItem key={status}>{status}</SelectItem>
+              ))}
             </Select>
             <Textarea
               autoFocus

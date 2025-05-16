@@ -1,82 +1,129 @@
-/* eslint-disable no-unused-vars */
-import { userApi } from "@/apis";
+import { classApi, courseApi, studentConsultationApi, userApi } from "@/apis";
 import { UserBasicFields } from "@/components";
 import { Section } from "@/components/common";
+import { ADMISSION_STATUSES, COURSE_STATUSES, EMPLOYEE_STATUS, ORDER_BY_NAME } from "@/constants";
+import { useNavigate } from "@/hooks";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
-import { useQuery } from "@tanstack/react-query";
+import { addToast } from "@heroui/toast";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { RefreshCcw, Save } from "lucide-react";
 import { useState } from "react";
 import { Controller, Form, useForm } from "react-simple-formkit";
 
+const numberFields = ["expectedClassId", "expectedCourseId", "consultantId"];
 const AdmissionForm = ({ defaultValues = {}, editMode }) => {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  const form = useForm();
+  const form = useForm({ numberFields });
   const { isDirty, isError, actions } = form;
 
+  const [selectedCourse, setSelectedCourse] = useState(defaultValues.courseId);
+
   const { data: userData, isLoading: userLoading } = useQuery({
-    queryKey: ["all-users", "consultant"],
+    queryKey: ["users", "as-options", "consultant"],
     queryFn: () =>
       userApi.get(
-        { paging: "false" },
-        { orderBy: "name", order: "asc" },
+        {},
+        ORDER_BY_NAME,
         null,
-        { status: "Đang làm việc" },
-        "consultant"
+        { status: EMPLOYEE_STATUS.active },
+        { otherParams: ["fields=:basic"], role: "consultant" }
       ),
   });
 
+  const statusActive = { status: COURSE_STATUSES.active };
+  const { data: courseData, isLoading: courseLoading } = useQuery({
+    queryKey: ["courses", "as-options"],
+    queryFn: () => courseApi.get({}, ORDER_BY_NAME, null, statusActive, ["fields=:basic"]),
+  });
+
+  const classFilters = { ...statusActive };
+  if (selectedCourse) classFilters.courseId = selectedCourse;
+  const { data: classData, isLoading: classLoading } = useQuery({
+    queryKey: ["classes", "as-options", classFilters.courseId],
+    queryFn: () => classApi.get({}, ORDER_BY_NAME, null, classFilters, ["fields=:basic"]),
+  });
+
   const handleSubmit = async (data) => {
-    console.log(data);
     setLoading(true);
+
+    if (editMode) {
+      const { id, ...removed } = defaultValues;
+      const result = await studentConsultationApi.update(id, { ...removed, ...data });
+      if (result.ok) {
+        queryClient.invalidateQueries({ queryKey: ["admissions"] });
+        navigate("/admin/admissions");
+      } else {
+        addToast({ color: "danger", title: "Lỗi khi sửa lớp học", description: result.message });
+      }
+      return;
+    }
+
+    const result = await studentConsultationApi.create(data);
+    if (result.ok) {
+      queryClient.invalidateQueries({ queryKey: ["admissions"] });
+      navigate("/admin/admissions");
+    } else {
+      addToast({ color: "danger", title: "Lỗi khi tạo lớp học", description: result.message });
+    }
+
     setLoading(false);
   };
 
   return (
     <>
       <Form form={form} onSubmit={handleSubmit} className="flex-1 px-2 sm:px-10 w-full space-y-4">
+        <Section title="Thông tin học viên" className="w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-start gap-4 pb-4">
+            <UserBasicFields
+              hideImage
+              disableCheckMail={defaultValues.id}
+              autoFocus={false}
+              form={form}
+              defaultValues={defaultValues}
+              classNames={{ address: "col-span-1 lg:col-span-1" }}
+            />
+          </div>
+        </Section>
         <Section title="Thông tin tư vấn" className="w-full">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-start gap-4 pb-4">
             <Controller
               name="consultantId"
-              defaultValue={defaultValues.consultantId && defaultValues.consultantId.toString()}
+              defaultValue={defaultValues.consultantId}
               render={({ ref, name, defaultValue, value, setValue }) => (
                 <Autocomplete
-                  isRequired
                   ref={ref}
+                  name={name}
+                  value={value && value.toString()}
                   size="lg"
                   radius="sm"
-                  name={name}
-                  value={value}
+                  isRequired
                   variant="bordered"
                   label="Tư vấn viên"
                   labelPlacement="outside"
                   placeholder="Chọn giáo viên"
                   isLoading={userLoading}
-                  onChange={actions.instantChange}
+                  defaultSelectedKey={defaultValue && defaultValue.toString()}
                   onSelectionChange={setValue}
-                  defaultSelectedKey={defaultValue}
+                  onChange={actions.instantChange}
                 >
-                  {userData?.users &&
-                    userData?.users.map((u) => <AutocompleteItem key={u.id.toString()}>{u.name}</AutocompleteItem>)}
+                  {userData?.rows &&
+                    userData?.rows.map((u) => <AutocompleteItem key={u.id.toString()}>{u.name}</AutocompleteItem>)}
                 </Autocomplete>
               )}
-            />
-            <UserBasicFields
-              hideImage
-              autoFocus={false}
-              form={form}
-              defaultValues={defaultValues}
-              classNames={{ address: "md:col-span-2 lg:col-span-3" }}
             />
             <Select
               name="status"
               isRequired
               onChange={actions.instantChange}
-              defaultSelectedKeys={new Set(defaultValues.status ? [defaultValues.status] : ["Đang tư vấn"])}
+              defaultSelectedKeys={
+                new Set(defaultValues.status ? [defaultValues.status] : [ADMISSION_STATUSES.working])
+              }
               size="lg"
               variant="bordered"
               label="Trạng thái"
@@ -84,10 +131,9 @@ const AdmissionForm = ({ defaultValues = {}, editMode }) => {
               labelPlacement="outside"
               placeholder="Chọn trạng thái"
             >
-              <SelectItem key="Chờ tư vấn">Chờ tư vấn</SelectItem>
-              <SelectItem key="Đang tư vấn">Đang tư vấn</SelectItem>
-              <SelectItem key="Đã đồng ý">Đã đồng ý</SelectItem>
-              <SelectItem key="Đã hủy">Đã hủy</SelectItem>
+              {Object.values(ADMISSION_STATUSES).map((status) => (
+                <SelectItem key={status}>{status}</SelectItem>
+              ))}
             </Select>
             <Input
               name="source"
@@ -99,37 +145,31 @@ const AdmissionForm = ({ defaultValues = {}, editMode }) => {
               labelPlacement="outside"
               placeholder="Tiktok, Facebook..."
             />
-            <Input
-              name="note"
-              defaultValue={defaultValues.source}
-              size="lg"
-              variant="bordered"
-              label="Ghi chú"
-              radius="sm"
-              labelPlacement="outside"
-              placeholder="Nhập ghi chú thêm (nếu có)"
-            />
             <Controller
               name="expectedCourseId"
               defaultValue={defaultValues.expectedCourseId}
-              render={({ ref, name, defaultValue, value, setValue }) => (
+              render={({ ref, name, value, defaultValue, setValue }) => (
                 <Autocomplete
-                  isRequired
                   ref={ref}
+                  name={name}
+                  value={value && value.toString()}
                   size="lg"
                   radius="sm"
-                  name={name}
-                  value={value}
+                  isRequired
                   variant="bordered"
                   label="Khóa học dự kiến"
                   labelPlacement="outside"
-                  placeholder="Chọn khóa học"
-                  isLoading={userLoading}
+                  placeholder="Khóa học dự kiến"
+                  isLoading={courseLoading}
+                  defaultSelectedKey={defaultValue && defaultValue.toString()}
+                  onSelectionChange={(newValue) => {
+                    setValue(newValue);
+                    setSelectedCourse(newValue);
+                  }}
                   onChange={actions.instantChange}
-                  onSelectionChange={setValue}
-                  defaultSelectedKey={defaultValue}
                 >
-                  <AutocompleteItem key={1}></AutocompleteItem>
+                  {courseData?.rows &&
+                    courseData?.rows.map((c) => <AutocompleteItem key={c.id.toString()}>{c.name}</AutocompleteItem>)}
                 </Autocomplete>
               )}
             />
@@ -139,39 +179,58 @@ const AdmissionForm = ({ defaultValues = {}, editMode }) => {
               render={({ ref, name, defaultValue, value, setValue }) => (
                 <Autocomplete
                   ref={ref}
-                  size="lg"
-                  radius="sm"
                   name={name}
                   value={value}
+                  size="lg"
+                  radius="sm"
+                  isRequired
                   variant="bordered"
-                  label="Lớp học dự kiến"
+                  label="Lớp dự kiến"
                   labelPlacement="outside"
-                  placeholder="Chọn lớp học"
-                  isLoading={userLoading}
-                  onChange={actions.instantChange}
+                  placeholder="Khóa học dự kiến"
+                  defaultSelectedKey={defaultValue && defaultValue.toString()}
+                  isLoading={classLoading}
                   onSelectionChange={setValue}
-                  defaultSelectedKey={defaultValue}
+                  onChange={actions.instantChange}
                 >
-                  <AutocompleteItem key={1}></AutocompleteItem>
+                  {classData?.rows &&
+                    classData?.rows.map((c) => <AutocompleteItem key={c.id.toString()}>{c.name}</AutocompleteItem>)}
                 </Autocomplete>
               )}
             />
-          </div>
-          <div className="space-x-4">
-            <Button
-              isLoading={loading}
-              isDisabled={isError}
-              type="submit"
-              startContent={<Save size="20px" />}
-              color="primary"
-            >
-              Lưu
-            </Button>
-            <Button type="reset" isDisabled={!isDirty} startContent={<RefreshCcw size="16px" />} variant="flat">
-              Đặt lại
-            </Button>
+            <Input
+              name="note"
+              defaultValue={defaultValues.note}
+              size="lg"
+              variant="bordered"
+              label="Ghi chú"
+              radius="sm"
+              labelPlacement="outside"
+              placeholder="Nhập ghi chú thêm (nếu có)"
+            />
           </div>
         </Section>
+        <div className="space-x-4">
+          <Button
+            isLoading={loading}
+            isDisabled={isError}
+            type="submit"
+            startContent={<Save size="20px" />}
+            className="shadow-xl"
+            color="primary"
+          >
+            Lưu dữ liệu
+          </Button>
+          <Button
+            className="shadow-xl"
+            type="reset"
+            isDisabled={!isDirty}
+            startContent={<RefreshCcw size="16px" />}
+            variant="flat"
+          >
+            Đặt lại
+          </Button>
+        </div>
       </Form>
     </>
   );

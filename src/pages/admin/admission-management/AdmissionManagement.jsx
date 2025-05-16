@@ -20,8 +20,8 @@ const AdmissionManagement = () => {
 
   const queryFilterKey = `p=${pager.page},ps=${pager.pageSize},q=${debounceQuery},o=${order.order},ob=${order.orderBy},ca=${filters.createdAt}`;
   const { isLoading, data, isSuccess } = useQuery({
-    queryKey: ["student-consultation", queryFilterKey],
-    queryFn: () => studentConsultationApi.get(pager, order, debounceQuery, filters),
+    queryKey: ["admissions", queryFilterKey],
+    queryFn: () => studentConsultationApi.get(pager, order, debounceQuery, filters, ["refs=true"]),
   });
 
   const handleDeleteCertificate = async () => {
@@ -31,7 +31,7 @@ const AdmissionManagement = () => {
     if (!result.ok) {
       addToast({ color: "danger", title: "Xóa thất bại!", description: result.message });
     } else {
-      queryClient.invalidateQueries({ queryKey: ["certificates"] });
+      queryClient.invalidateQueries({ queryKey: ["admissions"] });
     }
     onClose();
   };
@@ -74,6 +74,7 @@ const AdmissionManagement = () => {
               rowData={row}
               columnKey={columnKey}
               rowIndex={index}
+              refs={data?.refs}
               onDelete={(id) => {
                 setSelectedId(id);
                 onOpen();
@@ -107,6 +108,7 @@ const columns = [
   { name: "Ghi chú", uid: "note" },
   { name: "Ngày đăng ký", uid: "createdAt" },
   { name: "Ngày cập nhật gần nhất", uid: "lastUpdatedAt" },
+  { name: "Thao tác", uid: "actions" },
 ];
 
 const defaultSelectedColumns = [
