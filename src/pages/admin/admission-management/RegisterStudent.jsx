@@ -6,7 +6,7 @@ import { registerBreadcrumbItems } from "./constants";
 import { Card, CardBody, CardFooter } from "@heroui/card";
 import { Button } from "@heroui/button";
 import { MoveLeft, MoveRight } from "lucide-react";
-import { useNavigate } from "@/hooks";
+import { useNavigate, useReload } from "@/hooks";
 import { useSearchParams } from "react-router";
 import { useMemo } from "react";
 import { Modal, ModalBody, ModalContent, ModalHeader, useDisclosure } from "@heroui/modal";
@@ -21,6 +21,7 @@ const RegisterStudent = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { isOpen, onOpenChange, onOpen } = useDisclosure();
+  const [lastedReloadedAt, reload] = useReload();
 
   const step = searchParams.get("step");
   const userId = searchParams.get("userId");
@@ -36,13 +37,14 @@ const RegisterStudent = () => {
     data: admissionData,
     isLoading: admissionLoading,
   } = useQuery({
-    queryKey: ["admission", admissionId],
+    queryKey: ["admissions", admissionId],
     queryFn: () => admissionId && studentConsultationApi.getById(admissionId),
   });
 
   const loading = isLoading || admissionLoading;
 
   const defaultValues = useMemo(() => {
+    reload();
     return admissionData?.item || data?.item || {};
   }, [isSuccess, admissionSuccess, admissionData, data]);
 
@@ -78,7 +80,7 @@ const RegisterStudent = () => {
       )}
       {!loading && step && <Stepper step={Number(step)} />}
       {!loading && step === "1" && defaultValues && (
-        <>
+        <div>
           <div className="flex justify-between px-2 sm:px-10 mb-3">
             <Button
               variant="flat"
@@ -100,8 +102,9 @@ const RegisterStudent = () => {
               Tiếp theo
             </Button>
           </div>
-          <AdmissionForm key={defaultValues.id} defaultValues={defaultValues} editMode={Boolean(admissionId)} />
-        </>
+
+          <AdmissionForm key={lastedReloadedAt} defaultValues={defaultValues} editMode={Boolean(admissionId)} />
+        </div>
       )}
       {!loading && step === "2" && (
         <>

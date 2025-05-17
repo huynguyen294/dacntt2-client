@@ -163,8 +163,10 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
                 isRequired
                 name={name}
                 isLoading={metadataLoading}
-                onChange={actions.instantChange}
-                onSelectionChange={setValue}
+                onSelectionChange={(newValue) => {
+                  setValue([...newValue][0]);
+                  actions.instantChange();
+                }}
                 defaultSelectedKeys={defaultValue ? new Set([defaultValue.toString()]) : new Set([])}
                 size="lg"
                 variant="bordered"
@@ -182,7 +184,6 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
               </Select>
             )}
           />
-
           <Controller
             name="teacherId"
             defaultValue={defaultValues.teacherId && defaultValues.teacherId.toString()}

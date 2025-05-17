@@ -26,8 +26,8 @@ const ClassCell = ({ dataRefs, rowData, columnKey, rowIndex, onDelete = (id) => 
   if (columnKey === "level") cellValue = COURSE_LEVELS[cellValue];
   if (columnKey === "teacherId") cellValue = users[cellValue].name || "";
   if (columnKey === "courseId") cellValue = courses[cellValue].name || "";
-  if (columnKey === "numberOfStudents") cellValue = `${students[rowData.id].length}/${cellValue}`;
-  if (columnKey === "shiftId") cellValue = `${shifts[cellValue].name} (${shiftFormat(shifts[cellValue])})`;
+  if (columnKey === "numberOfStudents") cellValue = `${students[rowData.id]?.length || 0}/${cellValue}`;
+  if (columnKey === "shiftId") cellValue = `${shifts[cellValue]?.name} (${shiftFormat(shifts[cellValue])})`;
 
   switch (columnKey) {
     case "status": {

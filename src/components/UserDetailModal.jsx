@@ -11,8 +11,11 @@ import { userApi } from "@/apis";
 import { Button } from "@heroui/button";
 import { Tooltip } from "@heroui/tooltip";
 import { Ban, Trash2 } from "lucide-react";
+import { useParams } from "react-router";
 
 const UserDetailModal = ({ user, onOpenChange }) => {
+  const { role } = useParams();
+
   const { data } = useQuery({
     queryKey: ["users", "detail", user.id],
     queryFn: () => userApi.getById(user.id, { refs: true }),
@@ -53,7 +56,7 @@ const UserDetailModal = ({ user, onOpenChange }) => {
                 </div>
                 <div className="rounded-large border p-3 sm:p-4 py-6 gap-4">
                   <p className="font-bold">Thông tin cá nhân</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 w-full mt-4 space-y-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 w-full mt-4 gap-3">
                     <div>
                       <p className="font-semibold text-foreground-500">Giới tính</p>
                       <p className="font-semibold">{user.gender || "Không có"}</p>
@@ -73,10 +76,10 @@ const UserDetailModal = ({ user, onOpenChange }) => {
                   </div>
                 </div>
 
-                {EMPLOYEE_ROLES.includes(user.role) && (
+                {EMPLOYEE_ROLES.includes(role) && (
                   <div className="rounded-large border p-3 sm:p-4 py-6 gap-4">
                     <p className="font-bold">Thông tin nhân sự</p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 w-full mt-4 space-y-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 w-full mt-4 gap-3">
                       <div>
                         <p className="font-semibold text-foreground-500">Loại lao động</p>
                         <p className="font-semibold">{user.employmentType || "Không có"}</p>
@@ -107,7 +110,7 @@ const UserDetailModal = ({ user, onOpenChange }) => {
                   </div>
                 )}
 
-                {["student", "teacher"].includes(user.role) && data?.refs?.classes?.length > 0 && (
+                {["student", "teacher"].includes(role) && data?.refs?.classes?.length > 0 && (
                   <div className="rounded-large border p-3 sm:p-4 py-6 gap-4">
                     <p className="font-bold">Lớp học {user.role === "teacher" ? "đang dạy" : "đang học"}</p>
                     <TableProvider

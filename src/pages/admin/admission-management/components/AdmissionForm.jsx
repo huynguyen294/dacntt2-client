@@ -2,7 +2,7 @@ import { classApi, courseApi, studentConsultationApi, userApi } from "@/apis";
 import { UserBasicFields } from "@/components";
 import { Dot, Section } from "@/components/common";
 import { ADMISSION_STATUSES, COURSE_STATUSES, EMPLOYEE_STATUS, getAdmissionColor, ORDER_BY_NAME } from "@/constants";
-import { useMetadata, useNavigate } from "@/hooks";
+import { useMetadata } from "@/hooks";
 import { shiftFormat } from "@/utils";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { Avatar } from "@heroui/avatar";
@@ -19,7 +19,6 @@ import { Controller, Form, useForm } from "react-simple-formkit";
 const numberFields = ["expectedClassId", "expectedCourseId", "consultantId"];
 const AdmissionForm = ({ defaultValues = {}, editMode }) => {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
 
@@ -74,19 +73,19 @@ const AdmissionForm = ({ defaultValues = {}, editMode }) => {
       const result = await studentConsultationApi.update(id, { ...removed, ...data });
       if (result.ok) {
         queryClient.invalidateQueries({ queryKey: ["admissions"] });
-        navigate("/admin/admissions");
       } else {
-        addToast({ color: "danger", title: "Lỗi khi sửa lớp học", description: result.message });
+        addToast({ color: "danger", title: "Lỗi!", description: result.message });
       }
+
+      setLoading(false);
       return;
     }
 
     const result = await studentConsultationApi.create(data);
     if (result.ok) {
       queryClient.invalidateQueries({ queryKey: ["admissions"] });
-      navigate("/admin/admissions");
     } else {
-      addToast({ color: "danger", title: "Lỗi khi tạo lớp học", description: result.message });
+      addToast({ color: "danger", title: "Lỗi!", description: result.message });
     }
 
     setLoading(false);

@@ -46,14 +46,14 @@ const ClassDetailModal = ({ rowData, onOpenChange }) => {
                 <div className="h-[80dvh] sm:h-[75dvh] overflow-y-auto space-y-4 pb-10">
                   <div className="rounded-large border p-3 sm:p-4 py-6 gap-4">
                     <p className="font-bold">Thông tin lớp học</p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 w-full mt-4 space-y-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 w-full mt-4 gap-3">
                       <div>
                         <p className="font-semibold text-foreground-500">Tên</p>
                         <p className="font-semibold">{rowData.name || "Không có"}</p>
                       </div>
                       <div>
                         <p className="font-semibold text-foreground-500">Giáo viên</p>
-                        <p className="font-semibold">{users[rowData.teacherId].name || "Không có"}</p>
+                        <p className="font-semibold">{users[rowData.teacherId]?.name || "Không có"}</p>
                       </div>
                       <div>
                         <p className="font-semibold text-foreground-500">Lịch học</p>
@@ -61,7 +61,7 @@ const ClassDetailModal = ({ rowData, onOpenChange }) => {
                       </div>
                       <div>
                         <p className="font-semibold text-foreground-500">Ca học</p>
-                        <p className="font-semibold">{`${shifts[rowData.shiftId].name} (${shiftFormat(
+                        <p className="font-semibold">{`${shifts[rowData.shiftId]?.name} (${shiftFormat(
                           shifts[rowData.shiftId]
                         )})`}</p>
                       </div>
