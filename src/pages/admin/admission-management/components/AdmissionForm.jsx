@@ -206,17 +206,18 @@ const AdmissionForm = ({ defaultValues = {}, editMode }) => {
             />
             <Controller
               name="status"
-              defaultValue={defaultValues.status}
+              defaultValue={defaultValues.status || ADMISSION_STATUSES.working}
               render={({ name, ref, value, setValue, defaultValue }) => (
                 <Select
                   ref={ref}
                   name={name}
-                  value={value && value.toString()}
+                  value={value}
                   isRequired
                   onSelectionChange={(keys) => {
                     setValue([...keys][0]);
+                    actions.instantChange();
                   }}
-                  defaultSelectedKeys={new Set(defaultValue ? [defaultValue] : [ADMISSION_STATUSES.working])}
+                  defaultSelectedKeys={new Set([defaultValue])}
                   startContent={<Dot variant={getAdmissionColor(value || defaultValue)} />}
                   size="lg"
                   variant="bordered"
@@ -224,7 +225,6 @@ const AdmissionForm = ({ defaultValues = {}, editMode }) => {
                   radius="sm"
                   labelPlacement="outside"
                   placeholder="Chọn trạng thái"
-                  onChange={actions.instantChange}
                 >
                   {Object.values(ADMISSION_STATUSES).map((status) => (
                     <SelectItem key={status} startContent={<Dot variant={getAdmissionColor(status)} />}>
