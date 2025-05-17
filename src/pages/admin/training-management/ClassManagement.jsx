@@ -98,7 +98,7 @@ const columns = [
   { name: "Khóa học", uid: "courseId", disableSort: true },
   { name: "Ca học", uid: "shiftId", disableSort: true },
   { name: "Số buổi học", uid: "numberOfLessons" },
-  { name: "Số học sinh tối đa", uid: "numberOfStudents" },
+  { name: "Số học sinh", uid: "numberOfStudents" },
   { name: "Ngày khai giảng", uid: "openingDay" },
   { name: "Ngày kết thúc", uid: "closingDay" },
   { name: "Trạng thái", uid: "status" },

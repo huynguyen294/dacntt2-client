@@ -2,38 +2,28 @@ import { UserDetailModal } from "@/components";
 import { useTableContext } from "@/components/common";
 import { DATE_FORMAT, ROLE_PALLET } from "@/constants";
 import { useNavigate } from "@/hooks";
-import { alpha, convertImageSrc, localeString } from "@/utils";
+import { alpha, convertImageSrc, displayDate, localeString } from "@/utils";
 import { Button } from "@heroui/button";
 import { Chip } from "@heroui/chip";
-import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/dropdown";
 import { useDisclosure } from "@heroui/modal";
 import { Tooltip } from "@heroui/tooltip";
 import { User } from "@heroui/user";
-import { format } from "date-fns";
-import { Edit, Ellipsis, Eye, Info, Shapes, Trash2 } from "lucide-react";
+import { Edit, Eye, Trash2 } from "lucide-react";
 import { useParams } from "react-router";
 
 const TableCell = ({ rowData, columnKey, rowIndex, onDelete = () => {} }) => {
   const navigate = useNavigate();
   const { role } = useParams();
-  const { pager } = useTableContext();
+  const { getRowIndex } = useTableContext();
   const { isOpen, onOpenChange, onOpen } = useDisclosure();
 
   let cellValue = rowData[columnKey];
 
   const dateFields = ["createdAt", "dateOfBirth", "lastUpdatedAt"];
-  if (dateFields.includes(columnKey)) {
-    if (cellValue) cellValue = format(new Date(cellValue), DATE_FORMAT);
-  }
-  if (columnKey === "index") {
-    cellValue = rowIndex + 1 + (pager.page - 1) * pager.pageSize;
-  }
-  if (columnKey === "salary") {
-    cellValue = localeString(cellValue) + "đ";
-  }
-  if (columnKey === "tuition") {
-    cellValue = localeString(5000000) + "đ";
-  }
+  if (dateFields.includes(columnKey)) cellValue = displayDate(cellValue);
+  if (columnKey === "index") cellValue = getRowIndex(rowIndex + 1);
+  if (columnKey === "salary") cellValue = localeString(cellValue) + "đ";
+  if (columnKey === "tuition") cellValue = localeString(5000000) + "đ";
 
   switch (columnKey) {
     case "user":

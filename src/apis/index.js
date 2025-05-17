@@ -4,7 +4,9 @@ export * from "./auth";
 
 import otherClassApis from "./class";
 import otherCourseApis from "./course";
+import otherEnrollmentApis from "./enrollment";
 import otherShiftApis from "./shift";
+import otherStudentConsultationApis from "./studentConsultation";
 import { generateCrudApi } from "./utils";
 
 // images
@@ -28,7 +30,12 @@ const commonCourseApi = generateCrudApi("courses");
 export const courseApi = { ...commonCourseApi, ...otherCourseApis };
 
 // student-consultation
-export const studentConsultationApi = generateCrudApi("student-consultation");
+export const commonStudentConsultationApi = generateCrudApi("student-consultation");
+export const studentConsultationApi = { ...commonStudentConsultationApi, ...otherStudentConsultationApis };
+
+// student-consultation
+export const commonEnrollmentApi = generateCrudApi("enrollments");
+export const enrollmentApi = { ...commonEnrollmentApi, ...otherEnrollmentApis };
 
 // shifts
 const commonShiftApi = generateCrudApi("shifts");

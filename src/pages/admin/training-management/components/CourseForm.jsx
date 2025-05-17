@@ -140,7 +140,7 @@ const CourseForm = ({ defaultValues = {}, editMode }) => {
       <div className="space-x-4">
         <Button
           isLoading={loading}
-          isDisabled={isError}
+          isDisabled={!isDirty || isError}
           type="submit"
           startContent={editMode ? <Save size="20px" /> : <Plus size="20px" />}
           className="shadow-xl"

@@ -2,6 +2,7 @@
 import { useTableContext } from "@/components/common";
 import { ADMISSION_STATUSES, DATE_FORMAT } from "@/constants";
 import { useNavigate } from "@/hooks";
+import { displayDate } from "@/utils";
 import { Button } from "@heroui/button";
 import { Chip } from "@heroui/chip";
 import { Tooltip } from "@heroui/tooltip";
@@ -18,7 +19,7 @@ const AdmissionCell = ({ rowData, refs, columnKey, rowIndex, onDelete = (id) => 
 
   const dateFields = ["createdAt", "lastUpdatedAt"];
   if (dateFields.includes(columnKey)) {
-    if (cellValue) cellValue = format(new Date(cellValue), DATE_FORMAT);
+    cellValue = displayDate(cellValue);
   }
   if (columnKey === "index") {
     cellValue = getRowIndex(rowIndex + 1);

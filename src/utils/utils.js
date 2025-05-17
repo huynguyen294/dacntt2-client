@@ -1,6 +1,15 @@
 import Compressor from "compressorjs";
+import { format } from "date-fns";
 
-export const timeFormat = (text) => text.slice(0, 5);
+export const arrayToObject = (arr = [], property = "id") => {
+  return arr.reduce((acc, curr) => ({ ...acc, [curr[property]]: curr }), {});
+};
+
+export const timeFormat = (text) => text && text.slice(0, 5);
+
+export const displayDate = (value) => (value ? format(new Date(value), "dd/MM/yyyy") : "");
+
+export const shiftFormat = ({ startTime, endTime } = {}) => `${timeFormat(startTime)} - ${timeFormat(endTime)}`;
 
 const maxSize = 2 * 1024 * 1024; // 2MB
 export const compressImg = async (file) => {

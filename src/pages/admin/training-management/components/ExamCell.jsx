@@ -2,6 +2,7 @@
 import { useTableContext } from "@/components/common";
 import { DATE_FORMAT } from "@/constants";
 import { useNavigate } from "@/hooks";
+import { displayDate } from "@/utils";
 import { Button } from "@heroui/button";
 import { Tooltip } from "@heroui/tooltip";
 import { format } from "date-fns";
@@ -14,15 +15,9 @@ const ExamCell = ({ rowData, columnKey, rowIndex, onDelete = (id) => {} }) => {
   let cellValue = rowData[columnKey];
 
   const dateFields = ["createdAt", "date", "lastUpdatedAt"];
-  if (dateFields.includes(columnKey)) {
-    if (cellValue) cellValue = format(new Date(cellValue), DATE_FORMAT);
-  }
-  if (columnKey === "index") {
-    cellValue = getRowIndex(rowIndex + 1);
-  }
-  if (columnKey === "time") {
-    cellValue = cellValue.slice(0, 5);
-  }
+  if (dateFields.includes(columnKey)) cellValue = displayDate(cellValue);
+  if (columnKey === "index") cellValue = getRowIndex(rowIndex + 1);
+  if (columnKey === "time") cellValue = cellValue.slice(0, 5);
 
   switch (columnKey) {
     case "actions":

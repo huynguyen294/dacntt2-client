@@ -3,7 +3,7 @@ import { ImageLoading, Table, TableProvider } from "./common";
 import { cn } from "@/lib/utils";
 import { Avatar } from "@heroui/avatar";
 import { Chip } from "@heroui/chip";
-import { alpha, convertImageSrc, localeString } from "@/utils";
+import { alpha, displayDate, localeString } from "@/utils";
 import { DATE_FORMAT, EMPLOYEE_ROLES, ROLE_PALLET } from "@/constants";
 import { format } from "date-fns";
 import { useQuery } from "@tanstack/react-query";
@@ -13,12 +13,10 @@ import { Tooltip } from "@heroui/tooltip";
 import { Ban, Trash2 } from "lucide-react";
 
 const UserDetailModal = ({ user, onOpenChange }) => {
-  const { isLoading, data } = useQuery({
+  const { data } = useQuery({
     queryKey: ["users", "detail", user.id],
     queryFn: () => userApi.getById(user.id, { refs: true }),
   });
-
-  console.log(data);
 
   const handleDelete = () => {};
 
@@ -62,9 +60,7 @@ const UserDetailModal = ({ user, onOpenChange }) => {
                     </div>
                     <div>
                       <p className="font-semibold text-foreground-500">Ngày sinh</p>
-                      <p className="font-semibold">
-                        {user.dateOfBirth ? format(new Date(user.dateOfBirth), "dd/MM/yyyy") : "Không có"}
-                      </p>
+                      <p className="font-semibold">{displayDate(user.dateOfBirth) || "Không có"}</p>
                     </div>
                     <div>
                       <p className="font-semibold text-foreground-500">Số điện thoại</p>
@@ -136,7 +132,7 @@ const UserDetailModal = ({ user, onOpenChange }) => {
                           if (columnKey === "index") cellValue = index + 1;
                           const dateFields = ["openingDay", "closingDay"];
                           if (dateFields.includes(columnKey)) {
-                            if (cellValue) cellValue = format(new Date(cellValue), DATE_FORMAT);
+                            cellValue = displayDate(cellValue);
                           }
                           if (columnKey === "actions") {
                             return (

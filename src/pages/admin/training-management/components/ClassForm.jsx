@@ -1,4 +1,4 @@
-import { classApi, courseApi, shiftApi, userApi } from "@/apis";
+import { classApi, courseApi, userApi } from "@/apis";
 import { Collapse, CurrencyInput } from "@/components/common";
 import { COURSE_LEVELS, COURSE_STATUSES, DATE_FORMAT } from "@/constants";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
@@ -12,7 +12,7 @@ import { useState } from "react";
 import { parseDate } from "@internationalized/date";
 import { DatePicker } from "@heroui/date-picker";
 import { useForm, Form, Controller } from "react-simple-formkit";
-import { useNavigate } from "@/hooks";
+import { useMetadata, useNavigate } from "@/hooks";
 import { addToast } from "@heroui/toast";
 
 const ClassForm = ({ editMode, defaultValues = {} }) => {
@@ -21,6 +21,7 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
   const form = useForm({ numberFields });
   const { isError, isDirty, actions } = form;
   const [loading, setLoading] = useState(false);
+  const { loading: metadataLoading, shifts } = useMetadata();
 
   const { data: userData, isLoading: userLoading } = useQuery({
     queryKey: ["users", "as-options"],
@@ -42,20 +43,23 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
       ]),
   });
 
-  const { data: shiftData, isLoading: shiftLoading } = useQuery({
-    queryKey: ["shifts", "as-options"],
-    queryFn: () => shiftApi.get({ paging: "false" }, { orderBy: "name", order: "asc" }, null, {}, ["fields=:basic"]),
-  });
-
   const handleChange = (data) => {
     const courseId = data.courseId;
-    const found = courseId && courseData.courses.find((c) => c.id === Number(courseId));
+    const found = courseId && courseData.rows.find((c) => c.id === Number(courseId));
 
     if (found) {
       const { tuitionFee, numberOfStudents, numberOfLessons, description, level } = found;
-      actions.setValue({ tuitionFee, numberOfStudents, numberOfLessons, description, level }, null, {
-        shouldOnChange: false,
+      const newCourseValues = { tuitionFee, numberOfStudents, numberOfLessons, description, level };
+
+      const formState = actions.getFormState();
+      let isBlank = true;
+      Object.keys(newCourseValues).forEach((key) => {
+        if (formState[key]) isBlank = false;
       });
+
+      if (isBlank) {
+        actions.setValue(newCourseValues, null, { shouldOnChange: false });
+      }
     } else {
       actions.setValue(
         {
@@ -98,7 +102,13 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
   };
 
   return (
-    <Form form={form} onSubmit={handleSubmit} onChange={handleChange} className="w-full space-y-4">
+    <Form
+      key={form.lastReloadedAt}
+      form={form}
+      onSubmit={handleSubmit}
+      onChange={handleChange}
+      className="w-full space-y-4"
+    >
       <Collapse showDivider defaultExpanded variant="splitted" title="Thông tin cơ bản" className="w-full">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-start gap-4 pb-4">
           <Input
@@ -123,9 +133,8 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
                 value={new Set(value ? value.split(",") : [])}
                 isRequired
                 selectionMode="multiple"
-                isLoading={shiftLoading}
-                onChange={actions.instantChange}
                 onSelectionChange={(keys) => setValue([...keys].join(","))}
+                onChange={actions.instantChange}
                 defaultSelectedKeys={new Set(defaultValue ? defaultValue.split(",") : [])}
                 size="lg"
                 variant="bordered"
@@ -144,26 +153,36 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
               </Select>
             )}
           />
-          <Select
-            isRequired
+          <Controller
             name="shiftId"
-            isLoading={shiftLoading}
-            onChange={actions.instantChange}
-            defaultSelectedKeys={defaultValues.shiftId ? new Set([defaultValues.shiftId.toString()]) : new Set([])}
-            size="lg"
-            variant="bordered"
-            label="Ca học"
-            radius="sm"
-            labelPlacement="outside"
-            placeholder="Chọn ca học"
-          >
-            {shiftData?.rows &&
-              shiftData.rows.map((s) => (
-                <SelectItem key={s.id.toString()}>
-                  {`${s.name} (${s.startTime.slice(0, 5)} - ${s.endTime.slice(0, 5)})`}
-                </SelectItem>
-              ))}
-          </Select>
+            defaultValue={defaultValues.shiftId}
+            render={({ ref, value, defaultValue, name, setValue }) => (
+              <Select
+                ref={ref}
+                value={value && value.toString()}
+                isRequired
+                name={name}
+                isLoading={metadataLoading}
+                onChange={actions.instantChange}
+                onSelectionChange={setValue}
+                defaultSelectedKeys={defaultValue ? new Set([defaultValue.toString()]) : new Set([])}
+                size="lg"
+                variant="bordered"
+                label="Ca học"
+                radius="sm"
+                labelPlacement="outside"
+                placeholder="Chọn ca học"
+              >
+                {shifts &&
+                  shifts.map((s) => (
+                    <SelectItem key={s.id.toString()}>
+                      {`${s.name} (${s.startTime.slice(0, 5)} - ${s.endTime.slice(0, 5)})`}
+                    </SelectItem>
+                  ))}
+              </Select>
+            )}
+          />
+
           <Controller
             name="teacherId"
             defaultValue={defaultValues.teacherId && defaultValues.teacherId.toString()}
@@ -179,8 +198,10 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
                 labelPlacement="outside"
                 placeholder="Chọn giáo viên"
                 isLoading={userLoading}
-                onChange={actions.instantChange}
-                onSelectionChange={setValue}
+                onSelectionChange={(newValue) => {
+                  setValue(newValue);
+                  actions.instantChange();
+                }}
                 defaultSelectedKey={defaultValue}
               >
                 {userData?.rows &&
@@ -250,9 +271,11 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
                 name={name}
                 value={value}
                 isLoading={courseLoading}
-                onChange={actions.instantChange}
                 defaultSelectedKey={defaultValue}
-                onSelectionChange={setValue}
+                onSelectionChange={(newValue) => {
+                  setValue(newValue);
+                  actions.instantChange();
+                }}
                 size="lg"
                 variant="bordered"
                 label="Khóa học"
@@ -354,7 +377,6 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
                 selectedKeys={new Set(value ? [value.toString()] : [])}
                 onSelectionChange={(set) => setValue([...set][0])}
                 name={name}
-                onChange={actions.instantChange}
                 defaultSelectedKeys={new Set(defaultValue ? [defaultValue.toString()] : [])}
                 size="lg"
                 variant="bordered"
@@ -374,7 +396,7 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
       <div className="space-x-4">
         <Button
           isLoading={loading}
-          isDisabled={isError}
+          isDisabled={!isDirty || isError}
           type="submit"
           startContent={editMode ? <Save size="20px" /> : <Plus size="20px" />}
           className="shadow-xl"
@@ -384,7 +406,7 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
         </Button>
         <Button
           isDisabled={!isDirty}
-          onPress={() => actions.reset()}
+          type="reset"
           startContent={<RefreshCcw size="16px" />}
           className="shadow-xl"
           variant="flat"

@@ -12,8 +12,12 @@ export const generateCrudApi = (key) => {
       return result.data;
     },
 
-    getById: async (id) => {
-      const result = await API.get(`/api-v1/${key}/${id}`);
+    getById: async (id, { refs = false, refFields } = {}) => {
+      const params = [];
+      if (refs) params.push("refs=true");
+      if (refFields) params.push("refFields=" + refFields);
+
+      const result = await API.get(`/api-v1/${key}/${id}?${params.join("&")}`);
       return result.data;
     },
 

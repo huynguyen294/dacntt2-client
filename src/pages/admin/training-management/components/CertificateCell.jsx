@@ -2,7 +2,7 @@
 import { useTableContext } from "@/components/common";
 import { DATE_FORMAT } from "@/constants";
 import { useNavigate } from "@/hooks";
-import { convertImageSrc } from "@/utils";
+import { convertImageSrc, displayDate } from "@/utils";
 import { Button } from "@heroui/button";
 import { Chip } from "@heroui/chip";
 import { Tooltip } from "@heroui/tooltip";
@@ -16,12 +16,8 @@ const CertificateCell = ({ rowData, columnKey, rowIndex, onDelete = (id) => {} }
   let cellValue = rowData[columnKey];
 
   const dateFields = ["createdAt", "lastUpdatedAt"];
-  if (dateFields.includes(columnKey)) {
-    if (cellValue) cellValue = format(new Date(cellValue), DATE_FORMAT);
-  }
-  if (columnKey === "index") {
-    cellValue = getRowIndex(rowIndex + 1);
-  }
+  if (columnKey === "index") cellValue = getRowIndex(rowIndex + 1);
+  if (dateFields.includes(columnKey)) cellValue = displayDate(cellValue);
 
   switch (columnKey) {
     case "image": {

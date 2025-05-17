@@ -1,9 +1,11 @@
 import { classApi, courseApi, studentConsultationApi, userApi } from "@/apis";
 import { UserBasicFields } from "@/components";
-import { Section } from "@/components/common";
-import { ADMISSION_STATUSES, COURSE_STATUSES, EMPLOYEE_STATUS, ORDER_BY_NAME } from "@/constants";
-import { useNavigate } from "@/hooks";
+import { Dot, Section } from "@/components/common";
+import { ADMISSION_STATUSES, COURSE_STATUSES, EMPLOYEE_STATUS, getAdmissionColor, ORDER_BY_NAME } from "@/constants";
+import { useMetadata, useNavigate } from "@/hooks";
+import { shiftFormat } from "@/utils";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
+import { Avatar } from "@heroui/avatar";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
@@ -11,18 +13,24 @@ import { addToast } from "@heroui/toast";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { RefreshCcw, Save } from "lucide-react";
 import { useState } from "react";
+import { useSearchParams } from "react-router";
 import { Controller, Form, useForm } from "react-simple-formkit";
 
 const numberFields = ["expectedClassId", "expectedCourseId", "consultantId"];
 const AdmissionForm = ({ defaultValues = {}, editMode }) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
+
+  const userId = searchParams.get("userId");
 
   const form = useForm({ numberFields });
   const { isDirty, isError, actions } = form;
 
   const [selectedCourse, setSelectedCourse] = useState(defaultValues.courseId);
+
+  const { loading: metadataLoading, shiftObj } = useMetadata();
 
   const { data: userData, isLoading: userLoading } = useQuery({
     queryKey: ["users", "as-options", "consultant"],
@@ -50,6 +58,15 @@ const AdmissionForm = ({ defaultValues = {}, editMode }) => {
   });
 
   const handleSubmit = async (data) => {
+    if (!userId && !defaultValues.id) {
+      addToast({
+        color: "danger",
+        title: "Lỗi!",
+        description: "Chức năng đăng ký cho người dùng mới chưa hoạt động, vui lòng đăng ký cho học viên cũ.",
+      });
+      return;
+    }
+
     setLoading(true);
 
     if (editMode) {
@@ -106,44 +123,30 @@ const AdmissionForm = ({ defaultValues = {}, editMode }) => {
                   variant="bordered"
                   label="Tư vấn viên"
                   labelPlacement="outside"
-                  placeholder="Chọn giáo viên"
+                  placeholder="Chọn tư vấn viên"
                   isLoading={userLoading}
                   defaultSelectedKey={defaultValue && defaultValue.toString()}
-                  onSelectionChange={setValue}
-                  onChange={actions.instantChange}
+                  onSelectionChange={(newValue) => {
+                    setValue(newValue);
+                    actions.instantChange();
+                  }}
                 >
                   {userData?.rows &&
-                    userData?.rows.map((u) => <AutocompleteItem key={u.id.toString()}>{u.name}</AutocompleteItem>)}
+                    userData?.rows.map((u) => (
+                      <AutocompleteItem
+                        startContent={
+                          <div>
+                            <Avatar size="sm" src={u.imageUrl} />
+                          </div>
+                        }
+                        description={u.email}
+                        key={u.id.toString()}
+                      >
+                        {u.name}
+                      </AutocompleteItem>
+                    ))}
                 </Autocomplete>
               )}
-            />
-            <Select
-              name="status"
-              isRequired
-              onChange={actions.instantChange}
-              defaultSelectedKeys={
-                new Set(defaultValues.status ? [defaultValues.status] : [ADMISSION_STATUSES.working])
-              }
-              size="lg"
-              variant="bordered"
-              label="Trạng thái"
-              radius="sm"
-              labelPlacement="outside"
-              placeholder="Chọn trạng thái"
-            >
-              {Object.values(ADMISSION_STATUSES).map((status) => (
-                <SelectItem key={status}>{status}</SelectItem>
-              ))}
-            </Select>
-            <Input
-              name="source"
-              defaultValue={defaultValues.source}
-              size="lg"
-              variant="bordered"
-              label="Nguồn khách hàng"
-              radius="sm"
-              labelPlacement="outside"
-              placeholder="Tiktok, Facebook..."
             />
             <Controller
               name="expectedCourseId"
@@ -155,7 +158,6 @@ const AdmissionForm = ({ defaultValues = {}, editMode }) => {
                   value={value && value.toString()}
                   size="lg"
                   radius="sm"
-                  isRequired
                   variant="bordered"
                   label="Khóa học dự kiến"
                   labelPlacement="outside"
@@ -165,8 +167,8 @@ const AdmissionForm = ({ defaultValues = {}, editMode }) => {
                   onSelectionChange={(newValue) => {
                     setValue(newValue);
                     setSelectedCourse(newValue);
+                    actions.instantChange();
                   }}
-                  onChange={actions.instantChange}
                 >
                   {courseData?.rows &&
                     courseData?.rows.map((c) => <AutocompleteItem key={c.id.toString()}>{c.name}</AutocompleteItem>)}
@@ -183,20 +185,65 @@ const AdmissionForm = ({ defaultValues = {}, editMode }) => {
                   value={value}
                   size="lg"
                   radius="sm"
-                  isRequired
                   variant="bordered"
                   label="Lớp dự kiến"
                   labelPlacement="outside"
                   placeholder="Khóa học dự kiến"
                   defaultSelectedKey={defaultValue && defaultValue.toString()}
-                  isLoading={classLoading}
-                  onSelectionChange={setValue}
-                  onChange={actions.instantChange}
+                  isLoading={classLoading || metadataLoading}
+                  onSelectionChange={(newValue) => {
+                    setValue(newValue);
+                    actions.instantChange();
+                  }}
                 >
                   {classData?.rows &&
-                    classData?.rows.map((c) => <AutocompleteItem key={c.id.toString()}>{c.name}</AutocompleteItem>)}
+                    classData?.rows.map((c) => (
+                      <AutocompleteItem key={c.id.toString()} description={shiftFormat(shiftObj[c.shiftId])}>
+                        {c.name}
+                      </AutocompleteItem>
+                    ))}
                 </Autocomplete>
               )}
+            />
+            <Controller
+              name="status"
+              defaultValue={defaultValues.status}
+              render={({ name, ref, value, setValue, defaultValue }) => (
+                <Select
+                  ref={ref}
+                  name={name}
+                  value={value && value.toString()}
+                  isRequired
+                  onSelectionChange={(keys) => {
+                    setValue([...keys][0]);
+                  }}
+                  defaultSelectedKeys={new Set(defaultValue ? [defaultValue] : [ADMISSION_STATUSES.working])}
+                  startContent={<Dot variant={getAdmissionColor(value || defaultValue)} />}
+                  size="lg"
+                  variant="bordered"
+                  label="Trạng thái"
+                  radius="sm"
+                  labelPlacement="outside"
+                  placeholder="Chọn trạng thái"
+                  onChange={actions.instantChange}
+                >
+                  {Object.values(ADMISSION_STATUSES).map((status) => (
+                    <SelectItem key={status} startContent={<Dot variant={getAdmissionColor(status)} />}>
+                      {status}
+                    </SelectItem>
+                  ))}
+                </Select>
+              )}
+            />
+            <Input
+              name="source"
+              defaultValue={defaultValues.source}
+              size="lg"
+              variant="bordered"
+              label="Nguồn khách hàng"
+              radius="sm"
+              labelPlacement="outside"
+              placeholder="Tiktok, Facebook..."
             />
             <Input
               name="note"
@@ -213,7 +260,7 @@ const AdmissionForm = ({ defaultValues = {}, editMode }) => {
         <div className="space-x-4">
           <Button
             isLoading={loading}
-            isDisabled={isError}
+            isDisabled={!isDirty || isError}
             type="submit"
             startContent={<Save size="20px" />}
             className="shadow-xl"

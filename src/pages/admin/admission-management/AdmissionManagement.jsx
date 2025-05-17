@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { addToast } from "@heroui/toast";
 import { studentConsultationApi } from "@/apis";
+import AdmissionFilter from "./components/AdmissionFilter";
 
 const AdmissionManagement = () => {
   const queryClient = useQueryClient();
@@ -18,7 +19,7 @@ const AdmissionManagement = () => {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [selectedId, setSelectedId] = useState(null);
 
-  const queryFilterKey = `p=${pager.page},ps=${pager.pageSize},q=${debounceQuery},o=${order.order},ob=${order.orderBy},ca=${filters.createdAt}`;
+  const queryFilterKey = `p=${pager.page},ps=${pager.pageSize},q=${debounceQuery},o=${order.order},ob=${order.orderBy},ca=${filters.createdAt},s=${filters.status}`;
   const { isLoading, data, isSuccess } = useQuery({
     queryKey: ["admissions", queryFilterKey],
     queryFn: () => studentConsultationApi.get(pager, order, debounceQuery, filters, ["refs=true"]),
@@ -60,7 +61,7 @@ const AdmissionManagement = () => {
             </h3>
           </div>
           <TableHeader
-            filter={<div></div>}
+            filter={<AdmissionFilter />}
             addBtnPath={`/admin/register-admission`}
             rowSize={data?.rows?.length || 0}
           />

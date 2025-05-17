@@ -7,3 +7,4 @@ export { default as useForm } from "./useForm";
 export { default as useDebounce } from "./useDebounce";
 export { default as useTable } from "./useTable";
 export { default as useAutocompleteInfinity } from "./useAutocompleteInfinity";
+export { default as useMetadata } from "./useMetadata";

@@ -14,6 +14,12 @@ const otherClassApis = {
     if (filters.courseId) {
       params.push("filter=courseId:eq:" + filters.courseId);
     }
+    if (filters.shiftId) {
+      params.push("filter=shiftId:eq:" + filters.shiftId);
+    }
+    if (filters.teacherId) {
+      params.push("filter=teacherId:eq:" + filters.teacherId);
+    }
     const result = await API.get(`/api-v1/classes?${params.join("&")}`);
     return result.data;
   },

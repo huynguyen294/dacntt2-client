@@ -15,7 +15,7 @@ import { useQuery } from "@tanstack/react-query";
 import { studentConsultationApi, userApi } from "@/apis";
 import { Spinner } from "@heroui/spinner";
 import { ADMISSION_STATUSES } from "@/constants";
-import { Section } from "@/components/common";
+import { addToast } from "@heroui/toast";
 
 const RegisterStudent = () => {
   const navigate = useNavigate();
@@ -40,12 +40,18 @@ const RegisterStudent = () => {
     queryFn: () => admissionId && studentConsultationApi.getById(admissionId),
   });
 
+  const loading = isLoading || admissionLoading;
+
   const defaultValues = useMemo(() => {
-    return admissionData?.item || data?.item;
+    return admissionData?.item || data?.item || {};
   }, [isSuccess, admissionSuccess, admissionData, data]);
 
+  const handleRegistered = async () => {
+    addToast({ color: "success", title: "Thành công!", description: "Xếp học sinh vào lớp thành công." });
+  };
+
   return (
-    <ModuleLayout breadcrumbItems={registerBreadcrumbItems}>
+    <ModuleLayout breadcrumbItems={registerBreadcrumbItems} className="flex-1 overflow-y-auto pb-10">
       {isOpen && (
         <Modal isOpen={true} size="3xl" onOpenChange={onOpenChange}>
           <ModalContent>
@@ -65,14 +71,14 @@ const RegisterStudent = () => {
           </ModalContent>
         </Modal>
       )}
-      {(isLoading || admissionLoading) && (
+      {loading && (
         <div className="h-40 w-full flex justify-center items-center">
           <Spinner variant="wave" />
         </div>
       )}
-      {step === "1" && defaultValues && (
-        <div className="flex-1 overflow-y-auto pb-10">
-          <Stepper />
+      {!loading && step && <Stepper step={Number(step)} />}
+      {!loading && step === "1" && defaultValues && (
+        <>
           <div className="flex justify-between px-2 sm:px-10 mb-3">
             <Button
               variant="flat"
@@ -95,11 +101,10 @@ const RegisterStudent = () => {
             </Button>
           </div>
           <AdmissionForm key={defaultValues.id} defaultValues={defaultValues} editMode={Boolean(admissionId)} />
-        </div>
+        </>
       )}
-      {step === "2" && (
-        <div className="flex-1 overflow-y-auto pb-10">
-          <Stepper step={2} />
+      {!loading && step === "2" && (
+        <>
           <div className="flex justify-between px-2 sm:px-10 mb-3">
             <Button
               variant="flat"
@@ -121,14 +126,15 @@ const RegisterStudent = () => {
             </Button>
           </div>
           <div className="px-2 sm:px-10">
-            <Section title="Xếp lớp">
-              <ClassAssignment />
-            </Section>
+            <div className="shadow-large rounded-lg p-4">
+              {admissionData && (
+                <ClassAssignment isSingleMode studentIds={[admissionData.item.studentId]} onDone={handleRegistered} />
+              )}
+            </div>
           </div>
-          {/* <AdmissionForm key={defaultValues.id} defaultValues={defaultValues} editMode={Boolean(admissionId)} /> */}
-        </div>
+        </>
       )}
-      {!step && (
+      {!loading && !step && (
         <div className="px-2 sm:px-10 flex-1 flex justify-center items-center flex-col sm:flex-row rounded-2xl backdrop-blur-md">
           <div className="flex-1 w-full h-full flex justify-center sm:justify-end items-end sm:items-center pb-10 pr-0 sm:pb-0 sm:pr-10">
             <Card

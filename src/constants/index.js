@@ -39,6 +39,21 @@ export const ADMISSION_STATUSES = {
   working: "Đang tư vấn",
   accepted: "Đã đồng ý",
   rejected: "Đã hủy",
+  done: "Đã xếp lớp",
+};
+
+export const getAdmissionColor = (value) => {
+  switch (value) {
+    case ADMISSION_STATUSES.accepted:
+      return "success";
+    case ADMISSION_STATUSES.rejected:
+      return "danger";
+    case ADMISSION_STATUSES.working:
+      return "warning";
+    case ADMISSION_STATUSES.done:
+    default:
+      return "default";
+  }
 };
 
 export const ORDER_BY_NAME = { orderBy: "name", order: "asc" };

@@ -1,7 +1,7 @@
 import { useTableContext } from "@/components/common";
 import { COURSE_LEVELS, DATE_FORMAT } from "@/constants";
 import { useNavigate } from "@/hooks";
-import { localeString } from "@/utils";
+import { displayDate, localeString } from "@/utils";
 import { Button } from "@heroui/button";
 import { Chip } from "@heroui/chip";
 import { Tooltip } from "@heroui/tooltip";
@@ -15,18 +15,10 @@ const CourseCell = ({ rowData, columnKey, rowIndex, onDelete = (id) => {} }) => 
   let cellValue = rowData[columnKey];
 
   const dateFields = ["createdAt", "dateOfBirth", "lastUpdatedAt"];
-  if (dateFields.includes(columnKey)) {
-    if (cellValue) cellValue = format(new Date(cellValue), DATE_FORMAT);
-  }
-  if (columnKey === "index") {
-    cellValue = getRowIndex(rowIndex + 1);
-  }
-  if (columnKey === "tuitionFee") {
-    cellValue = localeString(cellValue) + "đ";
-  }
-  if (columnKey === "level") {
-    cellValue = COURSE_LEVELS[cellValue];
-  }
+  if (dateFields.includes(columnKey)) cellValue = displayDate(cellValue);
+  if (columnKey === "index") cellValue = getRowIndex(rowIndex + 1);
+  if (columnKey === "tuitionFee") cellValue = localeString(cellValue) + "đ";
+  if (columnKey === "level") cellValue = COURSE_LEVELS[cellValue];
 
   switch (columnKey) {
     case "status": {
