@@ -81,6 +81,7 @@ const AdmissionForm = ({ defaultValues = {}, editMode }) => {
       return;
     }
 
+    data.studentId = userId;
     const result = await studentConsultationApi.create(data);
     if (result.ok) {
       queryClient.invalidateQueries({ queryKey: ["admissions"] });
