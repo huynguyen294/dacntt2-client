@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Collapse, CurrencyInput, PasswordInput } from "@/components/common";
+import { Collapse, CurrencyInput, PasswordInput, StatusDot } from "@/components/common";
 import { UserBasicFields } from "@/components";
 import { Select, SelectItem } from "@heroui/select";
 import { useState } from "react";
@@ -9,15 +9,23 @@ import { useNavigate } from "@/hooks";
 import { imageApi, userApi } from "@/apis";
 import { useQueryClient } from "@tanstack/react-query";
 import { addToast } from "@heroui/toast";
-import { convertImageSrc } from "@/utils";
+import { convertImageSrc, removeNullish } from "@/utils";
 import { format } from "date-fns";
-import { DATE_FORMAT, EMPLOYEE_STATUS, ROLE_LABELS, ROLE_PALLET, USER_ROLES } from "@/constants";
+import {
+  DATE_FORMAT,
+  EMPLOYEE_ROLES,
+  EMPLOYEE_STATUS,
+  getStatusColor,
+  ROLE_LABELS,
+  ROLE_PALLET,
+  USER_ROLES,
+} from "@/constants";
 import { Checkbox } from "@heroui/checkbox";
 import { Input, Textarea } from "@heroui/input";
 import { DatePicker } from "@heroui/date-picker";
 import { useParams } from "react-router";
 import { parseDate } from "@internationalized/date";
-import { useForm, Form } from "react-simple-formkit";
+import { useForm, Form, Controller } from "react-simple-formkit";
 
 const UserForm = ({ defaultValues = {}, editMode }) => {
   const { role: paramRole } = useParams();
@@ -42,7 +50,7 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
   const { isError, isDirty, errors, actions } = form;
 
   const handleSubmit = async (data) => {
-    const { passwordConfirm, ...payload } = data;
+    const { passwordConfirm, ...payload } = removeNullish(data);
 
     setRegistering(true);
     let resultImg;
@@ -180,7 +188,7 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
           />
         </div>
       </Collapse>
-      {["teacher", "consultant", "finance-officer"].includes(role) && (
+      {EMPLOYEE_ROLES.includes(role) && (
         <Collapse showDivider defaultExpanded variant="splitted" title={"THÔNG TIN " + ROLE_LABELS[role]}>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-start gap-4 pb-4">
             <Select
@@ -251,25 +259,34 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
               labelPlacement="outside"
               placeholder="Tốt nghiệp trường, trung tâm..."
             />
-            <Select
-              autoFocus
+            <Controller
               name="status"
-              isRequired
-              onChange={actions.instantChange}
-              defaultSelectedKeys={
-                defaultValues.status ? new Set([defaultValues.status]) : new Set([EMPLOYEE_STATUS.active])
-              }
-              size="lg"
-              variant="bordered"
-              label="Trạng thái"
-              radius="sm"
-              labelPlacement="outside"
-              placeholder="Đang làm, đã nghỉ..."
-            >
-              {Object.values(EMPLOYEE_STATUS).map((status) => (
-                <SelectItem key={status}>{status}</SelectItem>
-              ))}
-            </Select>
+              defaultValue={defaultValues.status || EMPLOYEE_STATUS.active}
+              render={({ ref, name, defaultValue, value, setValue }) => (
+                <Select
+                  ref={ref}
+                  name={name}
+                  isRequired
+                  selectedKeys={new Set(value ? [value.toString()] : [])}
+                  onChange={actions.instantChange}
+                  onSelectionChange={(keys) => setValue([...keys][0])}
+                  defaultSelectedKeys={new Set(defaultValue ? [defaultValue.toString()] : [])}
+                  startContent={<StatusDot status={value || defaultValue} />}
+                  size="lg"
+                  radius="sm"
+                  variant="bordered"
+                  label="Trạng thái"
+                  labelPlacement="outside"
+                  placeholder="Đang làm, đã nghỉ..."
+                >
+                  {Object.values(EMPLOYEE_STATUS).map((status) => (
+                    <SelectItem key={status} startContent={<StatusDot status={status} />}>
+                      {status}
+                    </SelectItem>
+                  ))}
+                </Select>
+              )}
+            />
             <Textarea
               autoFocus
               defaultValue={defaultValues.note}

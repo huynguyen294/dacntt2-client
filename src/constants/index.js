@@ -14,12 +14,21 @@ export const ROLE_PALLET = {
   "finance-officer": "#b7ac44",
   student: "#a8bbb0",
 };
+
 export const DEFAULT_PAGER = { total: 0, pageCount: 1, page: 1, pageSize: 20 };
+
 export const COURSE_LEVELS = {
   1: "Sơ cấp",
   2: "Trung cấp",
   3: "Nâng cao",
 };
+
+export const CERTIFICATE_STATUSES = {
+  active: "Hoạt động",
+  onHold: "Tạm dừng",
+  stopped: "Hết hạn",
+};
+
 export const COURSE_STATUSES = {
   active: "Đang mở",
   onHold: "Tạm đóng",
@@ -51,9 +60,32 @@ export const getAdmissionColor = (value) => {
     case ADMISSION_STATUSES.working:
       return "warning";
     case ADMISSION_STATUSES.done:
+    case ADMISSION_STATUSES.pending:
     default:
       return "default";
   }
+};
+
+export const getStatusColor = (status) => {
+  const successes = [
+    ADMISSION_STATUSES.accepted,
+    EMPLOYEE_STATUS.active,
+    COURSE_STATUSES.active,
+    CERTIFICATE_STATUSES.active,
+  ];
+  const dangers = [ADMISSION_STATUSES.rejected, EMPLOYEE_STATUS.stopped, CERTIFICATE_STATUSES.stopped];
+  const warnings = [
+    ADMISSION_STATUSES.working,
+    EMPLOYEE_STATUS.onHold,
+    COURSE_STATUSES.onHold,
+    CERTIFICATE_STATUSES.onHold,
+  ];
+
+  if (successes.includes(status)) return "success";
+  if (dangers.includes(status)) return "danger";
+  if (warnings.includes(status)) return "warning";
+
+  return "default";
 };
 
 export const ORDER_BY_NAME = { orderBy: "name", order: "asc" };

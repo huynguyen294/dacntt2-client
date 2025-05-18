@@ -18,8 +18,7 @@ const TableHeader = ({
   filter,
 }) => {
   const navigate = useNavigate();
-  const { query, setQuery, order, setOrder, allColumns, selectedKeys, selectedColumns, setSelectedColumns } =
-    useTableContext();
+  const { query, setQuery, allColumns, selectedKeys, selectedColumns, setSelectedColumns } = useTableContext();
 
   return (
     <div className="mt-2 flex justify-between items-center gap-4">
@@ -34,57 +33,6 @@ const TableHeader = ({
           onValueChange={setQuery}
         />
         {filter}
-        <Dropdown showArrow>
-          <DropdownTrigger>
-            <Button
-              size="sm"
-              variant="flat"
-              className="font-semibold min-w-fit"
-              startContent={<ListFilter size="13px" />}
-            >
-              Sắp xếp
-            </Button>
-          </DropdownTrigger>
-          <DropdownMenu
-            disallowEmptySelection
-            closeOnSelect={false}
-            selectedKeys={new Set([order.orderBy])}
-            disabledKeys={["actions", "index"]}
-            selectionMode="single"
-            variant="faded"
-          >
-            {allColumns
-              .filter((c) => !c.disableSort)
-              .map((col) => {
-                const selected = order.orderBy === col.uid || order.orderBy === col.sortUid;
-
-                return (
-                  <DropdownItem
-                    hideSelectedIcon
-                    endContent={
-                      selected && (
-                        <ArrowDown
-                          size="15px"
-                          className={cn("transition-transform", order.order === "asc" && "rotate-180")}
-                        />
-                      )
-                    }
-                    key={col.uid}
-                    onPress={() => {
-                      if (selected) {
-                        setOrder((prev) => ({ ...prev, order: prev.order === "desc" ? "asc" : "desc" }));
-                      } else {
-                        const orderBy = col.sortUid || col.uid;
-                        setOrder({ orderBy, order: "desc" });
-                      }
-                    }}
-                  >
-                    {col.name}
-                  </DropdownItem>
-                );
-              })}
-          </DropdownMenu>
-        </Dropdown>
         <Dropdown showArrow>
           <DropdownTrigger>
             <Button size="sm" variant="flat" className="font-semibold min-w-fit" startContent={<Grid2X2 size="13px" />}>

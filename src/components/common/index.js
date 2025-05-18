@@ -12,4 +12,5 @@ export { default as TableHeader } from "./Table/TableHeader";
 export { default as TableProvider } from "./Table/TableProvider";
 export { default as Section } from "./Section";
 export { default as Dot } from "./Dot";
+export { default as StatusDot } from "./StatusDot";
 export * from "./Table/context";

@@ -3,6 +3,7 @@ import { Spinner } from "@heroui/spinner";
 import { Table as HerioUiTable, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/table";
 import { Ban } from "lucide-react";
 import { useTableContext } from "./context";
+import { Tab, Tabs } from "@heroui/tabs";
 
 const defaultCellRenderer = (row, columnKey, index) => row[columnKey];
 const Table = ({
@@ -15,8 +16,12 @@ const Table = ({
   isHeaderSticky = true,
   ...other
 }) => {
-  const { selectedKeys, setSelectedKeys, columns } = useTableContext();
+  const { selectedKeys, setSelectedKeys, columns, order, setOrder = () => {} } = useTableContext();
 
+  const sortDescriptor = order && {
+    column: order.orderBy,
+    direction: order.order === "asc" ? "ascending" : "descending",
+  };
   const loadingState = isLoading ? "loading" : "idle";
 
   return (
@@ -31,12 +36,20 @@ const Table = ({
       aria-label="Example table with custom cells"
       selectedKeys={selectedKeys}
       onSelectionChange={setSelectedKeys}
+      sortDescriptor={sortDescriptor}
+      onSortChange={({ column, direction }) => {
+        setOrder({ order: direction === "ascending" ? "asc" : "desc", orderBy: column });
+      }}
       classNames={{ wrapper: cn("h-full", classNames.wrapper), ...classNames }}
       {...other}
     >
       <TableHeader>
         {columns.map((column) => (
-          <TableColumn key={column.uid} align={column.uid === "actions" ? "center" : "start"}>
+          <TableColumn
+            allowsSorting={!column.disableSort}
+            key={column.uid}
+            align={column.uid === "actions" ? "center" : "start"}
+          >
             {column.name}
           </TableColumn>
         ))}

@@ -34,14 +34,6 @@ const AdmissionFilter = () => {
       </PopoverTrigger>
       <PopoverContent>
         <div className="p-2 space-y-4">
-          <RadioGroup value={status} label="Trạng thái" classNames={{ label: "text-base" }} onValueChange={setStatus}>
-            <Radio value="all">Tất cả</Radio>
-            {Object.values(ADMISSION_STATUSES).map((status) => (
-              <Radio key={status} value={status}>
-                {status}
-              </Radio>
-            ))}
-          </RadioGroup>
           <RadioGroup
             value={createdAt}
             label="Ngày đăng ký"

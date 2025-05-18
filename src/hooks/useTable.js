@@ -6,10 +6,14 @@ import useDebounce from "./useDebounce";
 const tableDefaultSelectedColumns = [];
 const tableAllColumns = [];
 
-const useTable = ({ defaultSelectedColumns = tableDefaultSelectedColumns, allColumns = tableAllColumns } = {}) => {
+const useTable = ({
+  defaultSelectedColumns = tableDefaultSelectedColumns,
+  allColumns = tableAllColumns,
+  defaultOrderBy = "createdAt",
+} = {}) => {
   const [query, setQuery] = useState("");
   const [pager, setPager] = useState(DEFAULT_PAGER);
-  const [order, setOrder] = useState({ order: "desc", orderBy: "createdAt" });
+  const [order, setOrder] = useState({ order: "desc", orderBy: defaultOrderBy });
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
   const [selectedColumns, setSelectedColumns] = useState(new Set(defaultSelectedColumns));
   const [filters, setFilters] = useState({});
@@ -28,7 +32,7 @@ const useTable = ({ defaultSelectedColumns = tableDefaultSelectedColumns, allCol
   const reset = useCallback(() => {
     setQuery("");
     setPager(DEFAULT_PAGER);
-    setOrder({ order: "desc", orderBy: "createdAt" });
+    setOrder({ order: "desc", orderBy: defaultOrderBy });
     setSelectedKeys(new Set([]));
     setSelectedColumns(new Set(defaultSelectedColumns));
     setFilters({});

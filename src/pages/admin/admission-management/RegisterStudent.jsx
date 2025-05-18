@@ -103,7 +103,12 @@ const RegisterStudent = () => {
             </Button>
           </div>
 
-          <AdmissionForm key={lastedReloadedAt} defaultValues={defaultValues} editMode={Boolean(admissionId)} />
+          <AdmissionForm
+            key={lastedReloadedAt}
+            defaultValues={defaultValues}
+            editMode={Boolean(admissionId)}
+            onReload={reload}
+          />
         </div>
       )}
       {!loading && step === "2" && (
@@ -154,9 +159,9 @@ const RegisterStudent = () => {
                 </div>
               </CardBody>
               <CardFooter>
-                <Button color="secondary" variant="bordered" radius="full" onPress={onOpen}>
+                <div className="border-1.5 border-secondary py-1 px-4 rounded-full">
                   <MoveRight className="text-secondary" />
-                </Button>
+                </div>
               </CardFooter>
             </Card>
           </div>
@@ -175,14 +180,9 @@ const RegisterStudent = () => {
                 </div>
               </CardBody>
               <CardFooter>
-                <Button
-                  onPress={() => navigate("/admin/register-admission?step=1")}
-                  color="primary"
-                  variant="bordered"
-                  radius="full"
-                >
+                <div className="border-1.5 border-primary py-1 px-4 rounded-full">
                   <MoveRight className="text-primary" />
-                </Button>
+                </div>
               </CardFooter>
             </Card>
           </div>

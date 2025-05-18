@@ -1,5 +1,5 @@
 import { classApi, courseApi, userApi } from "@/apis";
-import { Collapse, CurrencyInput } from "@/components/common";
+import { Collapse, CurrencyInput, StatusDot } from "@/components/common";
 import { COURSE_LEVELS, COURSE_STATUSES, DATE_FORMAT } from "@/constants";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { Button } from "@heroui/button";
@@ -244,21 +244,34 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
             labelPlacement="outside"
             classNames={{ label: "-mt-1" }}
           />
-          <Select
-            size="lg"
-            radius="sm"
+          <Controller
             name="status"
-            onChange={actions.instantChange}
-            defaultSelectedKeys={new Set(defaultValues.status ? [defaultValues.status] : [COURSE_STATUSES.active])}
-            variant="bordered"
-            label="Trạng thái"
-            labelPlacement="outside"
-            placeholder="Đang mở, Tạm đóng..."
-          >
-            {Object.values(COURSE_STATUSES).map((status) => (
-              <SelectItem key={status}>{status}</SelectItem>
-            ))}
-          </Select>
+            defaultValue={defaultValues.status}
+            render={({ ref, name, defaultValue, value, setValue }) => (
+              <Select
+                size="lg"
+                radius="sm"
+                ref={ref}
+                name={name}
+                isRequired
+                selectedKeys={new Set(value ? [value.toString()] : [])}
+                onChange={actions.instantChange}
+                onSelectionChange={(keys) => setValue([...keys][0])}
+                defaultSelectedKeys={new Set(defaultValue ? [defaultValue.toString()] : [])}
+                startContent={<StatusDot status={value || defaultValue} />}
+                variant="bordered"
+                label="Trạng thái"
+                labelPlacement="outside"
+                placeholder="Đang mở, Tạm đóng..."
+              >
+                {Object.values(COURSE_STATUSES).map((status) => (
+                  <SelectItem key={status} startContent={<StatusDot status={status} />}>
+                    {status}
+                  </SelectItem>
+                ))}
+              </Select>
+            )}
+          />
         </div>
       </Collapse>
       <Collapse showDivider defaultExpanded variant="splitted" title="Thông tin khóa học" className="w-full">

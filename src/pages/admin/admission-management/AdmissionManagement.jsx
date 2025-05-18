@@ -11,6 +11,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { addToast } from "@heroui/toast";
 import { studentConsultationApi } from "@/apis";
 import AdmissionFilter from "./components/AdmissionFilter";
+import { Tab, Tabs } from "@heroui/tabs";
+import { ADMISSION_STATUSES } from "@/constants";
 
 const AdmissionManagement = () => {
   const queryClient = useQueryClient();
@@ -18,11 +20,19 @@ const AdmissionManagement = () => {
   const { pager, filters, debounceQuery, order, setPager } = table;
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [selectedId, setSelectedId] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState("all");
 
-  const queryFilterKey = `p=${pager.page},ps=${pager.pageSize},q=${debounceQuery},o=${order.order},ob=${order.orderBy},ca=${filters.createdAt},s=${filters.status}`;
+  const queryFilterKey = `p=${pager.page},ps=${pager.pageSize},q=${debounceQuery},o=${order.order},ob=${order.orderBy},ca=${filters.createdAt},s=${selectedStatus}`;
   const { isLoading, data, isSuccess } = useQuery({
     queryKey: ["admissions", queryFilterKey],
-    queryFn: () => studentConsultationApi.get(pager, order, debounceQuery, filters, ["refs=true"]),
+    queryFn: () =>
+      studentConsultationApi.get(
+        pager,
+        order,
+        debounceQuery,
+        { ...filters, ...(selectedStatus !== "all" && { status: selectedStatus }) },
+        ["refs=true"]
+      ),
   });
 
   const handleDeleteCertificate = async () => {
@@ -65,6 +75,18 @@ const AdmissionManagement = () => {
             addBtnPath={`/admin/register-admission`}
             rowSize={data?.rows?.length || 0}
           />
+        </div>
+        <div className="px-2 sm:px-10 mt-1">
+          <Tabs
+            aria-label="AdmissionManagement tabs"
+            selectedKey={selectedStatus}
+            onSelectionChange={setSelectedStatus}
+          >
+            <Tab key="all" title="Tất cả" />
+            {Object.values(ADMISSION_STATUSES).map((status) => (
+              <Tab key={status} title={status} />
+            ))}
+          </Tabs>
         </div>
         <Table
           isLoading={isLoading}
@@ -119,7 +141,7 @@ const defaultSelectedColumns = [
   "status",
   "consultantId",
   "expectedClassId",
-  "lastUpdatedAt",
+  "createdAt",
   "actions",
 ];
 

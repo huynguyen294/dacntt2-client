@@ -112,7 +112,7 @@ const commonColumns = [
   { name: "Ngày cập nhật gần nhất", uid: "lastUpdatedAt" },
 ];
 
-const adminColumns = [...commonColumns, { name: "Thao tác", uid: "actions" }];
+const adminColumns = [...commonColumns, { name: "Thao tác", uid: "actions", disableSort: true }];
 
 const studentColumns = [
   ...commonColumns,
@@ -128,7 +128,7 @@ const teacherColumns = [
   { name: "Chuyên môn", uid: "major", disableSort: true },
   { name: "Lớp đang dạy", uid: "classes", disableSort: true },
   { name: "Trạng thái", uid: "status", disableSort: true },
-  { name: "Thao tác", uid: "actions" },
+  { name: "Thao tác", uid: "actions", disableSort: true },
 ];
 
 const consultantColumns = [
@@ -136,7 +136,7 @@ const consultantColumns = [
   { name: "Lương cơ bản", uid: "salary" },
   { name: "Loại lao động", uid: "employmentType", disableSort: true },
   { name: "Trạng thái", uid: "status", disableSort: true },
-  { name: "Thao tác", uid: "actions" },
+  { name: "Thao tác", uid: "actions", disableSort: true },
 ];
 
 const financeOfficerColumns = [
@@ -144,7 +144,7 @@ const financeOfficerColumns = [
   { name: "Lương cơ bản", uid: "salary", disableSort: true },
   { name: "Loại lao động", uid: "employmentType", disableSort: true },
   { name: "Trạng thái", uid: "status", disableSort: true },
-  { name: "Thao tác", uid: "actions" },
+  { name: "Thao tác", uid: "actions", disableSort: true },
 ];
 
 const commonSelectedColumns = ["index", "user", "phoneNumber", "createdAt", "actions"];

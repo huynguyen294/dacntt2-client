@@ -1,6 +1,10 @@
 import Compressor from "compressorjs";
 import { format } from "date-fns";
 
+export const removeNullish = (obj) => {
+  return Object.fromEntries(Object.entries(obj).filter(([_, value]) => value !== null && value !== undefined));
+};
+
 export const arrayToObject = (arr = [], property = "id") => {
   return arr.reduce((acc, curr) => ({ ...acc, [curr[property]]: curr }), {});
 };

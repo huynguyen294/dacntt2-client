@@ -1,6 +1,7 @@
 import { certificateApi, imageApi } from "@/apis";
-import { AvatarInput, Form, Section } from "@/components/common";
-import { useForm, useNavigate } from "@/hooks";
+import { AvatarInput, Section, StatusDot } from "@/components/common";
+import { CERTIFICATE_STATUSES } from "@/constants";
+import { useNavigate } from "@/hooks";
 import { convertImageSrc } from "@/utils";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
@@ -9,6 +10,7 @@ import { addToast } from "@heroui/toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { Plus, RefreshCcw, Save } from "lucide-react";
 import { useState } from "react";
+import { Controller, Form, useForm } from "react-simple-formkit";
 
 const CertificateForm = ({ defaultValues = {}, editMode }) => {
   // handle for date
@@ -109,23 +111,34 @@ const CertificateForm = ({ defaultValues = {}, editMode }) => {
             labelPlacement="outside"
             placeholder="Nhập cấp độ"
           />
-          <Select
-            autoFocus
+          <Controller
             name="status"
-            isRequired
-            onChange={actions.instantChange}
-            defaultSelectedKeys={defaultValues.status ? new Set([defaultValues.status]) : new Set(["Hoạt động"])}
-            size="lg"
-            variant="bordered"
-            label="Trạng thái"
-            radius="sm"
-            labelPlacement="outside"
-            placeholder="Đang làm, đã nghỉ..."
-          >
-            <SelectItem key={"Hoạt động"}>Hoạt động</SelectItem>
-            <SelectItem key={"Tạm dừng"}>Tạm dừng</SelectItem>
-            <SelectItem key={"Hết hạn"}>Hết hạn</SelectItem>
-          </Select>
+            defaultValue={defaultValues.status || CERTIFICATE_STATUSES.active}
+            render={({ ref, name, defaultValue, value, setValue }) => (
+              <Select
+                ref={ref}
+                name={name}
+                isRequired
+                selectedKeys={new Set(value ? [value.toString()] : [])}
+                onChange={actions.instantChange}
+                onSelectionChange={(keys) => setValue([...keys][0])}
+                defaultSelectedKeys={new Set(defaultValue ? [defaultValue.toString()] : [])}
+                startContent={<StatusDot status={value || defaultValue} />}
+                size="lg"
+                variant="bordered"
+                label="Trạng thái"
+                radius="sm"
+                labelPlacement="outside"
+                placeholder="Đang làm, đã nghỉ..."
+              >
+                {Object.values(CERTIFICATE_STATUSES).map((status) => (
+                  <SelectItem key={status} startContent={<StatusDot status={status} />}>
+                    {status}
+                  </SelectItem>
+                ))}
+              </Select>
+            )}
+          />
         </div>
       </Section>
       <div className="space-x-4">

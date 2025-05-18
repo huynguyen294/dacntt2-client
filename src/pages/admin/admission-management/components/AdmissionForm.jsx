@@ -17,7 +17,7 @@ import { useSearchParams } from "react-router";
 import { Controller, Form, useForm } from "react-simple-formkit";
 
 const numberFields = ["expectedClassId", "expectedCourseId", "consultantId"];
-const AdmissionForm = ({ defaultValues = {}, editMode }) => {
+const AdmissionForm = ({ defaultValues = {}, editMode, onReload }) => {
   const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
@@ -218,7 +218,7 @@ const AdmissionForm = ({ defaultValues = {}, editMode }) => {
                     setValue([...keys][0]);
                     actions.instantChange();
                   }}
-                  defaultSelectedKeys={new Set([defaultValue])}
+                  defaultSelectedKeys={new Set(defaultValue ? [defaultValue] : [])}
                   startContent={<Dot variant={getAdmissionColor(value || defaultValue)} />}
                   size="lg"
                   variant="bordered"
@@ -272,6 +272,7 @@ const AdmissionForm = ({ defaultValues = {}, editMode }) => {
             className="shadow-xl"
             type="reset"
             isDisabled={!isDirty}
+            onPress={onReload}
             startContent={<RefreshCcw size="16px" />}
             variant="flat"
           >

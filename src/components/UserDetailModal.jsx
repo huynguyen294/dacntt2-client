@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { Avatar } from "@heroui/avatar";
 import { Chip } from "@heroui/chip";
 import { alpha, displayDate, localeString } from "@/utils";
-import { DATE_FORMAT, EMPLOYEE_ROLES, ROLE_PALLET } from "@/constants";
+import { EMPLOYEE_ROLES, ROLE_PALLET } from "@/constants";
 import { format } from "date-fns";
 import { useQuery } from "@tanstack/react-query";
 import { userApi } from "@/apis";
@@ -137,6 +137,7 @@ const UserDetailModal = ({ user, onOpenChange }) => {
                           if (dateFields.includes(columnKey)) {
                             cellValue = displayDate(cellValue);
                           }
+
                           if (columnKey === "actions") {
                             return (
                               <Tooltip color="danger" content="Xóa học sinh khỏi lớp">

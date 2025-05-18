@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import React from "react";
 
-const Dot = ({ variant }) => {
+const Dot = ({ variant, className, ...other }) => {
   let variantClass = "bg-default/40";
   switch (variant) {
     case "success":
@@ -17,7 +17,7 @@ const Dot = ({ variant }) => {
       break;
   }
 
-  return <div className={cn("size-2 rounded-full", variantClass)} />;
+  return <div className={cn("size-2 rounded-full", variantClass, className)} {...other} />;
 };
 
 export default Dot;
