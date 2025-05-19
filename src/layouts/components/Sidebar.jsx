@@ -8,9 +8,11 @@ import {
   ChevronDown,
   CircleDot,
   CircleHelp,
+  ClipboardType,
   GraduationCap,
   Info,
   LayoutDashboard,
+  List,
   Podcast,
   School,
   User,
@@ -191,7 +193,16 @@ const userSidebarItems = {
   ],
   student: [
     {
-      items: [{ ...dashboard, path: "/", isDashboard: true }],
+      items: [{ ...dashboard, path: "/student", isDashboard: true }],
+    },
+  ],
+  consultant: [
+    {
+      items: [
+        { ...dashboard, path: "/consultant", isDashboard: true },
+        { label: "Đăng ký ứng viên", path: "/consultant/register-admission", icon: ClipboardType },
+        { label: "Quản lý ứng viên", path: "/consultant/admissions", icon: List },
+      ],
     },
   ],
 };

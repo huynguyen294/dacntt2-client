@@ -3,6 +3,7 @@ import { UserBasicFields } from "@/components";
 import { Dot, Section } from "@/components/common";
 import { ADMISSION_STATUSES, COURSE_STATUSES, EMPLOYEE_STATUS, getAdmissionColor, ORDER_BY_NAME } from "@/constants";
 import { useMetadata } from "@/hooks";
+import { useAppStore } from "@/state";
 import { shiftFormat } from "@/utils";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { Avatar } from "@heroui/avatar";
@@ -22,6 +23,7 @@ const AdmissionForm = ({ defaultValues = {}, editMode, onReload }) => {
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
 
+  const user = useAppStore("user");
   const userId = searchParams.get("userId");
 
   const form = useForm({ numberFields });
@@ -111,12 +113,12 @@ const AdmissionForm = ({ defaultValues = {}, editMode, onReload }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-start gap-4 pb-4">
             <Controller
               name="consultantId"
-              defaultValue={defaultValues.consultantId}
+              defaultValue={user.role === "consultant" ? user.id.toString() : defaultValues.consultantId}
               render={({ ref, name, defaultValue, value, setValue }) => (
                 <Autocomplete
                   ref={ref}
                   name={name}
-                  value={value && value.toString()}
+                  value={user.role === "consultant" ? user.id.toString() : value && value.toString()}
                   size="lg"
                   radius="sm"
                   isRequired
@@ -124,6 +126,7 @@ const AdmissionForm = ({ defaultValues = {}, editMode, onReload }) => {
                   label="Tư vấn viên"
                   labelPlacement="outside"
                   placeholder="Chọn tư vấn viên"
+                  isReadOnly={user.role === "consultant"}
                   isLoading={userLoading}
                   defaultSelectedKey={defaultValue && defaultValue.toString()}
                   onSelectionChange={(newValue) => {

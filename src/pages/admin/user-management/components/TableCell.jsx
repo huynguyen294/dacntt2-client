@@ -61,8 +61,8 @@ const TableCell = ({ rowData, columnKey, refs, rowIndex, onDelete = () => {} }) 
         classes && (
           <div className="flex flex-wrap gap-1">
             {classes.map((classData) => (
-              <Chip size="sm" variant="flat">
-                {classData.name}
+              <Chip key={classData?.id} size="sm" variant="flat">
+                {classData?.name}
               </Chip>
             ))}
           </div>

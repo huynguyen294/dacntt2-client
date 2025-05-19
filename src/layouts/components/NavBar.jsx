@@ -13,7 +13,7 @@ import { User } from "@heroui/user";
 import SidebarDrawer from "./SidebarDrawer";
 import { cn } from "@/lib/utils";
 
-const NavBar = ({ breadcrumbItems = [], hideMenuButton = false }) => {
+const NavBar = ({ breadcrumbItems = [], hideMenuButton = false, hideDashboard = false }) => {
   const navigate = useNavigate();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -49,12 +49,15 @@ const NavBar = ({ breadcrumbItems = [], hideMenuButton = false }) => {
                 separator: "px-2",
               }}
             >
-              <BreadcrumbItem onPress={() => navigate("/admin")} startContent={<LayoutDashboard size="16px" />}>
-                Tổng quan
-              </BreadcrumbItem>
-              {breadcrumbItems.map(({ path, label }, index) => (
+              {!hideDashboard && (
+                <BreadcrumbItem onPress={() => navigate("/admin")} startContent={<LayoutDashboard size="16px" />}>
+                  Tổng quan
+                </BreadcrumbItem>
+              )}
+              {breadcrumbItems.map(({ path, label, startContent }, index) => (
                 <BreadcrumbItem
                   key={label}
+                  startContent={startContent}
                   onPress={() => {
                     if (index === breadcrumbItems.length - 1) return;
                     path && navigate(path);

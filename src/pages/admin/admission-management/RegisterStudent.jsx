@@ -16,6 +16,7 @@ import { studentConsultationApi, userApi } from "@/apis";
 import { Spinner } from "@heroui/spinner";
 import { ADMISSION_STATUSES } from "@/constants";
 import { addToast } from "@heroui/toast";
+import { useAppStore } from "@/state";
 
 const RegisterStudent = () => {
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ const RegisterStudent = () => {
   const { isOpen, onOpenChange, onOpen } = useDisclosure();
   const [lastedReloadedAt, reload] = useReload();
 
+  const user = useAppStore("user");
   const step = searchParams.get("step");
   const userId = searchParams.get("userId");
   const admissionId = searchParams.get("admissionId");
@@ -63,7 +65,7 @@ const RegisterStudent = () => {
                 <ModalBody>
                   <SearchUser
                     onChange={(id) => {
-                      navigate(`/admin/register-admission?userId=${id}&step=1`);
+                      navigate(`/${user.role}/register-admission?userId=${id}&step=1`);
                       onClose();
                     }}
                   />
@@ -87,7 +89,7 @@ const RegisterStudent = () => {
               radius="full"
               className="shadow-small bg-default-50 font-semibold"
               startContent={<MoveLeft size="21px" />}
-              onPress={() => navigate("/admin/register-admission")}
+              onPress={() => navigate(`/${user.role}/register-admission`)}
             >
               Quay lại
             </Button>
@@ -97,12 +99,11 @@ const RegisterStudent = () => {
               radius="full"
               className="shadow-small bg-default-50 font-semibold"
               endContent={<MoveRight size="21px" />}
-              onPress={() => navigate(`/admin/register-admission?step=2&admissionId=${admissionId}`)}
+              onPress={() => navigate(`/${user.role}/register-admission?step=2&admissionId=${admissionId}`)}
             >
               Tiếp theo
             </Button>
           </div>
-
           <AdmissionForm
             key={lastedReloadedAt}
             defaultValues={defaultValues}
@@ -119,7 +120,7 @@ const RegisterStudent = () => {
               radius="full"
               className="shadow-small bg-default-50 font-semibold"
               startContent={<MoveLeft size="21px" />}
-              onPress={() => navigate(`/admin/register-admission?step=1&admissionId=${admissionId}`)}
+              onPress={() => navigate(`/${user.role}/register-admission?step=1&admissionId=${admissionId}`)}
             >
               Quay lại
             </Button>
@@ -167,7 +168,7 @@ const RegisterStudent = () => {
           </div>
           <div className="flex-1 w-full h-full flex justify-center sm:justify-start items-start sm:items-center pb-10 pl-0 sm:pb-0 sm:pl-10">
             <Card
-              onPress={() => navigate("/admin/register-admission?step=1")}
+              onPress={() => navigate(`/${user.role}/register-admission?step=1`)}
               isPressable
               isHoverable
               isBlurred

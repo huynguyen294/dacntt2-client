@@ -8,6 +8,9 @@ const otherStudentConsultationApis = {
     if (filters.status) {
       params.push("filter=status:eq:" + filters.status);
     }
+    if (filters.consultantId) {
+      params.push("filter=consultantId:eq:" + filters.consultantId);
+    }
     const result = await API.get(`/api-v1/student-consultation?${params.join("&")}`);
     return result.data;
   },

@@ -1,18 +1,19 @@
 /* eslint-disable no-unused-vars */
 import { useTableContext } from "@/components/common";
-import { ADMISSION_STATUSES, DATE_FORMAT } from "@/constants";
+import { ADMISSION_STATUSES } from "@/constants";
 import { useNavigate } from "@/hooks";
+import { useAppStore } from "@/state";
 import { displayDate } from "@/utils";
 import { Button } from "@heroui/button";
 import { Chip } from "@heroui/chip";
 import { Tooltip } from "@heroui/tooltip";
-import { format } from "date-fns";
 import { Edit, Trash2 } from "lucide-react";
 
 const AdmissionCell = ({ rowData, refs, columnKey, rowIndex, onDelete = (id) => {} }) => {
   const { getRowIndex } = useTableContext();
   const navigate = useNavigate();
 
+  const user = useAppStore("user");
   const { users = {}, classes = {}, courses = {} } = refs || {};
 
   let cellValue = rowData[columnKey];
@@ -52,7 +53,7 @@ const AdmissionCell = ({ rowData, refs, columnKey, rowIndex, onDelete = (id) => 
         <div className="relative flex items-center justify-center">
           <Tooltip content="Sửa ứng viên">
             <Button
-              onPress={() => navigate(`/admin/register-admission?step=1&admissionId=${rowData.id}`)}
+              onPress={() => navigate(`/${user.role}/register-admission?step=1&admissionId=${rowData.id}`)}
               size="sm"
               isIconOnly
               radius="full"

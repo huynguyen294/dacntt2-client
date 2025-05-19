@@ -5,8 +5,8 @@ import { Navigate } from "react-router";
 
 const withAuth =
   (Component) =>
-  ({ title, breadcrumbItems, children, className, hideMenuButton }) => {
-    const props = { title, breadcrumbItems, children, className, hideMenuButton };
+  ({ title, breadcrumbItems, children, className, classNames, hideMenuButton, hideDashboard }) => {
+    const props = { title, breadcrumbItems, children, className, classNames, hideMenuButton, hideDashboard };
 
     const valid = useAuthorizationRedirect();
     const profile = cryptoDecrypt(localStorage.getItem("profile"));

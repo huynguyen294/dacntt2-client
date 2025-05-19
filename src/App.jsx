@@ -30,6 +30,7 @@ import { Student } from "./pages/student";
 import { NotFound, Profile } from "./pages";
 
 import "./App.css";
+import { Consultant } from "./pages/consultant";
 
 const App = () => {
   const navigate = useNavigate();
@@ -52,7 +53,6 @@ const App = () => {
           <Route path="user-management/:role/edit/:userId" element={<EditUser />} />
 
           <Route path="admissions" element={<AdmissionManagement />} />
-
           <Route path="register-admission" element={<RegisterStudent />} />
 
           <Route path="certificates" element={<CertificateManagement />} />
@@ -76,6 +76,12 @@ const App = () => {
 
         <Route path="teacher">
           <Route index element={<Teacher />} />
+        </Route>
+
+        <Route path="consultant">
+          <Route index element={<Consultant />} />
+          <Route path="register-admission" element={<RegisterStudent />} />
+          <Route path="admissions" element={<AdmissionManagement />} />
         </Route>
 
         <Route path="/">
