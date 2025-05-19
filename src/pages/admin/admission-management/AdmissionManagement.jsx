@@ -17,7 +17,7 @@ import { ADMISSION_STATUSES } from "@/constants";
 const AdmissionManagement = () => {
   const queryClient = useQueryClient();
   const table = useTable({ allColumns: columns, defaultSelectedColumns });
-  const { pager, filters, debounceQuery, order, setPager } = table;
+  const { pager, filters, debounceQuery, order, setPager, setSelectedKeys } = table;
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [selectedId, setSelectedId] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState("all");
@@ -80,7 +80,10 @@ const AdmissionManagement = () => {
           <Tabs
             aria-label="AdmissionManagement tabs"
             selectedKey={selectedStatus}
-            onSelectionChange={setSelectedStatus}
+            onSelectionChange={(newValue) => {
+              setSelectedStatus(newValue);
+              setSelectedKeys(new Set([]));
+            }}
           >
             <Tab key="all" title="Tất cả" />
             {Object.values(ADMISSION_STATUSES).map((status) => (

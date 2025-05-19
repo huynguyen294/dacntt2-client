@@ -81,6 +81,7 @@ const UserManagement = () => {
           isLoading={isLoading}
           renderCell={(rowData, columnKey, index) => (
             <TableCell
+              refs={data?.refs}
               rowData={rowData}
               columnKey={columnKey}
               rowIndex={index}

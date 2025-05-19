@@ -116,12 +116,12 @@ const UserDetailModal = ({ user, onOpenChange }) => {
                     <TableProvider
                       value={{
                         columns: [
-                          { uid: "index", name: "STT" },
-                          { uid: "name", name: "Tên lớp" },
-                          { uid: "weekDays", name: "Ngày học" },
-                          { uid: "openingDay", name: "Ngày khai giảng" },
-                          { uid: "closingDay", name: "Ngày kết thúc" },
-                          user.role === "student" && { uid: "actions", name: "Thao tác" },
+                          { uid: "index", name: "STT", disableSort: true },
+                          { uid: "name", name: "Tên lớp", disableSort: true },
+                          { uid: "weekDays", name: "Ngày học", disableSort: true },
+                          { uid: "openingDay", name: "Ngày khai giảng", disableSort: true },
+                          { uid: "closingDay", name: "Ngày kết thúc", disableSort: true },
+                          user.role === "student" && { uid: "actions", name: "Thao tác", disableSort: true },
                         ],
                       }}
                     >
@@ -144,6 +144,7 @@ const UserDetailModal = ({ user, onOpenChange }) => {
                                 <Button
                                   onClick={(e) => e.stopPropagation()}
                                   onPress={handleDelete}
+                                  isDisabled
                                   size="sm"
                                   color="danger"
                                   isIconOnly

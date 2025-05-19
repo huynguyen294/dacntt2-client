@@ -9,17 +9,9 @@ import { useNavigate } from "@/hooks";
 import { imageApi, userApi } from "@/apis";
 import { useQueryClient } from "@tanstack/react-query";
 import { addToast } from "@heroui/toast";
-import { convertImageSrc, removeNullish } from "@/utils";
+import { convertImageSrc } from "@/utils";
 import { format } from "date-fns";
-import {
-  DATE_FORMAT,
-  EMPLOYEE_ROLES,
-  EMPLOYEE_STATUS,
-  getStatusColor,
-  ROLE_LABELS,
-  ROLE_PALLET,
-  USER_ROLES,
-} from "@/constants";
+import { DATE_FORMAT, EMPLOYEE_ROLES, EMPLOYEE_STATUS, ROLE_LABELS, ROLE_PALLET, USER_ROLES } from "@/constants";
 import { Checkbox } from "@heroui/checkbox";
 import { Input, Textarea } from "@heroui/input";
 import { DatePicker } from "@heroui/date-picker";
@@ -50,7 +42,7 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
   const { isError, isDirty, errors, actions } = form;
 
   const handleSubmit = async (data) => {
-    const { passwordConfirm, ...payload } = removeNullish(data);
+    const { passwordConfirm, ...payload } = data;
 
     setRegistering(true);
     let resultImg;

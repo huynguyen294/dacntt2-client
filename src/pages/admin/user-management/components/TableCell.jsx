@@ -1,6 +1,6 @@
 import { UserDetailModal } from "@/components";
 import { useTableContext } from "@/components/common";
-import { DATE_FORMAT, ROLE_PALLET } from "@/constants";
+import { DATE_FORMAT, getStatusColor, ROLE_LABELS, ROLE_PALLET } from "@/constants";
 import { useNavigate } from "@/hooks";
 import { alpha, convertImageSrc, displayDate, localeString } from "@/utils";
 import { Button } from "@heroui/button";
@@ -11,7 +11,7 @@ import { User } from "@heroui/user";
 import { Edit, Eye, Trash2 } from "lucide-react";
 import { useParams } from "react-router";
 
-const TableCell = ({ rowData, columnKey, rowIndex, onDelete = () => {} }) => {
+const TableCell = ({ rowData, columnKey, refs, rowIndex, onDelete = () => {} }) => {
   const navigate = useNavigate();
   const { role } = useParams();
   const { getRowIndex } = useTableContext();
@@ -45,29 +45,34 @@ const TableCell = ({ rowData, columnKey, rowIndex, onDelete = () => {} }) => {
           className="capitalize bg-[var(--current-color)]"
           size="sm"
           variant="flat"
-          style={{ "--current-color": alpha(ROLE_PALLET[cellValue], 0.2) }}
+          style={{ "--current-color": alpha(ROLE_PALLET[cellValue], 0.2), color: "#222" }}
         >
-          {cellValue}
+          {ROLE_LABELS[cellValue]}
         </Chip>
       );
-    case "classes":
-      if (rowData.role === "student" || rowData.status === "Đang làm việc") {
-        return (
-          <Chip className="capitalize" size="sm" variant="flat">
-            Tiếng Anh 1
-          </Chip>
-        );
+    case "classes": {
+      let classes;
+      const { userClasses = {} } = refs || {};
+      if (rowData.role === "student" || rowData.role === "teacher") {
+        classes = userClasses[rowData.id];
       }
-      return null;
+
+      return (
+        classes && (
+          <div className="flex flex-wrap gap-1">
+            {classes.map((classData) => (
+              <Chip size="sm" variant="flat">
+                {classData.name}
+              </Chip>
+            ))}
+          </div>
+        )
+      );
+    }
     case "status": {
-      const mapStatus = {
-        "Đang làm việc": "success",
-        "Tạm nghỉ việc": "warning",
-        "Đã nghỉ việc": "danger",
-      };
       return (
         cellValue && (
-          <Chip size="sm" variant="flat" color={mapStatus[cellValue]}>
+          <Chip size="sm" variant="flat" color={getStatusColor(cellValue)}>
             {cellValue}
           </Chip>
         )

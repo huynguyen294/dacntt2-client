@@ -81,13 +81,13 @@ const ClassDetailModal = ({ rowData, onOpenChange }) => {
                     <TableProvider
                       value={{
                         columns: [
-                          { uid: "index", name: "STT" },
-                          { uid: "name", name: "Tên" },
-                          { uid: "email", name: "Email" },
-                          { uid: "phoneNumber", name: "Số điện thoại" },
-                          { uid: "dateOfBirth", name: "Ngày sinh" },
-                          { uid: "gender", name: "Giới tính" },
-                          { uid: "actions", name: "Thao tác" },
+                          { uid: "index", name: "STT", disableSort: true },
+                          { uid: "name", name: "Tên", disableSort: true },
+                          { uid: "email", name: "Email", disableSort: true },
+                          { uid: "phoneNumber", name: "Số điện thoại", disableSort: true },
+                          { uid: "dateOfBirth", name: "Ngày sinh", disableSort: true },
+                          { uid: "gender", name: "Giới tính", disableSort: true },
+                          { uid: "actions", name: "Thao tác", disableSort: true },
                         ],
                       }}
                     >
