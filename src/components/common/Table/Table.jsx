@@ -3,9 +3,8 @@ import { Spinner } from "@heroui/spinner";
 import { Table as HerioUiTable, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/table";
 import { Ban } from "lucide-react";
 import { useTableContext } from "./context";
-import { Tab, Tabs } from "@heroui/tabs";
 
-const defaultCellRenderer = (row, columnKey, index) => row[columnKey];
+const defaultCellRenderer = (row, columnKey, index, table) => row[columnKey];
 const Table = ({
   className,
   rows,
@@ -16,13 +15,20 @@ const Table = ({
   isHeaderSticky = true,
   ...other
 }) => {
-  const { selectedKeys, setSelectedKeys, columns, order, setOrder = () => {} } = useTableContext();
+  const table = useTableContext();
+  const { selectedKeys, setSelectedKeys, columns, order, setOrder = () => {} } = table;
 
   const sortDescriptor = order && {
     column: order.orderBy,
     direction: order.order === "asc" ? "ascending" : "descending",
   };
   const loadingState = isLoading ? "loading" : "idle";
+
+  const renderTableCell = (col, row, rowIdx) => {
+    if (col.uid === "index") return table.getRowIndex ? table.getRowIndex(rowIdx) : rowIdx + 1;
+    if (typeof col.render === "function") return col.render(row, rowIdx, table);
+    return renderCell(row, col.uid, rowIdx, table);
+  };
 
   return (
     <HerioUiTable
@@ -67,7 +73,7 @@ const Table = ({
         {rows.map((row, rowIdx) => (
           <TableRow key={row.id}>
             {columns.map((col, colIdx) => (
-              <TableCell key={`${rowIdx}-${colIdx}`}>{renderCell(row, col.uid, rowIdx)}</TableCell>
+              <TableCell key={`${rowIdx}-${colIdx}`}>{renderTableCell(col, row, rowIdx)}</TableCell>
             ))}
           </TableRow>
         ))}

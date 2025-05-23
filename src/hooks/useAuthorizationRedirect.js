@@ -6,7 +6,7 @@ import { USER_ROLES } from "@/constants";
 import useNavigate from "./useNavigate";
 
 const useAuthorizationRedirect = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate(false);
   const location = useLocation();
 
   const valid = useMemo(() => {

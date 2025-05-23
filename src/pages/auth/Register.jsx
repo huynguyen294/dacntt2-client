@@ -11,7 +11,7 @@ import { useState } from "react";
 import { Form, useForm } from "react-simple-formkit";
 
 const Register = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate(false);
   const [registering, setRegistering] = useState(false);
   const [emailChecking, setEmailChecking] = useState(false);
 

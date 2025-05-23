@@ -2,15 +2,15 @@ import { Button } from "@heroui/button";
 import { Divider } from "@heroui/divider";
 import { Input } from "@heroui/input";
 
-import { ArrowDown, ChevronDown, Grid2X2, ListFilter, Plus, Search } from "lucide-react";
+import { ChevronDown, Grid2X2, Plus, Search } from "lucide-react";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/dropdown";
-import { cn } from "@/lib/utils";
 import { useNavigate } from "@/hooks";
 import { useTableContext } from "./context";
 
 const defaultSearchPlaceholder = "Tìm theo tên, email, số điện thoại";
 const TableHeader = ({
   rowSize = 0,
+  hideAddBtn,
   searchPlaceholder = defaultSearchPlaceholder,
   addBtnPath,
   addBtnText = "Thêm mới",
@@ -57,14 +57,16 @@ const TableHeader = ({
         <p className="whitespace-nowrap">{selectedKeys === "all" ? rowSize || 0 : selectedKeys.size} Đã chọn</p>
         {(selectedKeys === "all" || selectedKeys.size > 0) && multiAction}
       </div>
-      <Button
-        className="font-semibold min-w-fit"
-        color="primary"
-        endContent={<Plus size="18px" />}
-        onPress={() => navigate(addBtnPath)}
-      >
-        {addBtnText}
-      </Button>
+      {!hideAddBtn && (
+        <Button
+          className="font-semibold min-w-fit"
+          color="primary"
+          endContent={<Plus size="18px" />}
+          onPress={() => navigate(addBtnPath)}
+        >
+          {addBtnText}
+        </Button>
+      )}
     </div>
   );
 };

@@ -901,6 +901,19 @@
     "@react-types/button" "3.12.0"
     "@react-types/overlays" "3.8.14"
 
+"@heroui/progress@^2.2.15":
+  version "2.2.15"
+  resolved "https://registry.yarnpkg.com/@heroui/progress/-/progress-2.2.15.tgz#bc0fcd393f668b1a3a11b98737ec1aabcbe53a0f"
+  integrity sha512-nWZCw4EAuBZ7hrmmgC1bSzhg2wJScQeop4erUIM59UHFUSYhVbW7GG6Q5wBn+lEkEi/Sn3Tm7OOFDlUa7bRdXA==
+  dependencies:
+    "@heroui/react-utils" "2.1.10"
+    "@heroui/shared-utils" "2.1.9"
+    "@heroui/use-is-mounted" "2.1.7"
+    "@react-aria/i18n" "3.12.8"
+    "@react-aria/progress" "3.4.22"
+    "@react-aria/utils" "3.28.2"
+    "@react-types/progress" "3.5.11"
+
 "@heroui/radio@^2.3.16":
   version "2.3.18"
   resolved "https://registry.yarnpkg.com/@heroui/radio/-/radio-2.3.18.tgz#66a0e272c8ad54bf15708937e8306c936b05cd7f"
@@ -1776,6 +1789,18 @@
     "@react-types/shared" "^3.29.0"
     "@swc/helpers" "^0.5.0"
 
+"@react-aria/progress@3.4.22":
+  version "3.4.22"
+  resolved "https://registry.yarnpkg.com/@react-aria/progress/-/progress-3.4.22.tgz#e65c7c1bbac1be85205e96d5b243e295b16614d4"
+  integrity sha512-wK2hath4C9HKgmjCH+iSrAs86sUKqqsYKbEKk9/Rj9rzXqHyaEK9EG0YZDnSjd8kX+N9hYcs5MfJl6AZMH4juQ==
+  dependencies:
+    "@react-aria/i18n" "^3.12.8"
+    "@react-aria/label" "^3.7.17"
+    "@react-aria/utils" "^3.28.2"
+    "@react-types/progress" "^3.5.11"
+    "@react-types/shared" "^3.29.0"
+    "@swc/helpers" "^0.5.0"
+
 "@react-aria/radio@3.11.2":
   version "3.11.2"
   resolved "https://registry.yarnpkg.com/@react-aria/radio/-/radio-3.11.2.tgz#5bffae601e3c7b25ca8e201491b4db125e005ba9"
@@ -2295,6 +2320,20 @@
   dependencies:
     "@react-types/shared" "^3.29.0"
 
+"@react-types/progress@3.5.11":
+  version "3.5.11"
+  resolved "https://registry.yarnpkg.com/@react-types/progress/-/progress-3.5.11.tgz#76af0ef249e1c54536429321f62abafe8d1ea9da"
+  integrity sha512-CysuMld/lycOckrnlvrlsVoJysDPeBnUYBChwtqwiv4ZNRXos+wgAL1ows6dl7Nr57/FH5B4v5gf9AHEo7jUvw==
+  dependencies:
+    "@react-types/shared" "^3.29.0"
+
+"@react-types/progress@^3.5.11":
+  version "3.5.12"
+  resolved "https://registry.yarnpkg.com/@react-types/progress/-/progress-3.5.12.tgz#76d84f0eb7899f63d235a6b251b179f388080aba"
+  integrity sha512-wvhFz6vdlfKBtnzKvD/89N+0PF3yPQ+IVFRQvZ2TBrP7nF+ZA2pNLcZVcEYbKjHzmvEZRGu//ePC9hRJD9K30w==
+  dependencies:
+    "@react-types/shared" "^3.29.1"
+
 "@react-types/radio@3.8.8", "@react-types/radio@^3.8.8":
   version "3.8.8"
   resolved "https://registry.yarnpkg.com/@react-types/radio/-/radio-3.8.8.tgz#dbb3940408c38ed073ad441f05be4318e5013398"
@@ -2313,6 +2352,11 @@
   version "3.29.0"
   resolved "https://registry.yarnpkg.com/@react-types/shared/-/shared-3.29.0.tgz#f29bdad3bff1336aaa754d7abc420da2f014d931"
   integrity sha512-IDQYu/AHgZimObzCFdNl1LpZvQW/xcfLt3v20sorl5qRucDVj4S9os98sVTZ4IRIBjmS+MkjqpR5E70xan7ooA==
+
+"@react-types/shared@^3.29.1":
+  version "3.29.1"
+  resolved "https://registry.yarnpkg.com/@react-types/shared/-/shared-3.29.1.tgz#81c685e54aab7abe890b2a93e6758d0163b04c54"
+  integrity sha512-KtM+cDf2CXoUX439rfEhbnEdAgFZX20UP2A35ypNIawR7/PFFPjQDWyA2EnClCcW/dLWJDEPX2U8+EJff8xqmQ==
 
 "@react-types/table@3.12.0", "@react-types/table@^3.12.0":
   version "3.12.0"

@@ -24,13 +24,15 @@ import {
   RegisterStudent,
   TrainingSettings,
   UserManagement,
-} from "./pages/admin";
-import { Teacher } from "./pages/teacher";
-import { Student } from "./pages/student";
-import { NotFound, Profile } from "./pages";
+  Teacher,
+  Student,
+  NotFound,
+  Profile,
+  Consultant,
+  ClassRoom,
+} from "./pages";
 
 import "./App.css";
-import { Consultant } from "./pages/consultant";
 
 const App = () => {
   const navigate = useNavigate();
@@ -65,6 +67,7 @@ const App = () => {
 
           <Route path="classes" element={<ClassManagement />} />
           <Route path="classes/add" element={<AddClass />} />
+          <Route path="classes/:id" element={<ClassRoom />} />
           <Route path="classes/edit/:id" element={<EditClass />} />
 
           <Route path="exams" element={<ExamManagement />} />
@@ -82,6 +85,7 @@ const App = () => {
           <Route index element={<Consultant />} />
           <Route path="register-admission" element={<RegisterStudent />} />
           <Route path="admissions" element={<AdmissionManagement />} />
+          <Route path="classes" element={<ClassManagement />} />
         </Route>
 
         <Route path="/">

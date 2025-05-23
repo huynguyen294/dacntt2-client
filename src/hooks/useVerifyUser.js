@@ -6,7 +6,7 @@ import { addToast } from "@heroui/toast";
 import useNavigate from "./useNavigate";
 
 const useVerifyUser = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate(false);
   const appActions = useAppStore("appActions");
 
   useEffect(() => {

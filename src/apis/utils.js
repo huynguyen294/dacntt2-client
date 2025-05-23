@@ -12,7 +12,7 @@ export const generateCrudApi = (key) => {
       return result.data;
     },
 
-    getById: async (id, { refs = false, refFields } = {}) => {
+    getById: async (id, { refs = false, refFields = null } = {}) => {
       const params = [];
       if (refs) params.push("refs=true");
       if (refFields) params.push("refFields=" + refFields);
@@ -59,14 +59,14 @@ export const getServerErrorMessage = (error) => {
   return { ok: false, status: error.status, message: "Hệ thống lỗi, vui lòng thử lại sau." };
 };
 
-export const getCommonParams = (pager, order, search, filters) => {
+export const getCommonParams = (pager, order, search, filters = {}) => {
   const params = [];
-  if (pager.pageSize) params.push("pageSize=" + pager.pageSize);
-  if (pager.page) params.push("page=" + pager.page);
-  if (!pager.pageSize && !pager.page) params.push("paging=false");
+  if (pager?.pageSize) params.push("pageSize=" + pager.pageSize);
+  if (pager?.page) params.push("page=" + pager.page);
+  if (!pager?.pageSize && !pager?.page) params.push("paging=false");
   if (search) params.push("searchQuery=" + search);
-  if (order.order) params.push("order=" + order.order);
-  if (order.orderBy) params.push("orderBy=" + order.orderBy);
+  if (order?.order) params.push("order=" + order.order);
+  if (order?.orderBy) params.push("orderBy=" + order.orderBy);
 
   const { createdAt } = filters;
   if (createdAt) {

@@ -28,7 +28,8 @@ const SearchUser = ({ onChange = (key) => {} }) => {
         startContent={<Search size="14px" />}
         placeholder="Nhập tên hoặc email"
       />
-      <div className="h-[60dvh]  overflow-y-auto mt-2">
+      {!query && <p className="font-semibold text-foreground-400 px-2 mt-2 mb-1">Học viên mới gần đây</p>}
+      <div className="h-[60dvh]  overflow-y-auto">
         <Listbox variant="flat" aria-label="Actions" onAction={onChange} emptyContent="Không có dữ liệu">
           {isLoading && (
             <ListboxItem key="loader" className="w-full">

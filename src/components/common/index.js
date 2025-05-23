@@ -13,4 +13,7 @@ export { default as TableProvider } from "./Table/TableProvider";
 export { default as Section } from "./Section";
 export { default as Dot } from "./Dot";
 export { default as StatusDot } from "./StatusDot";
+export { default as Loader } from "./Loader";
+export { default as DropDown } from "./DropDown";
+export { default as Amount } from "./Amount";
 export * from "./Table/context";

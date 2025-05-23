@@ -13,7 +13,7 @@ import { Form, useForm } from "react-simple-formkit";
 import { addToast } from "@heroui/toast";
 
 const Login = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate(false);
   const [signing, setSigning] = useState(false);
 
   const form = useForm();

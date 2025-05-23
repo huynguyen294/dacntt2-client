@@ -139,69 +139,70 @@ const Sidebar = ({ className }) => {
 const dashboard = { label: "Tổng quan", icon: LayoutDashboard };
 const userSidebarItems = {
   admin: [
-    { items: [{ ...dashboard, path: "/admin", isDashboard: true }] },
+    { items: [{ ...dashboard, path: "/", isDashboard: true }] },
     {
       section: "Người dùng",
       sectionIcon: User,
       items: [
-        { label: "Tài khoản", path: "/admin/user-management/_" },
-        { label: "Học viên", path: "/admin/user-management/student" },
-        { label: "Giáo viên", path: "/admin/user-management/teacher" },
-        { label: "Tư vấn viên", path: "/admin/user-management/consultant" },
-        { label: "Nhân viên học vụ/tài chính", path: "/admin/user-management/finance-officer" },
+        { label: "Tài khoản", path: "/user-management/_" },
+        { label: "Học viên", path: "/user-management/student" },
+        { label: "Giáo viên", path: "/user-management/teacher" },
+        { label: "Tư vấn viên", path: "/user-management/consultant" },
+        { label: "Nhân viên học vụ/tài chính", path: "/user-management/finance-officer" },
       ],
     },
     {
       section: "Tuyển sinh",
       sectionIcon: Podcast,
       items: [
-        { label: "Đăng ký ứng viên", path: "/admin/register-admission" },
-        { label: "Quản lý ứng viên", path: "/admin/admissions" },
+        { label: "Đăng ký ứng viên", path: "/register-admission" },
+        { label: "Quản lý ứng viên", path: "/admissions" },
       ],
     },
     {
       section: "Đào tạo",
       sectionIcon: GraduationCap,
       items: [
-        { label: "Chứng chỉ", path: "/admin/certificates" },
-        { label: "Khóa học", path: "/admin/courses" },
-        { label: "Lớp học", path: "/admin/classes" },
-        { label: "Kỳ thi", path: "/admin/exams" },
-        { label: "Cài đặt đào tạo", path: "/admin/training-settings" },
+        { label: "Chứng chỉ", path: "/certificates" },
+        { label: "Khóa học", path: "/courses" },
+        { label: "Lớp học", path: "/classes" },
+        { label: "Kỳ thi", path: "/exams" },
+        { label: "Cài đặt đào tạo", path: "/training-settings" },
       ],
     },
     {
       section: "Báo cáo",
       sectionIcon: ChartColumnBig,
       items: [
-        { label: "Báo cáo tuyển sinh", path: "/admin/admission-report", disabled: true },
-        { label: "Báo cáo tài chính", path: "/admin/finance-report", disabled: true },
-        { label: "Báo cáo đào tạo", path: "/admin/edu-report", disabled: true },
+        { label: "Báo cáo tuyển sinh", path: "/admission-report", disabled: true },
+        { label: "Báo cáo tài chính", path: "/finance-report", disabled: true },
+        { label: "Báo cáo đào tạo", path: "/edu-report", disabled: true },
       ],
     },
     {
       items: [
-        { label: "Trung tâm trợ giúp", path: "/admin/contact", icon: CircleHelp },
-        { label: "Thông tin phần mềm", path: "/admin/about", icon: Info },
+        { label: "Trung tâm trợ giúp", path: "/contact", icon: CircleHelp },
+        { label: "Thông tin phần mềm", path: "/about", icon: Info },
       ],
     },
   ],
   teacher: [
     {
-      items: [{ ...dashboard, path: "/teacher", isDashboard: true }],
+      items: [{ ...dashboard, path: "/", isDashboard: true }],
     },
   ],
   student: [
     {
-      items: [{ ...dashboard, path: "/student", isDashboard: true }],
+      items: [{ ...dashboard, path: "/", isDashboard: true }],
     },
   ],
   consultant: [
     {
       items: [
-        { ...dashboard, path: "/consultant", isDashboard: true },
-        { label: "Đăng ký ứng viên", path: "/consultant/register-admission", icon: ClipboardType },
-        { label: "Quản lý ứng viên", path: "/consultant/admissions", icon: List },
+        { ...dashboard, path: "/", isDashboard: true },
+        { label: "Đăng ký ứng viên", path: "/register-admission", icon: ClipboardType },
+        { label: "Quản lý ứng viên", path: "/admissions", icon: List },
+        { label: "Danh sách lớp học", path: "/classes", icon: GraduationCap },
       ],
     },
   ],

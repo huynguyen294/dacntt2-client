@@ -1,6 +1,16 @@
 import Compressor from "compressorjs";
 import { format } from "date-fns";
 
+export const blurEmail = (email) => {
+  const [localPart, domain] = email.split("@");
+  if (!localPart || !domain || localPart.length <= 3) return email;
+
+  const visiblePart = localPart.slice(0, 3);
+  const hiddenPart = "•".repeat(localPart.length - 3);
+
+  return `${visiblePart}${hiddenPart}@${domain}`;
+};
+
 export const removeNullish = (obj) => {
   return Object.fromEntries(Object.entries(obj).filter(([_, value]) => value !== null && value !== undefined));
 };
@@ -10,9 +20,12 @@ export const arrayToObject = (arr = [], property = "id") => {
 };
 
 export const timeFormat = (text) => text && text.slice(0, 5);
-
-export const displayDate = (value) => (value ? format(new Date(value), "dd/MM/yyyy") : "");
-
+export const displayDate = (value) => (value ? format(new Date(value), "dd-MM-yyyy") : "");
+export const dayFormat = (date) => {
+  const day = new Date(date).getDay();
+  if (day === 0) return "Chủ nhật";
+  return "Thứ " + (day + 1);
+};
 export const shiftFormat = ({ startTime, endTime } = {}) => `${timeFormat(startTime)} - ${timeFormat(endTime)}`;
 
 const maxSize = 2 * 1024 * 1024; // 2MB
@@ -75,6 +88,28 @@ export const convertImageSrc = (link) => ({ link, id: getCloudinaryPublicIdFromU
 export const currencyToNumber = (str = "") => parseInt(String(str).replaceAll(/[.,]/g, ""));
 
 export const localeString = (number) => Number(number || 0).toLocaleString("zh-CN");
+
+const sample = (d = [], fn = Math.random) => {
+  if (d.length === 0) return;
+  return d[Math.round(fn() * (d.length - 1))];
+};
+export const generateUid = ({ limit = 8, randomFn = Math.random, numeric = true, upper = true, lower = true } = {}) => {
+  const allowed = [];
+  if (numeric) allowed.push("0123456789");
+  if (upper) allowed.push("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+  if (lower) allowed.push("abcdefghijklmnopqrstuvwxyz");
+  if (!numeric && !upper && !lower)
+    throw new Error(
+      "Sample error! At least one of the following is required: a numeric character, an uppercase letter, or a lowercase letter."
+    );
+  const allowedChars = allowed.join("");
+  const arr = [sample(allowedChars, randomFn)];
+  for (let i = 0; i < limit - 1; i++) {
+    arr.push(sample(allowedChars, randomFn));
+  }
+
+  return arr.join("");
+};
 
 export const removeVietnameseTones = (str) => {
   const mapAccents = {

@@ -14,7 +14,7 @@ import SidebarDrawer from "./SidebarDrawer";
 import { cn } from "@/lib/utils";
 
 const NavBar = ({ breadcrumbItems = [], hideMenuButton = false, hideDashboard = false }) => {
-  const navigate = useNavigate();
+  const navigate = useNavigate(true);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const user = useAppStore("user");
@@ -22,7 +22,7 @@ const NavBar = ({ breadcrumbItems = [], hideMenuButton = false, hideDashboard = 
   const handleLogout = () => {
     signOut();
     resetAppData();
-    navigate("/login");
+    navigate("/login", false);
   };
 
   return (
@@ -50,7 +50,7 @@ const NavBar = ({ breadcrumbItems = [], hideMenuButton = false, hideDashboard = 
               }}
             >
               {!hideDashboard && (
-                <BreadcrumbItem onPress={() => navigate("/admin")} startContent={<LayoutDashboard size="16px" />}>
+                <BreadcrumbItem onPress={() => navigate("/")} startContent={<LayoutDashboard size="16px" />}>
                   Tổng quan
                 </BreadcrumbItem>
               )}
@@ -111,12 +111,8 @@ const NavBar = ({ breadcrumbItems = [], hideMenuButton = false, hideDashboard = 
                 <DropdownItem key="user" className="h-14 gap-2">
                   <User avatarProps={{ src: user.imageUrl }} name={user.name} description={user.email} />
                 </DropdownItem>
-                <DropdownItem
-                  startContent={<UserPen size="16px" />}
-                  key="profile"
-                  onPress={() => navigate(`/${user.role}/profile`)}
-                >
-                  Hồ sơ
+                <DropdownItem startContent={<UserPen size="16px" />} key="profile" onPress={() => navigate(`/profile`)}>
+                  Hồ sơ cá nhân
                 </DropdownItem>
                 <DropdownItem startContent={<Info size="16px" />} key="contact">
                   Liên hệ
