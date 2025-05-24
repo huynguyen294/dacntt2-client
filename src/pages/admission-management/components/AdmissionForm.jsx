@@ -78,7 +78,7 @@ const AdmissionForm = ({ defaultValues = {}, editMode, onReload }) => {
     }
 
     data.studentId = userId;
-    if (!userId) data.password = generateUid();
+    if (!userId && data.status === ADMISSION_STATUSES.accepted) data.password = generateUid();
     const result = await studentConsultationApi.create(data);
     if (result.ok) {
       queryClient.invalidateQueries({ queryKey: ["admissions"] });
