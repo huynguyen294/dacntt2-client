@@ -15,6 +15,7 @@ export { default as AddExam } from "./training-management/exam/AddExam";
 export { default as EditExam } from "./training-management/exam/EditExam";
 export { default as ExamManagement } from "./training-management/exam/ExamManagement";
 
+export { default as TimeTablePage } from "./training-management/timetable/TimeTablePage";
 export { default as TrainingSettings } from "./training-management/TrainingSettings";
 export { default as AdmissionManagement } from "./admission-management/AdmissionManagement";
 export { default as RegisterStudent } from "./admission-management/RegisterStudent";

@@ -88,4 +88,10 @@ export const getStatusColor = (status) => {
   return "default";
 };
 
+export const ATTENDANCES = {
+  yes: "Có",
+  no: "Không",
+  late: "Đi trễ",
+};
+
 export const ORDER_BY_NAME = { orderBy: "name", order: "asc" };

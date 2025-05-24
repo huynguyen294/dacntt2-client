@@ -30,6 +30,7 @@ import {
   Profile,
   Consultant,
   ClassRoom,
+  TimeTablePage,
 } from "./pages";
 
 import "./App.css";
@@ -75,6 +76,7 @@ const App = () => {
           <Route path="exams/edit/:id" element={<EditExam />} />
 
           <Route path="training-settings" element={<TrainingSettings />} />
+          <Route path="timetable" element={<TimeTablePage />} />
         </Route>
 
         <Route path="teacher">

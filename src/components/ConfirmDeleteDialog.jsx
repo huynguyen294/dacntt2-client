@@ -2,7 +2,7 @@ import { Button } from "@heroui/button";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@heroui/modal";
 import { useState } from "react";
 
-const ConfirmDeleteDialog = ({ isOpen, title, onDelete, message, onClose }) => {
+const ConfirmDeleteDialog = ({ isOpen, title, onDelete, message, onClose, deleteBtnText = "Xóa" }) => {
   const [loading, setLoading] = useState(false);
 
   return (
@@ -29,7 +29,7 @@ const ConfirmDeleteDialog = ({ isOpen, title, onDelete, message, onClose }) => {
                   setLoading(false);
                 }}
               >
-                Xóa
+                {deleteBtnText}
               </Button>
             </ModalFooter>
           </>

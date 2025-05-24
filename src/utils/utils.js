@@ -16,7 +16,10 @@ export const removeNullish = (obj) => {
 };
 
 export const arrayToObject = (arr = [], property = "id") => {
-  return arr.reduce((acc, curr) => ({ ...acc, [curr[property]]: curr }), {});
+  return arr.reduce(
+    (acc, curr) => ({ ...acc, [typeof property === "string" ? curr[property] : property(curr)]: curr }),
+    {}
+  );
 };
 
 export const timeFormat = (text) => text && text.slice(0, 5);

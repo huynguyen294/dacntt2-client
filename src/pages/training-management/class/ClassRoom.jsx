@@ -3,7 +3,7 @@ import { ModuleLayout } from "@/layouts";
 import { addToast } from "@heroui/toast";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useParams, useSearchParams } from "react-router";
 import { classesManagementBreadcrumbItems } from "../constants";
 import { Calendar1, ClipboardCheck, Info, ListChecks, Users } from "lucide-react";
 import { Tab, Tabs } from "@heroui/tabs";
@@ -15,6 +15,9 @@ import ClassExercise from "./components/ClassExercise";
 
 const ClassRoom = () => {
   const { id } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const tab = searchParams.get("tab");
 
   const { data, isError, error } = useQuery({
     queryKey: ["classes", id, "refs"],
@@ -29,6 +32,12 @@ const ClassRoom = () => {
     <ModuleLayout breadcrumbItems={[...classesManagementBreadcrumbItems, { label: data?.item?.name || "..." }]}>
       <Tabs
         aria-label="ClassRoom tabs"
+        defaultSelectedKey="exercise"
+        selectedKey={tab}
+        onSelectionChange={(key) => {
+          searchParams.set("tab", key);
+          setSearchParams(searchParams);
+        }}
         classNames={{
           base: "container mx-auto w-full justify-center my-2 sm:my-4 px-2 sm:px-10",
           panel:
@@ -47,7 +56,7 @@ const ClassRoom = () => {
           <ClassInfo />
         </Tab>
         <Tab
-          key="task"
+          key="exercise"
           title={
             <div className="flex items-center space-x-2">
               <ClipboardCheck size="18px" />

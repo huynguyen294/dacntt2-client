@@ -65,7 +65,7 @@ const Sidebar = ({ className }) => {
   const SidebarItem = ({ item, isInSection }) => {
     let active;
     if (item.isDashboard) {
-      active = item.path === pathname;
+      active = item.path + `${user.role}/` === pathname;
     } else {
       active = pathname.includes(item.path);
     }
@@ -166,6 +166,7 @@ const userSidebarItems = {
         { label: "Chứng chỉ", path: "/certificates" },
         { label: "Khóa học", path: "/courses" },
         { label: "Lớp học", path: "/classes" },
+        { label: "Lịch học", path: "/timetable" },
         { label: "Kỳ thi", path: "/exams" },
         { label: "Cài đặt đào tạo", path: "/training-settings" },
       ],

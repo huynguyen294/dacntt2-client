@@ -1,5 +1,6 @@
 import { DATE_FORMAT } from "@/constants";
 import { addDays, format, startOfWeek, subDays } from "date-fns";
+import { arrayToObject } from "./utils";
 
 export const getWeeks = (startDate, endDate) => {
   const weeks = [];

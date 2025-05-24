@@ -5,6 +5,7 @@ export * from "./auth";
 import otherClassApis from "./class";
 import otherCourseApis from "./course";
 import otherEnrollmentApis from "./enrollment";
+import otherScheduleApis from "./schedule";
 import otherShiftApis from "./shift";
 import otherStudentConsultationApis from "./studentConsultation";
 import { generateCrudApi } from "./utils";
@@ -40,3 +41,7 @@ export const enrollmentApi = { ...commonEnrollmentApi, ...otherEnrollmentApis };
 // shifts
 const commonShiftApi = generateCrudApi("shifts");
 export const shiftApi = { ...commonShiftApi, ...otherShiftApis };
+
+// schedules
+const commonScheduleApi = generateCrudApi("class-schedules");
+export const scheduleApi = { ...commonScheduleApi, ...otherScheduleApis };

@@ -5,7 +5,7 @@ import { Ellipsis, EllipsisVertical } from "lucide-react";
 /**
  * @property {*} form
  * @param {{
- *   menuItems: [ { key: "", label: "", startContent: React.ReactNode, color: "" } ],
+ *   menuItems: [ { key: string, label: string, startContent: React.ReactNode, color: string, disabled: boolean } ],
  *   onAction: (key) => {},
  *   variant: 'horizontal' | 'vertical',
  *   placement: string,
@@ -22,8 +22,8 @@ const DropDown = ({ menuItems = [], onAction = () => {}, variant = "horizontal",
         </Button>
       </DropdownTrigger>
       <DropdownMenu variant="flat" onAction={onAction}>
-        {menuItems.map(({ startContent, label, key, color }) => (
-          <DropdownItem key={key} startContent={startContent} color={color}>
+        {menuItems.map(({ startContent, label, key, color, disabled }) => (
+          <DropdownItem key={key} startContent={startContent} color={color} isDisabled={disabled}>
             {label}
           </DropdownItem>
         ))}
