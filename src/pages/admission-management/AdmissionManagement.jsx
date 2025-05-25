@@ -92,7 +92,7 @@ const AdmissionManagement = () => {
           </Tabs>
           <TableHeader
             filter={<AdmissionFilter />}
-            addBtnPath={`/${user?.role}/register-admission`}
+            addBtnPath={`/register-admission`}
             rowSize={data?.rows?.length || 0}
           />
         </div>

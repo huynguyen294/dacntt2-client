@@ -1,13 +1,13 @@
 import { useAppStore } from "@/state";
 import { useLocation, useNavigate as useRouterNavigate } from "react-router";
 
-const useNavigate = (withRole = true) => {
+const useNavigate = (hookWithRole = true) => {
   const location = useLocation();
   const routerNavigate = useRouterNavigate();
   const use = useAppStore("user");
   const from = location.state?.from || "";
 
-  return (path, currentWithRole = withRole) => {
+  return (path, navigateFnWithRole = hookWithRole) => {
     const state = { from: location.pathname };
 
     if (typeof path === "function") {
@@ -16,7 +16,7 @@ const useNavigate = (withRole = true) => {
       return;
     }
 
-    routerNavigate(currentWithRole ? "/" + use?.role + path : path, { state });
+    routerNavigate(navigateFnWithRole ? "/" + use?.role + path : path, { state });
   };
 };
 

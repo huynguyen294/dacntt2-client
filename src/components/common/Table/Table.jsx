@@ -25,7 +25,7 @@ const Table = ({
   const loadingState = isLoading ? "loading" : "idle";
 
   const renderTableCell = (col, row, rowIdx) => {
-    if (col.uid === "index") return table.getRowIndex ? table.getRowIndex(rowIdx) : rowIdx + 1;
+    if (col.uid === "index") return table.getRowIndex ? table.getRowIndex(rowIdx + 1) : rowIdx + 1;
     if (typeof col.render === "function") return col.render(row, rowIdx, table);
     return renderCell(row, col.uid, rowIdx, table);
   };

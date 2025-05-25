@@ -65,7 +65,8 @@ const Sidebar = ({ className }) => {
   const SidebarItem = ({ item, isInSection }) => {
     let active;
     if (item.isDashboard) {
-      active = item.path + `${user.role}/` === pathname;
+      active = pathname.replaceAll(`/`, "") === user.role;
+      if (user.role === "student") active = pathname === "/";
     } else {
       active = pathname.includes(item.path);
     }
