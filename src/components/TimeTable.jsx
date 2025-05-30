@@ -37,28 +37,29 @@ const TimeTable = ({ value = defaultWeekCalendarValue, schedules = [] }) => {
           </tr>
         </thead>
         <tbody>
-          {shifts.map((shift) => (
-            <tr key={shift.name}>
-              <th>
-                <div>
-                  <p>{shift.name}</p>
-                  <p className="font-normal text-sm">({shiftFormat(shift)})</p>
-                </div>
-              </th>
-              {weeks.map((week, index) => {
-                return (
-                  <td key={shift.name + week}>
-                    {index % 2 === 0 && shift.id === 3 && (
-                      <div className="bg-primary rounded-lg p-1 sm:p-2 text-primary-foreground">
-                        <p>Tiếng Anh 1 - Ca 3</p>
-                        <p>Giáo viên 1</p>
-                      </div>
-                    )}
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
+          {shifts &&
+            shifts.map((shift) => (
+              <tr key={shift.name}>
+                <th>
+                  <div>
+                    <p>{shift.name}</p>
+                    <p className="font-normal text-sm">({shiftFormat(shift)})</p>
+                  </div>
+                </th>
+                {weeks.map((week, index) => {
+                  return (
+                    <td key={shift.name + week}>
+                      {index % 2 !== 0 && shift.id === 3 && (
+                        <div className="bg-primary rounded-lg p-1 sm:p-2 text-primary-foreground">
+                          <p>Tiếng Anh 1 - Ca 3</p>
+                          <p>Giáo viên 1</p>
+                        </div>
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>

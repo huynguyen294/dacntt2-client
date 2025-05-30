@@ -59,6 +59,33 @@ export const getServerErrorMessage = (error) => {
   return { ok: false, status: error.status, message: "Hệ thống lỗi, vui lòng thử lại sau." };
 };
 
+export const generateFilterParams = (filter = {}) => {
+  const params = [];
+  if (Object.values(filter).filter(Boolean).length === 0) return params;
+
+  const generateCondition = (field, value, operator = "eq") => {
+    if (typeof value === "object" && value !== null) {
+      const [opKey] = Object.keys(value);
+      operator = opKey;
+      value = value[opKey];
+    }
+
+    return `filter=${field}:${operator}:${value}`;
+  };
+
+  Object.keys(filter).forEach((field) => {
+    let value = filter[field];
+
+    if (Array.isArray(value)) {
+      params.push(generateCondition(field, value.join(","), "in"));
+    } else {
+      params.push(generateCondition(field, value));
+    }
+  });
+
+  return params;
+};
+
 export const getCommonParams = (pager, order, search, filters = {}) => {
   const params = [];
   if (pager?.pageSize) params.push("pageSize=" + pager.pageSize);
@@ -68,11 +95,13 @@ export const getCommonParams = (pager, order, search, filters = {}) => {
   if (order?.order) params.push("order=" + order.order);
   if (order?.orderBy) params.push("orderBy=" + order.orderBy);
 
-  const { createdAt } = filters;
+  const { createdAt, ...otherFilters } = filters;
   if (createdAt) {
     const date = format(subDays(new Date(), createdAt), DATE_FORMAT);
     params.push("filter=createdAt:gte:" + date);
   }
+
+  params.push(...generateFilterParams(otherFilters));
 
   return params;
 };

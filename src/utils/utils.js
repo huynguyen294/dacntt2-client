@@ -114,6 +114,17 @@ export const generateUid = ({ limit = 8, randomFn = Math.random, numeric = true,
   return arr.join("");
 };
 
+export const debounceFn = (cb, delay = 300) => {
+  let timerId;
+
+  return (...args) => {
+    if (timerId) clearTimeout(timerId);
+    timerId = setTimeout(() => {
+      cb(...args);
+    }, delay);
+  };
+};
+
 export const removeVietnameseTones = (str) => {
   const mapAccents = {
     à: "a",

@@ -16,19 +16,24 @@ import { Spinner } from "@heroui/spinner";
 const Loader = ({ variant, isLoading, className, classNames = {}, ...other }) => {
   switch (variant) {
     case "progress":
-      return isLoading ? (
-        <Progress
-          isIndeterminate
-          size="sm"
-          variant="wave"
-          className={cn(className)}
-          classNames={{
-            indicator: cn("bg-gradient-to-r from-secondary-100 to-primary-500", classNames.indicator),
-            classNames,
-          }}
-          {...other}
-        />
-      ) : null;
+      return (
+        <div className="h-2">
+          {isLoading ? (
+            <Progress
+              aria-labelledby="loader-progress"
+              isIndeterminate
+              size="sm"
+              variant="wave"
+              className={cn(className)}
+              classNames={{
+                indicator: cn("bg-gradient-to-r from-secondary-100 to-primary-500", classNames.indicator),
+                classNames,
+              }}
+              {...other}
+            />
+          ) : null}
+        </div>
+      );
 
     case "default":
     default:

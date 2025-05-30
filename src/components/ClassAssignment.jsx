@@ -1,11 +1,10 @@
 /* eslint-disable no-unused-vars */
 import { classApi, courseApi, enrollmentApi, userApi } from "@/apis";
-import { COURSE_STATUSES, DATE_FORMAT, ORDER_BY_NAME } from "@/constants";
-import { useMetadata, useTable } from "@/hooks";
-import { Select, SelectItem } from "@heroui/select";
+import { COURSE_STATUSES } from "@/constants";
+import { useMetadata, useServerList } from "@/hooks";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { Table, TableProvider } from "./common";
+import { LoadMoreButton, Table, TableProvider } from "./common";
 import { Button } from "@heroui/button";
 import { Chip } from "@heroui/chip";
 import { Avatar } from "@heroui/avatar";
@@ -13,42 +12,25 @@ import { Divider } from "@heroui/divider";
 import { arrayToObject, displayDate, shiftFormat } from "@/utils";
 import { Spinner } from "@heroui/spinner";
 import { addToast } from "@heroui/toast";
+import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 
 const ClassAssignment = ({ studentIds = [], isSingleMode, onDone }) => {
   const queryClient = useQueryClient();
-  const { pager, debounceQuery, order, filters } = useTable();
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [selectedShift, setSelectedShift] = useState(null);
+  const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [enrolling, setEnrolling] = useState(false);
-  const [hasMore, setHasMore] = useState(false);
   const { loading: metadataLoading, shifts, shiftObj } = useMetadata();
 
-  const queryFilterKey = `p=${pager.page},ps=${pager.pageSize},q=${debounceQuery},o=${order.order},ob=${order.orderBy},ca=${filters.createdAt},c=${selectedCourse},s=${selectedShift}`;
-  const { isLoading, data: classData } = useQuery({
-    queryKey: ["classes", queryFilterKey],
-    queryFn: () =>
-      classApi.get(pager, order, debounceQuery, { ...filters, courseId: selectedCourse, shiftId: selectedShift }),
+  const classList = useServerList("classes", classApi.get, {
+    filters: { courseId: selectedCourse, shiftId: selectedShift, teacherId: selectedTeacher },
+    otherParams: ["fields=:basic", "filter=id:in:" + studentIds.join(",")],
   });
-
-  const { data: userData, isLoading: userLoading } = useQuery({
-    queryKey: ["users", "as-options", studentIds.join(",")],
-    queryFn: () =>
-      userApi.get(
-        {},
-        ORDER_BY_NAME,
-        null,
-        {},
-        { otherParams: ["filter=id:in:" + studentIds.join(","), "fields=:basic"] }
-      ),
+  const studentList = useServerList("users", userApi.get, {
+    otherParams: ["fields=:basic", "filter=id:in:" + studentIds.join(",")],
   });
-
-  const { data: courseData, isLoading: courseLoading } = useQuery({
-    queryKey: ["courses", "as-options"],
-    queryFn: () =>
-      courseApi.get({ paging: "false" }, { orderBy: "name", order: "asc" }, null, { status: COURSE_STATUSES.active }, [
-        "fields=:basic",
-      ]),
-  });
+  const teacherList = useServerList("users", userApi.get, { filters: { role: ["teacher"] } });
+  const courseList = useServerList("users", courseApi.get, { filters: { status: COURSE_STATUSES.active } });
 
   const { data: enrData, isLoading: enrLoading } = useQuery({
     queryKey: ["enrollments", studentIds[0]],
@@ -91,16 +73,14 @@ const ClassAssignment = ({ studentIds = [], isSingleMode, onDone }) => {
     onDone();
   };
 
-  const handleLoadMore = () => {};
-
   return (
     <div className="pb-4 sm:pb-10">
       <div className="flex flex-col justify-start gap-2">
         <p className="font-semibold text-foreground-700 mr-2">Đang xếp lớp cho:</p>
-        {userLoading && <Spinner variant="wave" />}
+        {studentList.isLoading && <Spinner variant="wave" />}
         <div className="flex gap-1 flex-wrap">
-          {userData &&
-            userData.rows.map((user) => (
+          {studentList.ready &&
+            studentList.list.map((user) => (
               <Chip key={user.id} variant="flat" avatar={<Avatar src={user.imageUrl} />}>
                 {user.name}
               </Chip>
@@ -109,23 +89,31 @@ const ClassAssignment = ({ studentIds = [], isSingleMode, onDone }) => {
       </div>
       <Divider className="my-4" />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 sm:gap-4">
-        <Select
-          isLoading={courseLoading}
-          selectedKeys={new Set(selectedCourse ? [selectedCourse] : [])}
-          onSelectionChange={(keys) => setSelectedCourse([...keys][0])}
+        <Autocomplete
+          isLoading={courseList.isLoading}
+          selectedKey={selectedCourse}
+          onSelectionChange={setSelectedCourse}
           size="lg"
           variant="bordered"
           label="Khóa học"
           radius="sm"
+          items={courseList.list}
           labelPlacement="outside"
-          placeholder="Chọn lớp học"
+          placeholder="Chọn khóa học"
+          isVirtualized
+          maxListboxHeight={265}
+          itemHeight={40}
+          listboxProps={{
+            bottomContent: courseList.hasMore && <LoadMoreButton onLoadMore={courseList.onLoadMore} />,
+          }}
         >
-          {courseData?.rows && courseData?.rows.map((course) => <SelectItem key={course.id}>{course.name}</SelectItem>)}
-        </Select>
-        <Select
+          {(course) => <AutocompleteItem key={course.id}>{course.name}</AutocompleteItem>}
+        </Autocomplete>
+        <Autocomplete
           isLoading={metadataLoading}
-          selectedKeys={new Set(selectedShift ? [selectedShift] : selectedShift)}
-          onSelectionChange={(keys) => setSelectedShift([...keys][0])}
+          selectedKey={selectedShift}
+          onSelectionChange={setSelectedShift}
+          items={shifts}
           size="lg"
           variant="bordered"
           label="Ca học"
@@ -133,37 +121,49 @@ const ClassAssignment = ({ studentIds = [], isSingleMode, onDone }) => {
           labelPlacement="outside"
           placeholder="Chọn ca học"
         >
-          {shifts && shifts.map((s) => <SelectItem key={s.id.toString()}>{`${s.name} ${shiftFormat(s)}`}</SelectItem>)}
-        </Select>
-        <Select
-          isLoading={metadataLoading}
-          selectedKeys={new Set(selectedShift ? [selectedShift] : selectedShift)}
-          onSelectionChange={(keys) => setSelectedShift([...keys][0])}
+          {(s) => <AutocompleteItem key={s.id.toString()}>{`${s.name} ${shiftFormat(s)}`}</AutocompleteItem>}
+        </Autocomplete>
+        <Autocomplete
+          isLoading={teacherList.isLoading}
+          selectedKey={selectedTeacher}
+          onSelectionChange={setSelectedTeacher}
+          items={teacherList.list}
+          isVirtualized
+          maxListboxHeight={265}
+          itemHeight={50}
           size="lg"
           variant="bordered"
           label="Giáo viên"
           radius="sm"
           labelPlacement="outside"
           placeholder="Chọn giáo viên"
-        ></Select>
+          listboxProps={{
+            bottomContent: teacherList.hasMore && <LoadMoreButton onLoadMore={teacherList.onLoadMore} />,
+          }}
+        >
+          {(t) => (
+            <AutocompleteItem
+              key={t.id.toString()}
+              startContent={
+                <div className="size-10">
+                  <Avatar src={t.imageUrl} />
+                </div>
+              }
+              description={t.email}
+            >
+              {t.name}
+            </AutocompleteItem>
+          )}
+        </Autocomplete>
       </div>
       <TableProvider value={{ columns }}>
         <Table
-          isLoading={isLoading || enrLoading}
+          isLoading={classList.isLoading || enrLoading}
           isHeaderSticky={false}
           classNames={{ wrapper: "shadow-none p-0 rounded-none mt-4" }}
-          rows={classData?.rows || []}
+          rows={classList.list}
           selectionMode="none"
-          bottomContent={
-            hasMore && !isLoading ? (
-              <div className="flex w-full justify-center">
-                <Button size="sm" isDisabled={isLoading} variant="flat" onPress={handleLoadMore}>
-                  {isLoading && <Spinner color="white" size="sm" />}
-                  Tải thêm
-                </Button>
-              </div>
-            ) : null
-          }
+          bottomContent={classList.hasMore && <LoadMoreButton onLoadMore={classList.onLoadMore} />}
           renderCell={(rowData, columnKey, index) => {
             let cellValue = rowData[columnKey];
             if (columnKey === "index") cellValue = index + 1;

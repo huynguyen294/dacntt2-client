@@ -3,11 +3,7 @@ export * from "./utils";
 export * from "./auth";
 
 import otherClassApis from "./class";
-import otherCourseApis from "./course";
 import otherEnrollmentApis from "./enrollment";
-import otherScheduleApis from "./schedule";
-import otherShiftApis from "./shift";
-import otherStudentConsultationApis from "./studentConsultation";
 import { generateCrudApi } from "./utils";
 
 // images
@@ -28,20 +24,28 @@ export const classApi = { ...commonClassApi, ...otherClassApis };
 
 // courses
 const commonCourseApi = generateCrudApi("courses");
-export const courseApi = { ...commonCourseApi, ...otherCourseApis };
+export const courseApi = { ...commonCourseApi };
 
 // student-consultation
 export const commonStudentConsultationApi = generateCrudApi("student-consultation");
-export const studentConsultationApi = { ...commonStudentConsultationApi, ...otherStudentConsultationApis };
+export const studentConsultationApi = { ...commonStudentConsultationApi };
 
-// student-consultation
+// enrollments
 export const commonEnrollmentApi = generateCrudApi("enrollments");
 export const enrollmentApi = { ...commonEnrollmentApi, ...otherEnrollmentApis };
 
 // shifts
 const commonShiftApi = generateCrudApi("shifts");
-export const shiftApi = { ...commonShiftApi, ...otherShiftApis };
+export const shiftApi = { ...commonShiftApi };
 
 // schedules
 const commonScheduleApi = generateCrudApi("class-schedules");
-export const scheduleApi = { ...commonScheduleApi, ...otherScheduleApis };
+export const scheduleApi = { ...commonScheduleApi };
+
+// schedules
+const commonTopicApi = generateCrudApi("class-topics");
+export const topicApi = { ...commonTopicApi };
+
+// schedules
+const commonExerciseApi = generateCrudApi("class-exercises");
+export const exerciseApi = { ...commonExerciseApi };

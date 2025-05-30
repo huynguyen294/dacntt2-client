@@ -2,9 +2,16 @@ import { Button } from "@heroui/button";
 import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/modal";
 import { X } from "lucide-react";
 
-const FullScreenModal = ({ titleText, titleIcon, onOpenChange, children, rightControls }) => {
+const FullScreenModal = ({ classNames, titleText, titleIcon, onOpenChange, children, rightControls }) => {
   return (
-    <Modal disableAnimation size="full" isOpen={true} onOpenChange={onOpenChange} hideCloseButton>
+    <Modal
+      scrollBehavior="inside"
+      disableAnimation
+      size="full"
+      isOpen={true}
+      onOpenChange={onOpenChange}
+      hideCloseButton
+    >
       <ModalContent>
         {(onClose) => (
           <>
@@ -20,7 +27,7 @@ const FullScreenModal = ({ titleText, titleIcon, onOpenChange, children, rightCo
               </div>
               {rightControls}
             </ModalHeader>
-            <ModalBody>{children}</ModalBody>
+            <ModalBody className="px-2 sm:px-6">{children}</ModalBody>
           </>
         )}
       </ModalContent>

@@ -1,62 +1,51 @@
 /* eslint-disable no-unused-vars */
 import { userApi } from "@/apis";
-import { useDebounce } from "@/hooks";
+import { useServerList } from "@/hooks";
 import { Avatar } from "@heroui/avatar";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Listbox, ListboxItem } from "@heroui/listbox";
-import { Spinner } from "@heroui/spinner";
-import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
-import { useState } from "react";
+import { Loader, LoadMoreButton } from "./common";
 
-const SearchUser = ({ onChange = (key) => {} }) => {
-  const [query, setQuery] = useState("");
-  const debounceQuery = useDebounce(query);
-
-  const { isLoading, data } = useQuery({
-    queryKey: ["users", "search", "student", debounceQuery],
-    queryFn: () =>
-      userApi.get({}, {}, debounceQuery, { roles: ["student"] }, { otherParams: ["fields=id,name,email,imageUrl"] }),
-  });
+const SearchUser = ({ onChange = (key) => {}, role = ["student"] }) => {
+  const userList = useServerList("users", userApi.get, { filters: { role } });
 
   return (
     <div className="pb-4 sm:pb-10">
       <Input
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        onChange={(e) => userList.onQueryChange(e.target.value)}
         startContent={<Search size="14px" />}
-        placeholder="Nhập tên hoặc email"
+        placeholder="Nhập tên, email..."
       />
-      {!query && <p className="font-semibold text-foreground-400 px-2 mt-2 mb-1">Học viên mới gần đây</p>}
+      <Loader variant="progress" isLoading={userList.isLoading} />
       <div className="h-[60dvh]  overflow-y-auto">
-        <Listbox variant="flat" aria-label="Actions" onAction={onChange} emptyContent="Không có dữ liệu">
-          {isLoading && (
-            <ListboxItem key="loader" className="w-full">
-              <div className="w-full h-20 flex justify-center items-center">
-                <Spinner size="sm" />
-              </div>
+        <Listbox
+          variant="flat"
+          aria-label="Actions"
+          onAction={onChange}
+          emptyContent="Không có dữ liệu"
+          bottomContent={userList.hasMore && <LoadMoreButton size="md" onLoadMore={userList.onLoadMore} />}
+        >
+          {userList.list.map((row) => (
+            <ListboxItem
+              className="!text-base"
+              startContent={
+                <div>
+                  <Avatar size="lg" src={row.imageUrl} />
+                </div>
+              }
+              endContent={
+                <Button size="sm" className="h-8" color="primary" onPress={() => onChange(row.id)}>
+                  Đăng ký
+                </Button>
+              }
+              description={row.email}
+              key={row.id.toString()}
+            >
+              {row.name}
             </ListboxItem>
-          )}
-          {data?.rows &&
-            data?.rows.map((row) => (
-              <ListboxItem
-                startContent={
-                  <div>
-                    <Avatar size="lg" src={row.imageUrl} />
-                  </div>
-                }
-                endContent={
-                  <Button size="sm" className="h-8" color="primary" onPress={() => onChange(row.id)}>
-                    Đăng ký
-                  </Button>
-                }
-                description={row.email}
-                key={row.id}
-              >
-                <span className="text-base">{row.name}</span>
-              </ListboxItem>
-            ))}
+          ))}
         </Listbox>
       </div>
     </div>

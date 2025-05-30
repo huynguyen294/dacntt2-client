@@ -16,4 +16,5 @@ export { default as StatusDot } from "./StatusDot";
 export { default as Loader } from "./Loader";
 export { default as DropDown } from "./DropDown";
 export { default as Amount } from "./Amount";
+export { default as LoadMoreButton } from "./LoadMoreButton";
 export * from "./Table/context";

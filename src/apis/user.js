@@ -1,29 +1,7 @@
-import { getCommonParams, getServerErrorMessage } from "./utils";
-import { format, subDays } from "date-fns";
 import API from "./api";
-import { DATE_FORMAT } from "@/constants";
+import { generateCrudApi, getCommonParams, getServerErrorMessage } from "./utils";
 import { getAppActions } from "@/state";
 import { cryptoDecrypt, cryptoEncrypt } from "@/utils";
-
-const getUsers = async (pager, order, search, filters, { role, otherParams = [] } = {}) => {
-  const params = getCommonParams(pager, order, search, filters);
-  if (filters.roles) {
-    params.push("filter=role:in:" + filters.roles.join(","));
-  }
-  if (filters.status) {
-    params.push("filter=status:in:" + filters.status);
-  }
-  if (filters.createdAt) {
-    const date = format(subDays(new Date(), filters.createdAt), DATE_FORMAT);
-    params.push("filter=createdAt:gte:" + date);
-  }
-  // not a filter
-  if (role) params.push("role=" + role);
-  params.push(...otherParams);
-
-  const result = await API.get(`/api-v1/users?${params.join("&")}`);
-  return result.data;
-};
 
 const getUserById = async (id, { role, refs } = {}) => {
   const params = [];
@@ -129,9 +107,11 @@ const checkEmailAvailable = async (email) => {
   }
 };
 
+const commonUserApi = generateCrudApi("users");
+
 export default {
+  ...commonUserApi,
   create: createUser,
-  get: getUsers,
   getById: getUserById,
   update: updateUser,
   updateProfile,

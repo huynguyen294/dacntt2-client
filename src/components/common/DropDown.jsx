@@ -13,11 +13,11 @@ import { Ellipsis, EllipsisVertical } from "lucide-react";
  * }} props
  */
 
-const DropDown = ({ menuItems = [], onAction = () => {}, variant = "horizontal", placement = "left" }) => {
+const DropDown = ({ btnClass, menuItems = [], onAction = () => {}, variant = "horizontal", placement = "left" }) => {
   return (
     <HeroUIDropDown showArrow placement={placement}>
       <DropdownTrigger>
-        <Button radius="full" isIconOnly size="sm" variant="light">
+        <Button radius="full" isIconOnly size="sm" variant="light" className={btnClass}>
           {variant === "vertical" ? <EllipsisVertical /> : <Ellipsis />}
         </Button>
       </DropdownTrigger>
