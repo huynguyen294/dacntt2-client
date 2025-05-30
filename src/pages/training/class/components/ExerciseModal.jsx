@@ -19,7 +19,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { addToast } from "@heroui/toast";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@heroui/modal";
 
-const ExerciseModal = ({ editMode, defaultValues = {}, onOpenChange, onSave }) => {
+const ExerciseModal = ({ editMode, defaultValues = {}, onOpenChange, onSave = () => {} }) => {
   const queryClient = useQueryClient();
   const { data, classId } = useClassData();
   const { topics, isLoading } = useExerciseData();

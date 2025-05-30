@@ -6,6 +6,7 @@ import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Radio, RadioGroup } from "@heroui/radio";
+import { addToast } from "@heroui/toast";
 import { Save } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
@@ -48,7 +49,9 @@ const CheckAttendance = () => {
     );
   };
 
-  const handleSave = async () => {};
+  const handleSave = async () => {
+    addToast({ color: "danger", title: "Lỗi!", description: "Tính năng chưa hỗ trợ" });
+  };
 
   useEffect(() => {
     if (!selectedDate && schedules) {

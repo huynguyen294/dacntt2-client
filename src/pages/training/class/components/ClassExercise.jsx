@@ -23,10 +23,14 @@ import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "@/hooks";
+import { useParams } from "react-router";
 
 const ClassExercise = () => {
   useClassData();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { id } = useParams();
   const { fullExercises, exercises, topics, isLoading, ready } = useExerciseData();
   const topicModal = useDisclosure();
   const exerciseModal = useDisclosure();
@@ -78,6 +82,8 @@ const ClassExercise = () => {
             helperText = "Đã đăng vào " + format(new Date(exercise.createdAt), "dd MMM", { locale: vi });
           }
 
+          const notAvailable = exercise.isDraft || exercise.releaseDay;
+
           return (
             <AccordionItem
               classNames={{ trigger: "border-b-1" }}
@@ -85,7 +91,7 @@ const ClassExercise = () => {
                 <div
                   className={cn(
                     "size-8 rounded-full bg-gradient-to-br from-primary-400 to-secondary-400 text-primary-foreground grid place-items-center",
-                    (exercise.isDraft || exercise.releaseDay) && "from-foreground-300 to-foreground-300"
+                    notAvailable && "from-foreground-300 to-foreground-300"
                   )}
                 >
                   <ClipboardPen size="18px" />
@@ -97,12 +103,7 @@ const ClassExercise = () => {
                 <div className="w-full flex-1 flex justify-between">
                   <p className="text-base font-semibold text-foreground-700">{exercise.title}</p>
                   <div className="flex items-center gap-1">
-                    <p
-                      className={cn(
-                        "text-[12px] text-foreground-500",
-                        (exercise.isDraft || exercise.releaseDay) && "italic font-semibold"
-                      )}
-                    >
+                    <p className={cn("text-[12px] text-foreground-500", notAvailable && "italic font-semibold")}>
                       {helperText}
                     </p>
                     <DropDown
@@ -129,8 +130,21 @@ const ClassExercise = () => {
                     : "Đã đăng vào " + format(new Date(exercise.createdAt), "dd MMM", { locale: vi })}
                 </p>
                 <div dangerouslySetInnerHTML={{ __html: exercise.description }} />
-                <Button endContent={<MoveRight size="14px" />} size="sm" className="text-background bg-foreground mt-4">
-                  Xem chi tiết
+                <Button
+                  endContent={<MoveRight size="14px" />}
+                  size="sm"
+                  className="text-background bg-foreground mt-4"
+                  onPress={() => {
+                    if (notAvailable) {
+                      setSelectedExercise(exercise);
+                      exerciseModal.onOpen();
+                      return;
+                    }
+
+                    navigate(`/classes/${id}/${exercise.id}`);
+                  }}
+                >
+                  {notAvailable ? "Chỉnh sửa bài tập" : "Xem chi tiết"}
                 </Button>
               </div>
             </AccordionItem>
