@@ -29,7 +29,10 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
     otherParams: ["role=teacher", "fields=:basic"],
   });
 
-  const courseList = useServerList("users", courseApi.get, { filters: { status: COURSE_STATUSES.active } });
+  const courseList = useServerList("courses", courseApi.get, {
+    filters: { status: COURSE_STATUSES.active },
+    otherParams: ["fields=:full"],
+  });
 
   const handleChange = (data) => {
     const courseId = data.courseId;

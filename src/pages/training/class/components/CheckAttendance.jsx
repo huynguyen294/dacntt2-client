@@ -1,3 +1,4 @@
+import { attendanceApi } from "@/apis";
 import useClassData from "../hooks/useClassData";
 import { Table, TableProvider } from "@/components/common";
 import { ATTENDANCES } from "@/constants";
@@ -7,9 +8,10 @@ import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Radio, RadioGroup } from "@heroui/radio";
 import { addToast } from "@heroui/toast";
+import { useQuery } from "@tanstack/react-query";
 import { Save } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router";
+import { useParams, useSearchParams } from "react-router";
 
 const AttendRow = ({ onInit, onChange }) => {
   useEffect(() => {
@@ -29,11 +31,18 @@ const AttendRow = ({ onInit, onChange }) => {
 
 const CheckAttendance = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { students, loading, schedules } = useClassData();
+  const { students, loading, schedules, classId } = useClassData();
   const [attendances, setAttendances] = useState({});
 
-  const selectedDate = searchParams.get("date");
+  const lessonId = searchParams.get("lessonId");
   const changeAttendance = (id, value) => setAttendances((prev) => ({ ...prev, [id]: value }));
+
+  const attendResult = useQuery({
+    queryKey: ["classes", classId, "attendances"],
+    queryFn: () => attendanceApi.get(null, null, null, { classId, lessonId }),
+  });
+
+  console.log(attendResult.data);
 
   const renderNote = (row) => {
     return (
@@ -50,15 +59,16 @@ const CheckAttendance = () => {
   };
 
   const handleSave = async () => {
+    console.log(attendances);
     addToast({ color: "danger", title: "Lỗi!", description: "Tính năng chưa hỗ trợ" });
   };
 
   useEffect(() => {
-    if (!selectedDate && schedules) {
-      searchParams.set("date", schedules[0].date);
+    if (!lessonId && schedules) {
+      searchParams.set("lessonId", schedules[0].id);
       setSearchParams(searchParams);
     }
-  }, [schedules, selectedDate]);
+  }, [schedules, lessonId]);
 
   return (
     <div id="attendance">
@@ -67,16 +77,16 @@ const CheckAttendance = () => {
           label="Buổi học: "
           labelPlacement="outside-left"
           inputProps={{ classNames: { label: "text-base font-semibold", input: "min-w-60" } }}
-          selectedKey={selectedDate}
+          selectedKey={lessonId}
           onSelectionChange={(newValue) => {
-            searchParams.set("date", newValue);
+            searchParams.set("lessonId", newValue);
             setSearchParams(searchParams);
           }}
           isClearable={false}
         >
           {schedules.map((schedule, index) => (
             <AutocompleteItem
-              key={schedule.date}
+              key={schedule.id.toString()}
               isDisabled={new Date(schedule.date) > new Date()}
               description={schedule.shift.name + " " + shiftFormat(schedule.shift)}
             >{`Buổi ${index + 1}: ${schedule.date} (${dayFormat(schedule.date)})`}</AutocompleteItem>
@@ -93,7 +103,7 @@ const CheckAttendance = () => {
               disableSort: true,
               render: (row) => (
                 <AttendRow
-                  onInit={() => changeAttendance(row.id, { ...attendances[row.id], attend: "yes", isTouched: false })}
+                  onInit={() => changeAttendance(row.id, { attend: "yes", ...attendances[row.id], isTouched: false })}
                   onChange={(e) =>
                     changeAttendance(row.id, { ...attendances[row.id], attend: e.target.value, isTouched: true })
                   }

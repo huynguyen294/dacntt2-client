@@ -9,7 +9,7 @@ const create = async (list) => {
   }
 };
 
-const updateByClass = async (list) => {
+const update = async (list) => {
   try {
     const result = await API.patch(`/api-v1/${key}`, { classAttendances: list });
     return { ok: true, updated: result.data.updated };
@@ -18,5 +18,5 @@ const updateByClass = async (list) => {
   }
 };
 
-const otherAttendanceApis = { create, updateByClass };
+const otherAttendanceApis = { create, update };
 export default otherAttendanceApis;

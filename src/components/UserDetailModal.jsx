@@ -17,8 +17,8 @@ const UserDetailModal = ({ user, onOpenChange }) => {
   const { role } = useParams();
 
   const { data } = useQuery({
-    queryKey: ["users", "detail", user.id],
-    queryFn: () => userApi.getById(user.id, { refs: true }),
+    queryKey: ["users", "detail", user.id, "refs=true"],
+    queryFn: () => userApi.getById(user.id, ["refs=true"]),
   });
 
   const handleDelete = () => {};

@@ -13,29 +13,41 @@ import { Controller, Form, useForm } from "react-simple-formkit";
 import { Checkbox } from "@heroui/checkbox";
 import { addToast } from "@heroui/toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { Button } from "@heroui/button";
 
-const ScheduleForm = ({ defaultValues = {}, onClose }) => {
+const ScheduleForm = ({ editMode, defaultValues = {}, onClose }) => {
   const form = useForm({ numberFields });
   const queryClient = useQueryClient();
   const { loading, shifts } = useMetadata();
-  const { fullSchedules, data, classId } = useClassData();
+  const { schedules, data, classId } = useClassData();
   const teacherList = useServerList("users", userApi.get, { filters: { role: ["teacher"] } });
 
-  const handleSubmit = async (data) => {
-    const found = fullSchedules.find((s) => s.date === data.date);
+  const [saving, setSaving] = useState(false);
 
-    if (!found) {
-      const result = await scheduleApi.create({ ...data, classId });
+  const handleSubmit = async (data) => {
+    setSaving(true);
+    if (editMode) {
+      const { shift, teacher, ...removed } = defaultValues;
+      const result = await scheduleApi.update(defaultValues.id, { ...removed, ...data, classId });
       if (result.ok) {
         queryClient.invalidateQueries({ queryKey: ["classes", classId, "schedules"] });
         onClose();
       } else {
         addToast({ color: "danger", title: "Lỗi!", description: result.message });
       }
+      setSaving(false);
       return;
     }
 
-    addToast({ color: "danger", title: "Lỗi!", description: "Tính năng chưa hỗ trợ" });
+    const result = await scheduleApi.create({ ...data, classId });
+    if (result.ok) {
+      queryClient.invalidateQueries({ queryKey: ["classes", classId, "schedules"] });
+      onClose();
+    } else {
+      addToast({ color: "danger", title: "Lỗi!", description: result.message });
+    }
+    setSaving(false);
     return;
   };
 
@@ -52,7 +64,7 @@ const ScheduleForm = ({ defaultValues = {}, onClose }) => {
         aria-labelledby="date-picker"
         isDateUnavailable={(date) =>
           Boolean(
-            fullSchedules.find(
+            schedules.find(
               (s) => s.date === date.toString() && s.date !== defaultValues.date && !s.isAbsented && !s.isDeleted
             )
           )
@@ -140,6 +152,14 @@ const ScheduleForm = ({ defaultValues = {}, onClose }) => {
           </Checkbox>
         )}
       />
+      <div className="py-4 w-full flex justify-end">
+        <Button color="danger" variant="light" onPress={onClose}>
+          Hủy
+        </Button>
+        <Button isLoading={saving} color="primary" type="submit">
+          Lưu lại
+        </Button>
+      </div>
     </Form>
   );
 };

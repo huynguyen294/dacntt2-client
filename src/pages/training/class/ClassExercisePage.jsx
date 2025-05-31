@@ -15,7 +15,7 @@ const ClassExercisePage = () => {
 
   const classResult = useQuery({
     queryKey: ["classes", id, "refs=true"],
-    queryFn: () => classApi.getById(id, { refs: true }),
+    queryFn: () => classApi.getById(id, ["refs=true"]),
   });
 
   const exerciseResult = useQuery({

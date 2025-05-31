@@ -20,8 +20,8 @@ const ClassRoom = () => {
   const tab = searchParams.get("tab");
 
   const { data, isError, error } = useQuery({
-    queryKey: ["classes", id, "refs"],
-    queryFn: () => classApi.getById(id, { refs: true }),
+    queryKey: ["classes", id, "refs=true"],
+    queryFn: () => classApi.getById(id, ["refs=true"]),
   });
 
   useEffect(() => {

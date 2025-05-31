@@ -16,7 +16,7 @@ const EditUser = () => {
 
   const { isLoading, data, isError, error } = useQuery({
     queryKey: ["users", userId],
-    queryFn: () => userApi.getById(userId, { refs: EMPLOYEE_ROLES.includes(userRole) }),
+    queryFn: () => userApi.getById(userId, EMPLOYEE_ROLES.includes(userRole) ? ["refs=true"] : []),
   });
 
   useEffect(() => {

@@ -1,8 +1,6 @@
 import { classApi, scheduleApi } from "@/apis";
 import { DATE_FORMAT, ORDER_BY_NAME } from "@/constants";
 import { useMetadata } from "@/hooks";
-import { arrayToObject } from "@/utils";
-import { getClassSchedule } from "@/utils/class";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { useMemo } from "react";
@@ -15,7 +13,7 @@ const useClassData = (classId) => {
   const { shiftObj } = useMetadata();
   const { isLoading, data } = useQuery({
     queryKey: ["classes", classId, "refs=true"],
-    queryFn: () => classApi.getById(classId, { refs: true }),
+    queryFn: () => classApi.getById(classId, ["refs=true"]),
   });
 
   const { isLoading: studentLoading, data: studentData } = useQuery({
@@ -24,38 +22,29 @@ const useClassData = (classId) => {
   });
 
   const { isLoading: scheduleLoading, data: scheduleData } = useQuery({
-    queryKey: ["classes", classId, "schedules"],
-    queryFn: () => scheduleApi.get(null, null, null, { classId }),
+    queryKey: ["classes", classId, "schedules", "refs=true"],
+    queryFn: () => scheduleApi.get(null, { order: "asc", orderBy: "date" }, null, { classId }, ["refs=true"]),
   });
 
-  const [fullSchedules, schedules] = useMemo(() => {
+  const schedules = useMemo(() => {
     if (!data || !scheduleData) return [];
     const { rows = [] } = scheduleData;
-
-    const scheduleObj = arrayToObject(rows, (row) => format(new Date(row.date), DATE_FORMAT));
-    const dates = getClassSchedule(data.item);
     const shift = shiftObj[data.item.shiftId];
     const teacher = data.refs.teacher;
 
-    rows.forEach((row) => {
-      const rowDate = format(new Date(row.date), DATE_FORMAT);
-      !dates.includes(rowDate) && dates.push(rowDate);
-    });
-
-    dates.sort((a, b) => new Date(a) - new Date(b));
-
-    const full = dates.map((date) => {
-      const result = { ...scheduleObj[date], date, shift, teacher };
+    const result = rows.map((row) => {
+      const date = format(new Date(row.date), DATE_FORMAT);
+      const result = { ...row, date, shift, teacher };
       return result;
     });
 
-    return [full, full.filter((s) => !s.isDeleted)];
+    return result;
   }, [data, scheduleData]);
 
   const loading = isLoading || studentLoading || scheduleLoading;
   const ready = Boolean(data) && Boolean(studentData) && Boolean(scheduleData);
 
-  return { classId, loading, fullSchedules, schedules, ready, data, shiftObj, students: studentData?.students || [] };
+  return { classId, loading, schedules, ready, data, shiftObj, students: studentData?.students || [] };
 };
 
 export default useClassData;

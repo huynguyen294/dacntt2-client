@@ -29,18 +29,13 @@ const ClassSchedule = () => {
   const handleAbsented = async () => {
     if (!selectedRow || action !== "absented") return;
 
-    const { date } = selectedRow;
-    let result = {};
-    if (selectedRow.id) {
-      result = await scheduleApi.update(selectedRow.id, { isAbsented: true });
-      queryClient.invalidateQueries({ queryKey: ["classes", id, "schedules"] });
-    } else {
-      result = await scheduleApi.create({ classId: id, isAbsented: true, date });
-      queryClient.invalidateQueries({ queryKey: ["classes", id, "schedules"] });
-    }
+    const result = await scheduleApi.update(selectedRow.id, { isAbsented: true });
+    queryClient.invalidateQueries({ queryKey: ["classes", id, "schedules"] });
+
     if (!result.ok) {
       addToast({ color: "danger", title: "Lỗi!", description: "Có lỗi khi báo vắng buổi học" });
     }
+
     setAction(null);
     setSelectedRow(null);
     onDeleteClose();
@@ -49,18 +44,13 @@ const ClassSchedule = () => {
   const handleDelete = async () => {
     if (!selectedRow || action !== "delete") return;
 
-    const { date } = selectedRow;
-    let result = {};
-    if (selectedRow.id) {
-      result = await scheduleApi.update(selectedRow.id, { isDeleted: true });
-      queryClient.invalidateQueries({ queryKey: ["classes", id, "schedules"] });
-    } else {
-      result = await scheduleApi.create({ classId: id, isDeleted: true, date });
-      queryClient.invalidateQueries({ queryKey: ["classes", id, "schedules"] });
-    }
+    const result = await scheduleApi.delete(selectedRow.id);
+    queryClient.invalidateQueries({ queryKey: ["classes", id, "schedules"] });
+
     if (!result.ok) {
       addToast({ color: "danger", title: "Lỗi!", description: "Có lỗi khi xóa buổi học" });
     }
+
     setAction(null);
     setSelectedRow(null);
     onDeleteClose();
@@ -87,7 +77,7 @@ const ClassSchedule = () => {
           }
           if (key === "attendance") {
             searchParams.set("tab", "attendance");
-            searchParams.set("date", row.date);
+            searchParams.set("lessonId", row.id);
             setSearchParams(searchParams);
           }
         }}
@@ -104,7 +94,7 @@ const ClassSchedule = () => {
             startContent: <ListChecks size="18px" className="w-4" />,
             disabled: new Date(row.date) > new Date() || row.isAbsented,
           },
-          { key: "edit", label: "Chỉnh sửa", startContent: <Edit size="18px" className="w-4" />, disabled: true },
+          { key: "edit", label: "Chỉnh sửa", startContent: <Edit size="18px" className="w-4" /> },
           { key: "delete", label: "Xóa", startContent: <Trash2 size="18px" className="w-4" />, color: "danger" },
         ]}
       />
@@ -161,16 +151,8 @@ const ClassSchedule = () => {
               <>
                 <ModalHeader>Lịch học</ModalHeader>
                 <ModalBody>
-                  <ScheduleForm defaultValues={selectedRow || {}} onClose={onClose} />
+                  <ScheduleForm editMode={Boolean(selectedRow)} defaultValues={selectedRow || {}} onClose={onClose} />
                 </ModalBody>
-                <ModalFooter>
-                  <Button color="danger" variant="light" onPress={onClose}>
-                    Hủy
-                  </Button>
-                  <Button color="primary" type="submit" form="schedule-form">
-                    Lưu lại
-                  </Button>
-                </ModalFooter>
               </>
             )}
           </ModalContent>

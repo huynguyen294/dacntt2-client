@@ -2,6 +2,7 @@ export { default as API } from "./api";
 export * from "./utils";
 export * from "./auth";
 
+import otherAttendanceApis from "./attendance";
 import otherClassApis from "./class";
 import otherEnrollmentApis from "./enrollment";
 import { generateCrudApi } from "./utils";
@@ -46,6 +47,10 @@ export const scheduleApi = { ...commonScheduleApi };
 const commonTopicApi = generateCrudApi("class-topics");
 export const topicApi = { ...commonTopicApi };
 
-// schedules
+// exercises
 const commonExerciseApi = generateCrudApi("class-exercises");
 export const exerciseApi = { ...commonExerciseApi };
+
+// attendances
+const commonAttendanceApi = generateCrudApi("class-attendances");
+export const attendanceApi = { ...commonAttendanceApi, ...otherAttendanceApis };
