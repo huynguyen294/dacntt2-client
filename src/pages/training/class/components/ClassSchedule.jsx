@@ -7,10 +7,10 @@ import { dayFormat, shiftFormat } from "@/utils";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@heroui/modal";
 import { useState } from "react";
 import { ConfirmDeleteDialog } from "@/components";
-import { scheduleApi } from "@/apis";
+import { attendanceApi, scheduleApi } from "@/apis";
 import { addToast } from "@heroui/toast";
 import { cn } from "@/lib/utils";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import ScheduleForm from "./ScheduleForm";
 
 const ClassSchedule = () => {
@@ -25,6 +25,11 @@ const ClassSchedule = () => {
 
   // const user = useAppStore('user')
   const { loading, schedules } = useClassData(id);
+
+  const { data: dataLessonCheck } = useQuery({
+    queryKey: ["classes", id, "check-lessons"],
+    queryFn: () => attendanceApi.checkLessons(id),
+  });
 
   const handleAbsented = async () => {
     if (!selectedRow || action !== "absented") return;
@@ -59,6 +64,7 @@ const ClassSchedule = () => {
   const renderActions = (row) => {
     return (
       <DropDown
+        isDisabled={dataLessonCheck?.result?.[row.id]?.total > 0}
         onAction={(key) => {
           if (key === "absented") {
             setAction("absented");
