@@ -16,15 +16,15 @@ import { useSearchParams } from "react-router";
 const CheckAttendance = () => {
   const queryClient = useQueryClient();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { students, loading, schedules, classId } = useClassData();
+  const { students, loading, schedules, classId, ready } = useClassData();
   const [attendances, setAttendances] = useState(null);
 
   const lessonId = searchParams.get("lessonId");
   const changeAttendance = (id, value) => setAttendances((prev) => ({ ...prev, [id]: value }));
 
   const attendResult = useQuery({
-    queryKey: ["classes", classId, "attendances", lessonId],
-    queryFn: () => attendanceApi.get(null, null, null, { classId, lessonId }),
+    queryKey: ["classes", classId, "attendances", lessonId, "refs=true"],
+    queryFn: () => attendanceApi.get(null, null, null, { classId, lessonId }, ["refs=true"]),
   });
 
   const editMode = attendResult.data?.rows?.length > 0;
@@ -32,11 +32,12 @@ const CheckAttendance = () => {
   const [saving, setSaving] = useState(false);
 
   const defaultValues = useMemo(() => {
-    if (!attendResult.data) return null;
+    if (!attendResult.data || !ready) return null;
     let result = attendResult.data.rows.reduce(
       (acc, row) => ({ ...acc, [row.studentId]: { ...row, isTouched: false } }),
       {}
     );
+
     if (attendResult.data.rows.length === 0) {
       result = students.reduce((acc, s) => {
         return {
@@ -54,7 +55,7 @@ const CheckAttendance = () => {
     }
 
     return result;
-  }, [attendResult.data]);
+  }, [attendResult.data, ready]);
 
   const renderNote = (row) => {
     return (
@@ -62,9 +63,7 @@ const CheckAttendance = () => {
         variant="bordered"
         classNames={{ inputWrapper: "shadow-none" }}
         onBlur={(e) => {
-          if (e.target.value) {
-            changeAttendance(row.id, { ...attendances[row.id], note: e.target.value, isTouched: true });
-          }
+          changeAttendance(row.id, { ...attendances[row.id], note: e.target.value, isTouched: true });
         }}
       />
     );
@@ -109,15 +108,20 @@ const CheckAttendance = () => {
   }, [defaultValues]);
 
   useEffect(() => {
-    if (!lessonId && schedules) {
-      searchParams.set("lessonId", schedules[0].id);
+    if (!lessonId && schedules.length > 0) {
+      let date = schedules[0].id;
+      schedules.forEach((s) => {
+        if (new Date(s.date) < new Date()) date = s.id;
+      });
+
+      searchParams.set("lessonId", date);
       setSearchParams(searchParams);
     }
   }, [schedules, lessonId]);
 
   return (
     <div id="attendance">
-      <Loader isLoading={attendResult.isLoading} />
+      <Loader isLoading={attendResult.isLoading || loading} />
       {attendances && (
         <>
           {schedules && (
@@ -169,8 +173,27 @@ const CheckAttendance = () => {
                 },
                 { uid: "name", name: "Tên", disableSort: true },
                 { uid: "email", name: "Email", disableSort: true, render: (row) => blurEmail(row.email) },
-                { uid: "absents", name: "Số buổi nghỉ", disableSort: true, render: () => 0 },
-                { uid: "late", name: "Số buổi trễ", disableSort: true, render: () => 0 },
+                {
+                  uid: "absents",
+                  name: "Số buổi nghỉ",
+                  disableSort: true,
+                  render: (row) => {
+                    const attends = attendResult.data?.refs?.studentAttends?.[row.id] || [];
+                    const found = attends.find((a) => a.attend === "no");
+                    console.log(attends, found);
+                    return found?.total || 0;
+                  },
+                },
+                {
+                  uid: "late",
+                  name: "Số buổi trễ",
+                  disableSort: true,
+                  render: (row) => {
+                    const attends = attendResult.data?.refs?.studentAttends?.[row.id] || [];
+                    const found = attends.find((a) => a.attend === "late");
+                    return found?.total || 0;
+                  },
+                },
                 { uid: "note", name: "Nhận xét", disableSort: true, render: renderNote },
               ],
             }}
