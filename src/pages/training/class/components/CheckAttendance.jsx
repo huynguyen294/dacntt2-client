@@ -180,7 +180,6 @@ const CheckAttendance = () => {
                   render: (row) => {
                     const attends = attendResult.data?.refs?.studentAttends?.[row.id] || [];
                     const found = attends.find((a) => a.attend === "no");
-                    console.log(attends, found);
                     return found?.total || 0;
                   },
                 },

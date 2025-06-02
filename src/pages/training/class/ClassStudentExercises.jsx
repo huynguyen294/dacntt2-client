@@ -35,7 +35,7 @@ const ClassStudentExercises = () => {
   const scores = useMemo(() => {
     if (!data) return;
     return arrayToObject(data.rows, "exerciseId");
-  }, []);
+  }, [data]);
 
   const student = useMemo(() => {
     if (!classData.ready) return null;
