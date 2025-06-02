@@ -1,5 +1,6 @@
 import { DATE_FORMAT } from "@/constants";
 import { format, subDays } from "date-fns";
+import camelCase from "camelcase";
 import API from "./api";
 
 export const generateCrudApi = (key) => {
@@ -22,6 +23,10 @@ export const generateCrudApi = (key) => {
 
     create: async (data) => {
       try {
+        if (Array.isArray(data)) {
+          const result = await API.post(`/api-v1/${key}`, { [camelCase(key)]: data });
+          return { ok: true, created: result.data.created };
+        }
         const result = await API.post(`/api-v1/${key}`, data);
         return { ok: true, created: result.data.created };
       } catch (error) {
@@ -31,6 +36,10 @@ export const generateCrudApi = (key) => {
 
     update: async (id, newData) => {
       try {
+        if (Array.isArray(id)) {
+          const result = await API.patch(`/api-v1/${key}`, { [camelCase(key)]: id });
+          return { ok: true, updated: result.data.updated };
+        }
         const result = await API.patch(`/api-v1/${key}/${id}`, newData);
         return { ok: true, updated: result.data.updated };
       } catch (error) {

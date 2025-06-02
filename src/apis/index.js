@@ -5,6 +5,7 @@ export * from "./auth";
 import otherAttendanceApis from "./attendance";
 import otherClassApis from "./class";
 import otherEnrollmentApis from "./enrollment";
+import otherExerciseScoreApis from "./exerciseScore";
 import { generateCrudApi } from "./utils";
 
 // images
@@ -54,3 +55,7 @@ export const exerciseApi = { ...commonExerciseApi };
 // attendances
 const commonAttendanceApi = generateCrudApi("class-attendances");
 export const attendanceApi = { ...commonAttendanceApi, ...otherAttendanceApis };
+
+// exercise scores
+const commonExerciseScoreApi = generateCrudApi("class-exercise-scores");
+export const exerciseScoreApi = { ...commonExerciseScoreApi, ...otherExerciseScoreApis };

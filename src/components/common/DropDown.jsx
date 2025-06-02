@@ -20,11 +20,20 @@ const DropDown = ({
   onAction = () => {},
   variant = "horizontal",
   placement = "left",
+  ...other
 }) => {
   return (
     <HeroUIDropDown showArrow placement={placement}>
       <DropdownTrigger>
-        <Button radius="full" isIconOnly size="sm" variant="light" className={btnClass} isDisabled={isDisabled}>
+        <Button
+          radius="full"
+          isIconOnly
+          size="sm"
+          variant="light"
+          className={btnClass}
+          isDisabled={isDisabled}
+          {...other}
+        >
           {variant === "vertical" ? <EllipsisVertical /> : <Ellipsis />}
         </Button>
       </DropdownTrigger>

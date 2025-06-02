@@ -98,3 +98,8 @@ export const ATTENDANCES = {
 };
 
 export const ORDER_BY_NAME = { orderBy: "name", order: "asc" };
+
+export const EXERCISE_STATUSES = {
+  submitted: "Đã nộp",
+  missing: "Chưa nộp",
+};

@@ -58,7 +58,7 @@ const NavBar = ({ breadcrumbItems = [], hideMenuButton = false, hideDashboard = 
               )}
               {breadcrumbItems.map(({ path, label, startContent }, index) => (
                 <BreadcrumbItem
-                  key={label}
+                  key={label + path}
                   startContent={startContent}
                   onPress={() => {
                     if (index === breadcrumbItems.length - 1) return;
