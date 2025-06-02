@@ -12,6 +12,7 @@ export { default as AddClass } from "./training/class/AddClass";
 export { default as EditClass } from "./training/class/EditClass";
 export { default as ClassRoom } from "./training/class/ClassRoom";
 export { default as ClassExercisePage } from "./training/class/ClassExercisePage";
+export { default as ClassStudentExercises } from "./training/class/ClassStudentExercises";
 export { default as AddExam } from "./training/exam/AddExam";
 export { default as EditExam } from "./training/exam/EditExam";
 export { default as ExamManagement } from "./training/exam/ExamManagement";

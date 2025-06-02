@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import ClassCell from "./components/ClassCell";
 import { ModuleLayout } from "@/layouts";
 import { classesManagementBreadcrumbItems } from "../constants";
 import { useTable } from "@/hooks";
@@ -10,7 +11,6 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { classApi } from "@/apis";
 import { addToast } from "@heroui/toast";
 import { useAppStore } from "@/state";
-import ClassCell from "./components/ClassCell";
 
 const ClassManagement = () => {
   const queryClient = useQueryClient();

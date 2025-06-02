@@ -141,7 +141,7 @@ const ClassExercise = () => {
                       return;
                     }
 
-                    navigate(`/classes/${id}/${exercise.id}`);
+                    navigate(`/classes/${id}/exercise/${exercise.id}`);
                   }}
                 >
                   {notAvailable ? "Chỉnh sửa bài tập" : "Xem chi tiết"}

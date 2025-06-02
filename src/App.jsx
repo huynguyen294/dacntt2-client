@@ -32,6 +32,7 @@ import {
   ClassRoom,
   TimeTablePage,
   ClassExercisePage,
+  ClassStudentExercises,
 } from "./pages";
 
 import "./App.css";
@@ -70,7 +71,8 @@ const App = () => {
           <Route path="classes" element={<ClassManagement />} />
           <Route path="classes/add" element={<AddClass />} />
           <Route path="classes/:id" element={<ClassRoom />} />
-          <Route path="classes/:id/:exerciseId" element={<ClassExercisePage />} />
+          <Route path="classes/:id/exercise/:exerciseId" element={<ClassExercisePage />} />
+          <Route path="classes/:id/student/:studentId" element={<ClassStudentExercises />} />
           <Route path="classes/edit/:id" element={<EditClass />} />
 
           <Route path="exams" element={<ExamManagement />} />

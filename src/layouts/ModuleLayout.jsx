@@ -6,7 +6,6 @@ const ModuleLayout = withAuth(({ title, breadcrumbItems, children, className }) 
   return (
     <main className={cn("h-[100dvh] flex flex-col overflow-hidden container mx-auto", className)}>
       <NavBar title={title} shouldHideOnScroll breadcrumbItems={breadcrumbItems} />
-
       {children}
     </main>
   );
