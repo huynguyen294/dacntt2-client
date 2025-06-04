@@ -47,10 +47,18 @@ const ClassCell = ({ dataRefs, rowData, columnKey, rowIndex, onDelete = (id) => 
 
   switch (columnKey) {
     case "status": {
-      const color = cellValue === "Đang mở" ? "success" : cellValue === "Tạm đóng" ? "warning" : "default";
+      const status = { color: "success", text: "Đang hoạt động" };
+      if (new Date(rowData.openingDay) > new Date()) {
+        status.color = "warning";
+        status.text = "Chưa bắt đầu";
+      }
+      if (new Date(rowData.closingDay) < new Date()) {
+        status.color = "danger";
+        status.text = "Đã kết thúc";
+      }
       return (
-        <Chip size="sm" variant="flat" color={color}>
-          {cellValue}
+        <Chip size="sm" variant="flat" color={status.color}>
+          {status.text}
         </Chip>
       );
     }

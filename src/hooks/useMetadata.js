@@ -11,7 +11,6 @@ const useMetadata = () => {
 
   const shiftObj = useMemo(() => {
     if (!shiftData?.rows) return {};
-
     return arrayToObject(shiftData?.rows, "id");
   }, [shiftData]);
 

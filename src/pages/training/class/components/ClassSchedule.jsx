@@ -62,9 +62,11 @@ const ClassSchedule = () => {
   };
 
   const renderActions = (row) => {
+    const passed = dataLessonCheck?.result?.[row.id]?.total > 0;
+
     return (
       <DropDown
-        isDisabled={dataLessonCheck?.result?.[row.id]?.total > 0}
+        isDisabled={passed}
         onAction={(key) => {
           if (key === "absented") {
             setAction("absented");
@@ -82,9 +84,13 @@ const ClassSchedule = () => {
             onScheduleModalOpen();
           }
           if (key === "attendance") {
-            searchParams.set("tab", "attendance");
-            searchParams.set("lessonId", row.id);
-            setSearchParams(searchParams);
+            if (new Date(row.date) > new Date()) {
+              addToast({ color: "danger", title: "Lỗi!", description: "Chưa đến ngày học" });
+            } else {
+              searchParams.set("tab", "attendance");
+              searchParams.set("lessonId", row.id);
+              setSearchParams(searchParams, { replace: true });
+            }
           }
         }}
         menuItems={[
@@ -98,7 +104,7 @@ const ClassSchedule = () => {
             key: "attendance",
             label: "Điểm danh",
             startContent: <ListChecks size="18px" className="w-4" />,
-            disabled: new Date(row.date) > new Date() || row.isAbsented,
+            disabled: row.isAbsented,
           },
           { key: "edit", label: "Chỉnh sửa", startContent: <Edit size="18px" className="w-4" /> },
           { key: "delete", label: "Xóa", startContent: <Trash2 size="18px" className="w-4" />, color: "danger" },
@@ -110,7 +116,7 @@ const ClassSchedule = () => {
   const renderTime = (row) => {
     const day = dayFormat(row.date);
     const shift = row.shift.name + " " + shiftFormat(row.shift);
-    const passed = new Date() > new Date(row.date);
+    const passed = dataLessonCheck?.result?.[row.id]?.total > 0;
 
     return (
       <div className={cn("my-2", row.isAbsented && "line-through", passed && "text-foreground-400")}>
@@ -123,7 +129,7 @@ const ClassSchedule = () => {
   };
 
   const renderTeacher = (row) => {
-    const passed = new Date() > new Date(row.date);
+    const passed = dataLessonCheck?.result?.[row.id]?.total > 0;
 
     return (
       <div className={cn(row.isAbsented && "line-through", passed && "text-foreground-400")}>

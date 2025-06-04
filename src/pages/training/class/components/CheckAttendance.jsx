@@ -115,7 +115,7 @@ const CheckAttendance = () => {
       });
 
       searchParams.set("lessonId", date);
-      setSearchParams(searchParams);
+      setSearchParams(searchParams, { replace: true });
     }
   }, [schedules, lessonId]);
 
@@ -132,7 +132,7 @@ const CheckAttendance = () => {
               selectedKey={lessonId}
               onSelectionChange={(newValue) => {
                 searchParams.set("lessonId", newValue);
-                setSearchParams(searchParams);
+                setSearchParams(searchParams, { replace: true });
               }}
               isClearable={false}
             >

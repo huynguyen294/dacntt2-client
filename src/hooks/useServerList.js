@@ -1,4 +1,3 @@
-import { userApi } from "@/apis";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import { PAGER } from "@/constants";
@@ -6,8 +5,8 @@ import { debounceFn } from "@/utils";
 
 const useServerList = (
   dataKey = "users",
-  getFn = userApi.get,
-  { filters = {}, otherParams = ["fields=:basic"], selectList = (data) => data.rows } = {}
+  getFn = (pager, order, query, filters, otherParams) => {},
+  { filters = {}, otherParams = ["fields=:basic"], selectList = (data) => data.rows, paging = true } = {}
 ) => {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -26,13 +25,13 @@ const useServerList = (
 
   const { isLoading, data } = useQuery({
     queryKey: [dataKey, "basic-list", query, pager.page, JSON.stringify(filters), [...otherParams]],
-    queryFn: () => getFn(pager, null, query, filters, otherParams),
+    queryFn: () => getFn(paging && pager, null, query, filters, otherParams),
   });
 
   useEffect(() => {
     if (data) {
-      setPager(data.pager);
-      if (pager.page === 1) {
+      paging && setPager(data.pager);
+      if (pager.page === 1 || !paging) {
         setList(selectList(data));
       } else {
         setList((prev) => [...prev, ...selectList(data)]);

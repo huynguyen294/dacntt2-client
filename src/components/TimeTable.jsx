@@ -12,13 +12,14 @@ export const defaultWeekCalendarValue = {
 };
 
 const weeks = ["Th 2", "Th 3", "Th 4", "Th 5", "Th 6", "Th 7", "CN"];
+const times = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21];
 
 const TimeTable = ({ value = defaultWeekCalendarValue, schedules = [] }) => {
   const { shifts } = useMetadata();
 
   return (
     <div className="shadow-small p-2 w-full rounded-large">
-      <table className="w-full [&_th]:p-1 sm:[&_th]:p-2 [&_td]:p-1 sm:[&_td]:p-2 [&_th]:text-foreground [&_th]:border-r-2 [&_td]:border-r-2 [&_th]:border-b-2 [&_td]:border-b-2 [&_th:last-child]:border-r-0 [&_td:last-child]:border-r-0 [&_tr:last-child_td]:border-b-0 [&_tbody_tr:last-child_th]:border-b-0 rounded-lg overflow-hidden">
+      <table className="w-full [&_th]:p-1 sm:[&_th]:p-2 [&_td]:p-1 sm:[&_td]:p-2 [&_th]:text-foreground [&_th]:border-r-1 [&_td]:border-r-1 [&_th]:border-b-1 [&_td]:border-b-1 [&_th:last-child]:border-r-0 [&_td:last-child]:border-r-0 [&_tr:last-child_td]:border-b-0 [&_tbody_tr:last-child_th]:border-b-0 rounded-lg overflow-hidden">
         <thead>
           <tr>
             <th>Ca | Thứ</th>

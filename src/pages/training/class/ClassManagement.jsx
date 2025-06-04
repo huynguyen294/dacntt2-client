@@ -11,6 +11,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { classApi } from "@/apis";
 import { addToast } from "@heroui/toast";
 import { useAppStore } from "@/state";
+import ClassFilter from "./components/ClassFilter";
 
 const ClassManagement = () => {
   const queryClient = useQueryClient();
@@ -19,9 +20,9 @@ const ClassManagement = () => {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [selectedClassId, setSelectedClassId] = useState(null);
 
-  const queryFilterKey = `p=${pager.page},ps=${pager.pageSize},q=${debounceQuery},o=${order.order},ob=${order.orderBy},ca=${filters.createdAt}`;
+  const queryFilterKey = `p=${pager.page},ps=${pager.pageSize},q=${debounceQuery},o=${order.order},ob=${order.orderBy}`;
   const { isLoading, data, isSuccess } = useQuery({
-    queryKey: ["classes", queryFilterKey],
+    queryKey: ["classes", queryFilterKey, JSON.stringify(filters)],
     queryFn: () => classApi.get(pager, order, debounceQuery, filters, ["refs=true"]),
   });
 
@@ -62,6 +63,7 @@ const ClassManagement = () => {
             </h3>
           </div>
           <TableHeader
+            filter={<ClassFilter />}
             searchPlaceholder="Nhập tên lớp học"
             addBtnPath={`/classes/add`}
             rowSize={data?.rows?.length || 0}
@@ -122,6 +124,7 @@ const defaultSelectedColumns = [
   "numberOfStudents",
   "openingDay",
   "closingDay",
+  "status",
   "actions",
 ];
 

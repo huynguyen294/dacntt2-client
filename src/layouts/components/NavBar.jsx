@@ -78,9 +78,6 @@ const NavBar = ({ breadcrumbItems = [], hideMenuButton = false, hideDashboard = 
               <Search size="20px" />
             </Button>
             <Button size="sm" isIconOnly variant="light" radius="full">
-              <Settings size="20px" />
-            </Button>
-            <Button size="sm" isIconOnly variant="light" radius="full">
               <Bell size="20px" />
             </Button>
             <Divider orientation="vertical" className="h-6 mx-2" />

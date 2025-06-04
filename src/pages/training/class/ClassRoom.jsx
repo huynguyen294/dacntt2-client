@@ -36,7 +36,7 @@ const ClassRoom = () => {
         selectedKey={tab}
         onSelectionChange={(key) => {
           searchParams.set("tab", key);
-          setSearchParams(searchParams);
+          setSearchParams(searchParams, { replace: true });
         }}
         classNames={{
           base: "container mx-auto w-full justify-center my-2 sm:my-4 px-2 sm:px-10",
