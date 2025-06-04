@@ -366,7 +366,7 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
             render={({ value, setValue, name, defaultValue, ref }) => (
               <Select
                 ref={ref}
-                selectedKeys={new Set([value])}
+                selectedKeys={value && new Set([value.toString()])}
                 onSelectionChange={(set) => setValue([...set][0])}
                 name={name}
                 defaultSelectedKeys={new Set(defaultValue ? [defaultValue.toString()] : [])}

@@ -14,9 +14,10 @@ const EditUser = () => {
   const { userId, role } = useParams();
   const userRole = search.get("role");
 
+  const refs = EMPLOYEE_ROLES.includes(userRole);
   const { isLoading, data, isError, error } = useQuery({
-    queryKey: ["users", userId],
-    queryFn: () => userApi.getById(userId, EMPLOYEE_ROLES.includes(userRole) ? ["refs=true"] : []),
+    queryKey: ["users", userId, `refs=${refs}`],
+    queryFn: () => userApi.getById(userId, { refs }),
   });
 
   useEffect(() => {

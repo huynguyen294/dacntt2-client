@@ -107,6 +107,7 @@ const columns = [
   { name: "Ngày khai giảng", uid: "openingDay" },
   { name: "Ngày kết thúc", uid: "closingDay" },
   { name: "Trạng thái", uid: "status" },
+  { name: "Cấp độ", uid: "level" },
   { name: "Ngày cập nhật gần nhât", uid: "lastUpdatedAt" },
   // { name: "Người cập nhật", uid: "lastUpdatedBy", disableSort: true },
   { name: "Ngày tạo", uid: "createdAt" },

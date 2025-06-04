@@ -140,7 +140,12 @@ const Sidebar = ({ className }) => {
 const dashboard = { label: "Tổng quan", icon: LayoutDashboard };
 const userSidebarItems = {
   admin: [
-    { items: [{ ...dashboard, path: "/", isDashboard: true }] },
+    {
+      items: [
+        { ...dashboard, path: "/", isDashboard: true },
+        { label: "Bảng tin", path: "/information-sheet", icon: LayoutDashboard },
+      ],
+    },
     {
       section: "Người dùng",
       sectionIcon: User,

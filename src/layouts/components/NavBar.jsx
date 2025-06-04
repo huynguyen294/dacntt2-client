@@ -52,7 +52,7 @@ const NavBar = ({ breadcrumbItems = [], hideMenuButton = false, hideDashboard = 
               }}
             >
               {!hideDashboard && (
-                <BreadcrumbItem onPress={() => navigate("/")} startContent={<LayoutDashboard size="16px" />}>
+                <BreadcrumbItem onClick={() => navigate("/")} startContent={<LayoutDashboard size="16px" />}>
                   Tổng quan
                 </BreadcrumbItem>
               )}

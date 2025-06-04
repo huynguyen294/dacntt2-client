@@ -24,15 +24,13 @@ import {
   RegisterStudent,
   TrainingSettings,
   UserManagement,
-  Teacher,
-  Student,
   NotFound,
   Profile,
-  Consultant,
   ClassRoom,
   TimeTablePage,
   ClassExercisePage,
   ClassStudentExercises,
+  Dashboard,
 } from "./pages";
 
 import "./App.css";
@@ -53,6 +51,7 @@ const App = () => {
 
         <Route path="admin">
           <Route index element={<Admin />} />
+          <Route path="information-sheet" element={<Dashboard />} />
           <Route path="user-management/:role" element={<UserManagement />} />
           <Route path="user-management/:role/add" element={<AddUser />} />
           <Route path="user-management/:role/edit/:userId" element={<EditUser />} />
@@ -84,19 +83,22 @@ const App = () => {
         </Route>
 
         <Route path="teacher">
-          <Route index element={<Teacher />} />
+          <Route index element={<Dashboard />} />
         </Route>
 
         <Route path="consultant">
-          <Route index element={<Consultant />} />
+          <Route index element={<Dashboard />} />
           <Route path="register-admission" element={<RegisterStudent />} />
           <Route path="admissions" element={<AdmissionManagement />} />
           <Route path="classes" element={<ClassManagement />} />
         </Route>
 
+        <Route path="finance-officer">
+          <Route index element={<Dashboard />} />
+        </Route>
+
         <Route path="/">
-          <Route index element={<Student />} />
-          <Route path="test" element={<Student />} />
+          <Route index element={<Dashboard />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

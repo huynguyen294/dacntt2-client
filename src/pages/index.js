@@ -1,3 +1,4 @@
+export { default as Dashboard } from "./Dashboard";
 export { default as UserManagement } from "./users/UserManagement";
 export { default as AddUser } from "./users/AddUser";
 export { default as EditUser } from "./users/EditUser";
@@ -28,6 +29,3 @@ export { default as Register } from "./auth/Register";
 export { default as NotFound } from "./NotFound";
 export { default as Profile } from "./Profile";
 export { default as Admin } from "./Admin";
-export { default as Consultant } from "./Consultant";
-export { default as Student } from "./Student";
-export { default as Teacher } from "./Teacher";

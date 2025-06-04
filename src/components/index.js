@@ -4,3 +4,4 @@ export { default as UserDetailModal } from "./UserDetailModal";
 export { default as ClassAssignment } from "./ClassAssignment";
 export { default as SearchUser } from "./SearchUser";
 export { default as TimeTable } from "./TimeTable";
+export { default as InformationSheet } from "./InformationSheet";
