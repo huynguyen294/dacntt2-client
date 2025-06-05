@@ -24,7 +24,7 @@ const ClassAssignment = ({ studentIds = [], isSingleMode, onDone }) => {
 
   const classList = useServerList("classes", classApi.get, {
     filters: { courseId: selectedCourse, shiftId: selectedShift, teacherId: selectedTeacher },
-    otherParams: ["fields=:basic", "filter=id:in:" + studentIds.join(",")],
+    otherParams: ["fields=:basic"],
   });
   const studentList = useServerList("users", userApi.get, {
     otherParams: ["fields=:basic", "filter=id:in:" + studentIds.join(",")],

@@ -78,6 +78,8 @@ export const generateFilterParams = (filter = {}) => {
       value = value[opKey];
     }
 
+    if (value === null) return "";
+
     return `filter=${field}:${operator}:${value}`;
   };
 

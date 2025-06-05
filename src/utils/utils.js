@@ -23,6 +23,7 @@ export const arrayToObject = (arr = [], property = "id") => {
 };
 
 export const timeFormat = (text) => text && text.slice(0, 5);
+export const splitTime = (text) => text.split(":").map((t) => Number(t));
 export const displayDate = (value) => (value ? format(new Date(value), "dd-MM-yyyy") : "");
 export const dayFormat = (date) => {
   const day = new Date(date).getDay();

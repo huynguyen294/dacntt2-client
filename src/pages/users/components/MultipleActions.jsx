@@ -37,9 +37,7 @@ const MultipleActions = () => {
                     onDone={() => {
                       addToast({ title: "Thành công!", description: "Đã thêm các học sinh vào lớp" });
                       queryClient.invalidateQueries({ queryKey: ["classes"] });
-                      [...selectedKeys].forEach((id) => {
-                        queryClient.invalidateQueries({ queryKey: ["users", "detail", Number(id)] });
-                      });
+                      queryClient.invalidateQueries({ queryKey: ["users"] });
                       onClose();
                     }}
                   />

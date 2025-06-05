@@ -6,7 +6,13 @@ import { debounceFn } from "@/utils";
 const useServerList = (
   dataKey = "users",
   getFn = (pager, order, query, filters, otherParams) => {},
-  { filters = {}, otherParams = ["fields=:basic"], selectList = (data) => data.rows, paging = true } = {}
+  {
+    filters = {},
+    paging = true,
+    otherParams = ["fields=:basic"],
+    selectList = (data) => data.rows,
+    searchQuery = "",
+  } = {}
 ) => {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -24,8 +30,8 @@ const useServerList = (
   );
 
   const { isLoading, data } = useQuery({
-    queryKey: [dataKey, "basic-list", query, pager.page, JSON.stringify(filters), [...otherParams]],
-    queryFn: () => getFn(paging && pager, null, query, filters, otherParams),
+    queryKey: [dataKey, "basic-list", searchQuery || query, pager.page, JSON.stringify(filters), [...otherParams]],
+    queryFn: () => getFn(paging && pager, null, searchQuery || query, filters, otherParams),
   });
 
   useEffect(() => {

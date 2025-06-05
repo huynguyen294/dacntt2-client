@@ -150,7 +150,7 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
             render={({ ref, value, defaultValue, name, setValue }) => (
               <Select
                 ref={ref}
-                selectedKeys={new Set([value])}
+                selectedKeys={value && new Set([value.toString()])}
                 isRequired
                 name={name}
                 isLoading={metadataLoading}
