@@ -12,6 +12,7 @@ import { useState } from "react";
 
 const TimeTablePage = () => {
   const [selectedUser, setSelectedUser] = useState("2");
+  const [selectedClass, setSelectedClass] = useState("2");
 
   const studentList = useServerList("users", userApi.get, { filters: { role: "student" } });
   const teacherList = useServerList("users", userApi.get, {
@@ -42,6 +43,7 @@ const TimeTablePage = () => {
           labelPlacement="outside"
           placeholder="Chọn lớp học"
           items={classList.list}
+          selectedKey={selectedClass}
           isVirtualized
           maxListboxHeight={265}
           itemHeight={40}
@@ -50,6 +52,7 @@ const TimeTablePage = () => {
           }}
           isLoading={classList.isLoading}
           onInputChange={classList.onQueryChange}
+          onSelectionChange={setSelectedClass}
         >
           {(item) => <AutocompleteItem key={item.id}>{item.name}</AutocompleteItem>}
         </Autocomplete>
@@ -108,7 +111,11 @@ const TimeTablePage = () => {
         </Autocomplete>
       </div>
       <div className="px-2 sm:px-10 mt-4 overflow-y-auto pt-2 pb-6">
-        <TimeTable teacherId={Number(selectedTeacher)} studentId={Number(selectedStudent)} />
+        <TimeTable
+          teacherId={Number(selectedTeacher)}
+          studentId={Number(selectedStudent)}
+          classId={Number(selectedClass)}
+        />
       </div>
     </ModuleLayout>
   );

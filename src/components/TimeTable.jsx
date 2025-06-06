@@ -1,4 +1,4 @@
-import { classApi, scheduleApi, userApi } from "@/apis";
+import { classApi, enrollmentApi, scheduleApi, userApi } from "@/apis";
 import { DATE_FORMAT, EMPLOYEE_STATUS } from "@/constants";
 import { useMetadata, useServerList } from "@/hooks";
 import { cn } from "@/lib/utils";
@@ -8,6 +8,7 @@ import { Loader } from "./common";
 import { Button } from "@heroui/button";
 import { ArrowRight, ChevronsLeft, ChevronsRight, MoveRight } from "lucide-react";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 const currentDate = new Date();
 export const defaultWeekCalendarValue = {
@@ -22,7 +23,7 @@ const END_HOUR = 21;
 const NUM_OF_ROWS = ((END_HOUR - START_HOUR) * 60) / 5;
 const ONE_HOUR_ROWS = 12;
 
-const TimeTable = ({ studentId, teacherId, classId }) => {
+const TimeTable = ({ generalMode, studentId, teacherId, classId }) => {
   const [value, setValue] = useState(defaultWeekCalendarValue);
   const metadata = useMetadata();
   const teacherList = useServerList("users", userApi.get, {
@@ -43,6 +44,13 @@ const TimeTable = ({ studentId, teacherId, classId }) => {
     paging: false,
   });
 
+  const enrResult = useQuery({
+    queryKey: ["enrollments", [studentId]],
+    queryFn: () => studentId && enrollmentApi.getByStudents([studentId]),
+  });
+
+  const studentClasses = enrResult.data ? enrResult.data.rows.map((r) => r.classId) : [];
+
   const ready = classList.ready && scheduleList.ready && teacherList.ready && Boolean(metadata.shifts);
   const isLoading = classList.isLoading && scheduleList.isLoading && teacherList.isLoading && metadata.loading;
   const classObj = arrayToObject(classList.list);
@@ -51,10 +59,12 @@ const TimeTable = ({ studentId, teacherId, classId }) => {
   const filteredSchedule = scheduleList.list.filter((s) => {
     const sDate = new Date(s.date);
     if (sDate < new Date(value.startDate) || sDate > new Date(value.endDate)) return;
-    if (teacherId) return s.teacherId === teacherId;
-    if (studentId) return s.studentId === studentId;
-    if (classId) return s.classId === classId;
-    return true;
+
+    let valid = true;
+    if (teacherId) valid = s.teacherId === teacherId;
+    if (studentId) valid = studentClasses.includes(s.classId);
+    if (classId) valid = s.classId === classId;
+    return valid;
   });
 
   const multipleMode = !studentId && !teacherId && !classId;
