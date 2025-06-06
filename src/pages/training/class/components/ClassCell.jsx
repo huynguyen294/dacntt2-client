@@ -15,14 +15,14 @@ import { Avatar } from "@heroui/avatar";
 const ClassCell = ({ dataRefs, rowData, columnKey, rowIndex, onDelete = (id) => {} }) => {
   const { getRowIndex } = useTableContext();
   const { isOpen, onOpenChange, onOpen } = useDisclosure();
-  const { shifts } = useMetadata();
+  const { shiftObj } = useMetadata();
   const navigate = useNavigate();
 
   const { users = {}, courses = {}, studentCounts = {} } = dataRefs || {};
 
   const teacher = users[rowData.teacherId];
   const course = courses[rowData.courseId];
-  const shift = shifts && shifts[rowData.shiftId];
+  const shift = shiftObj && shiftObj[rowData.shiftId];
   const studentCount = Number(studentCounts[rowData.id]?.total || 0);
 
   const user = useAppStore("user");
@@ -35,7 +35,12 @@ const ClassCell = ({ dataRefs, rowData, columnKey, rowIndex, onDelete = (id) => 
   if (columnKey === "level") cellValue = COURSE_LEVELS[cellValue];
   if (columnKey === "courseId") cellValue = course?.name || "";
   if (columnKey === "numberOfStudents") cellValue = `${studentCount || 0}/${cellValue}`;
-  if (columnKey === "shiftId") cellValue = `${shift?.name} (${shiftFormat(shift)})`;
+  if (columnKey === "shiftId")
+    cellValue = (
+      <p>
+        {shift?.name} ({shiftFormat(shift)})
+      </p>
+    );
   if (columnKey === "teacherId") {
     cellValue = teacher?.name || "";
     return (

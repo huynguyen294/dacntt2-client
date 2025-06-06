@@ -61,13 +61,13 @@ const TimeTable = ({ studentId, teacherId, classId }) => {
 
   const { shiftObj } = metadata;
 
-  const Block = ({ schedule, rowSpan }) => {
+  const Block = ({ schedule, rowSpan, isToday }) => {
     const shift = shiftObj[schedule.shiftId];
     const teacher = teacherObj[schedule.teacherId];
     const classData = classObj[schedule.classId];
 
     return (
-      <td rowSpan={rowSpan} className="!p-[2px] border-b-1">
+      <td rowSpan={rowSpan} className={cn("!p-[2px] border-b-1", isToday && "bg-secondary-50/50")}>
         <div className="w-full bg-primary-100 border-l-5 border-primary-400 rounded text-primary-700 px-1">
           <p className="font-bold">{classData.name}</p>
           <p className="text-small">({shiftFormat(shift)})</p>
@@ -79,13 +79,14 @@ const TimeTable = ({ studentId, teacherId, classId }) => {
     );
   };
 
-  const generateRows = (filtered) => {
+  const generateRows = (filtered, isToday) => {
     const result = new Array(NUM_OF_ROWS)
       .fill()
       .map((_, index) => (
         <td
           className={cn(
-            index % ONE_HOUR_ROWS === ONE_HOUR_ROWS - 1 && index < NUM_OF_ROWS - ONE_HOUR_ROWS && "border-b-1"
+            index % ONE_HOUR_ROWS === ONE_HOUR_ROWS - 1 && index < NUM_OF_ROWS - ONE_HOUR_ROWS && "border-b-1",
+            isToday && "bg-secondary-50/50"
           )}
         />
       ));
@@ -98,7 +99,7 @@ const TimeTable = ({ studentId, teacherId, classId }) => {
         const startIdx = calcIndexFromTime(shift.startTime);
         const endIdx = calcIndexFromTime(shift.endTime);
 
-        result[startIdx] = <Block rowSpan={endIdx - startIdx} schedule={schedule} />;
+        result[startIdx] = <Block isToday={isToday} rowSpan={endIdx - startIdx} schedule={schedule} />;
         Array.from({ length: endIdx - startIdx - 1 }).forEach((_, index) => {
           result[startIdx + index + 1] = null;
         });
@@ -110,10 +111,12 @@ const TimeTable = ({ studentId, teacherId, classId }) => {
 
   const columns = weeks.map((label, index) => {
     const currentDay = addDays(new Date(value.startDate), index);
+
+    const isToday = format(currentDay, DATE_FORMAT) === format(currentDate, DATE_FORMAT);
     const filtered = filteredSchedule.filter(
       (s) => format(new Date(s.date), DATE_FORMAT) === format(currentDay, DATE_FORMAT)
     );
-    return generateRows(filtered);
+    return generateRows(filtered, isToday);
   });
 
   return (
@@ -161,9 +164,10 @@ const TimeTable = ({ studentId, teacherId, classId }) => {
                   <th className="border-b-1 w-[6rem]"></th>
                   {weeks.map((week, index) => {
                     const currentDay = addDays(new Date(value.startDate), index);
+                    const isToday = format(currentDay, DATE_FORMAT) === format(currentDate, DATE_FORMAT);
 
                     return (
-                      <th key={`h-${week}`} className="border-b-1">
+                      <th key={`h-${week}`} className={cn("border-b-1", isToday && "bg-secondary-50/50")}>
                         <div>
                           <p className="text-sm font-normal">{week}</p>
                           <div className={cn("text-lg")}>{format(currentDay, "dd/MM")}</div>
@@ -183,7 +187,10 @@ const TimeTable = ({ studentId, teacherId, classId }) => {
                       {firstCol ? (
                         <th
                           rowSpan={ONE_HOUR_ROWS}
-                          className={cn("!p-1 text-center border-b-1", hour === END_HOUR - 1 && "border-b-0")}
+                          className={cn(
+                            "!p-1 text-center border-b-1 font-normal",
+                            hour === END_HOUR - 1 && "border-b-0"
+                          )}
                         >
                           {format(new Date().setHours(hour, 0), "HH:mm")}
                         </th>
