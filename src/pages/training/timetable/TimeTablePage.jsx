@@ -12,7 +12,7 @@ import { useState } from "react";
 
 const TimeTablePage = () => {
   const [selectedUser, setSelectedUser] = useState("2");
-  const [selectedClass, setSelectedClass] = useState("2");
+  const [selectedClass, setSelectedClass] = useState();
 
   const studentList = useServerList("users", userApi.get, { filters: { role: "student" } });
   const teacherList = useServerList("users", userApi.get, {

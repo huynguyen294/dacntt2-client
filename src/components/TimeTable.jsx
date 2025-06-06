@@ -64,6 +64,8 @@ const TimeTable = ({ generalMode, studentId, teacherId, classId }) => {
     if (teacherId) valid = s.teacherId === teacherId;
     if (studentId) valid = studentClasses.includes(s.classId);
     if (classId) valid = s.classId === classId;
+
+    console.log(classId);
     return valid;
   });
 
