@@ -2,7 +2,7 @@ import { classApi, enrollmentApi, scheduleApi, userApi } from "@/apis";
 import { DATE_FORMAT, EMPLOYEE_STATUS } from "@/constants";
 import { useMetadata, useServerList } from "@/hooks";
 import { cn } from "@/lib/utils";
-import { arrayToObject, shiftFormat } from "@/utils";
+import { arrayToObject, displayDate, shiftFormat, splitTime } from "@/utils";
 import { addDays, differenceInMinutes, endOfWeek, format, startOfWeek, subDays } from "date-fns";
 import { Loader } from "./common";
 import { Button } from "@heroui/button";
@@ -65,7 +65,6 @@ const TimeTable = ({ generalMode, studentId, teacherId, classId }) => {
     if (studentId) valid = studentClasses.includes(s.classId);
     if (classId) valid = s.classId === classId;
 
-    console.log(classId);
     return valid;
   });
 
@@ -80,7 +79,7 @@ const TimeTable = ({ generalMode, studentId, teacherId, classId }) => {
 
     return (
       <td rowSpan={rowSpan} className={cn("!p-[2px] border-b-1", isToday && "bg-secondary-50/50")}>
-        <div className="w-full bg-primary-100 border-l-5 border-primary-400 rounded text-primary-700 px-1">
+        <div className="w-full bg-primary-100 border-l-5 border-primary-400 rounded-small text-primary-700 px-1">
           <p className="font-bold">{classData.name}</p>
           <p className="text-small">({shiftFormat(shift)})</p>
           <div className="flex gap-1 items-center py-2">
@@ -91,7 +90,37 @@ const TimeTable = ({ generalMode, studentId, teacherId, classId }) => {
     );
   };
 
-  const generateRows = (filtered, isToday) => {
+  const OverlapBlock = ({ schedules, rowSpan, isToday }) => {
+    return (
+      <td rowSpan={rowSpan} className={cn("!p-[2px] border-b-1", isToday && "bg-secondary-50/50")}>
+        <div className="flex flex-col gap-[0.5px]">
+          {schedules.map((schedule, index) => {
+            const shift = shiftObj[schedule.shiftId];
+            const teacher = teacherObj[schedule.teacherId];
+            const classData = classObj[schedule.classId];
+
+            return (
+              <div
+                className={cn(
+                  "w-full bg-primary-100 border-l-5 border-primary-400 rounded-sm text-primary-700 px-1",
+                  index === schedules.length - 1 && "rounded-b-small",
+                  index === 0 && "rounded-t-small"
+                )}
+              >
+                <p className="font-bold">{classData.name}</p>
+                <p className="text-small">({shiftFormat(shift)})</p>
+                <div className="flex gap-1 items-center py-2">
+                  <p className="font-semibold">GV: {teacher.name}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </td>
+    );
+  };
+
+  const generateRows = (schedules, isToday) => {
     const result = new Array(NUM_OF_ROWS)
       .fill()
       .map((_, index) => (
@@ -104,9 +133,17 @@ const TimeTable = ({ generalMode, studentId, teacherId, classId }) => {
       ));
 
     if (multipleMode) {
-      // const merged = filtered.
+      const merged = groupOverlappingSchedules(schedules, shiftObj);
+      merged.forEach((gSchedule) => {
+        const startIdx = calcIndexFromTime(getStartTimeFromSchedules(gSchedule, shiftObj));
+        const endIdx = calcIndexFromTime(getEndTimeFromSchedules(gSchedule, shiftObj));
+        result[startIdx] = <OverlapBlock isToday={isToday} rowSpan={endIdx - startIdx} schedules={gSchedule} />;
+        Array.from({ length: endIdx - startIdx - 1 }).forEach((_, index) => {
+          result[startIdx + index + 1] = null;
+        });
+      });
     } else {
-      filtered.forEach((schedule) => {
+      schedules.forEach((schedule) => {
         const shift = shiftObj[schedule.shiftId];
         const startIdx = calcIndexFromTime(shift.startTime);
         const endIdx = calcIndexFromTime(shift.endTime);
@@ -228,28 +265,56 @@ const calcIndexFromTime = (time) => {
   return diffMinutes / 5;
 };
 
-const groupOverlappingSchedules = (schedules) => {
+const getStartTimeFromSchedules = (list, shiftObj) => {
+  const [first, ...other] = list;
+
+  let startTime = shiftObj[first.shiftId].startTime;
+  other.forEach((item) => {
+    const itemStartTime = shiftObj[item.shiftId].startTime;
+    if (splitTime(itemStartTime)[0] < splitTime(startTime)[0]) startTime = itemStartTime;
+  });
+  return startTime;
+};
+
+const getEndTimeFromSchedules = (list, shiftObj) => {
+  const [first, ...other] = list;
+
+  let endTime = shiftObj[first.shiftId].endTime;
+  other.forEach((item) => {
+    const itemStartTime = shiftObj[item.shiftId].endTime;
+    if (splitTime(itemStartTime)[0] > splitTime(endTime)[0]) endTime = itemStartTime;
+  });
+  return endTime;
+};
+
+const isOverlap = ([a1, a2], [b1, b2]) => {
+  return Math.max(a1, b1) <= Math.min(a2, b2);
+};
+
+const groupOverlappingSchedules = (schedules, shiftObj) => {
   const cloned = [...schedules];
-  cloned.sort((a, b) => a.startTime - b.startTime);
+  const grouped = [];
 
-  const groups = [];
-  let currentGroup = [cloned[0]];
+  cloned.forEach((schedule) => {
+    const shift = shiftObj[schedule.shiftId];
+    const found = grouped.find((g) =>
+      Boolean(
+        g.find((gS) => {
+          const gsShift = shiftObj[gS.shiftId];
+          if (displayDate(shift.date) !== displayDate(gsShift.date)) return;
 
-  for (let i = 1; i < cloned.length; i++) {
-    const last = currentGroup[currentGroup.length - 1];
-    const current = cloned[i];
+          return isOverlap(
+            [splitTime(shift.startTime)[0], splitTime(shift.endTime)[0]],
+            [splitTime(gsShift.startTime)[0], splitTime(gsShift.endTime)[0]]
+          );
+        })
+      )
+    );
+    if (!found) grouped.push([schedule]);
+    if (found) found.push(schedule);
+  });
 
-    if (current.startTime < last.endTime) {
-      currentGroup.push(current);
-      last.endTime = Math.max(last.endTime, current.endTime);
-    } else {
-      groups.push(currentGroup);
-      currentGroup = [current];
-    }
-  }
-
-  groups.push(currentGroup);
-  return groups;
+  return grouped;
 };
 
 export default TimeTable;

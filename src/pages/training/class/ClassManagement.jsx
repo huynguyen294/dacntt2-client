@@ -15,7 +15,7 @@ import ClassFilter from "./components/ClassFilter";
 
 const ClassManagement = () => {
   const queryClient = useQueryClient();
-  const table = useTable({ allColumns: columns, defaultSelectedColumns });
+  const table = useTable({ allColumns: columns, defaultSelectedColumns, defaultOrderBy: "name" });
   const { pager, filters, debounceQuery, order, setPager } = table;
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [selectedClassId, setSelectedClassId] = useState(null);

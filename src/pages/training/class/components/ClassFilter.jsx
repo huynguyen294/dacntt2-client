@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { COURSE_LEVELS, COURSE_STATUSES, DATE_FORMAT } from "@/constants";
+import { COURSE_LEVELS, DATE_FORMAT } from "@/constants";
 import { Button } from "@heroui/button";
 
 import { CheckCheck, SlidersHorizontal } from "lucide-react";

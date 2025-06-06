@@ -41,18 +41,22 @@ const TimeTablePage = () => {
           label="Lớp học"
           radius="sm"
           labelPlacement="outside"
-          placeholder="Chọn lớp học"
+          placeholder="Tìm theo tên lớp học"
           items={classList.list}
           selectedKey={selectedClass}
           isVirtualized
           maxListboxHeight={265}
           itemHeight={40}
+          isLoading={classList.isLoading}
+          onInputChange={classList.onQueryChange}
+          inputValue={classList.query}
           listboxProps={{
             bottomContent: classList.hasMore && <LoadMoreButton onLoadMore={classList.onLoadMore} />,
           }}
-          isLoading={classList.isLoading}
-          onInputChange={classList.onQueryChange}
-          onSelectionChange={setSelectedClass}
+          onSelectionChange={(key) => {
+            setSelectedClass(key);
+            classList.clearQuery();
+          }}
         >
           {(item) => <AutocompleteItem key={item.id}>{item.name}</AutocompleteItem>}
         </Autocomplete>
@@ -62,7 +66,7 @@ const TimeTablePage = () => {
           label="Người dùng"
           radius="sm"
           labelPlacement="outside"
-          placeholder="Nhập tên, email, số điện thoại..."
+          placeholder="Tìm theo tên, email, số điện thoại..."
           isVirtualized
           maxListboxHeight={265}
           itemHeight={50}
@@ -71,8 +75,12 @@ const TimeTablePage = () => {
             bottomContent: studentList.hasMore && <LoadMoreButton onLoadMore={studentList.onLoadMore} />,
           }}
           isLoading={studentList.isLoading || teacherList.isLoading}
+          inputValue={studentList.query}
           onInputChange={studentList.onQueryChange}
-          onSelectionChange={setSelectedUser}
+          onSelectionChange={(key) => {
+            setSelectedUser(key);
+            classList.clearQuery();
+          }}
         >
           {teacherList.list.length > 0 && (
             <AutocompleteSection title="Giáo viên">

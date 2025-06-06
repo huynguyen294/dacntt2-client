@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import { PAGER } from "@/constants";
 import { debounceFn } from "@/utils";
+import useDebounce from "./useDebounce";
 
 const useServerList = (
   dataKey = "users",
@@ -10,8 +11,8 @@ const useServerList = (
     filters = {},
     paging = true,
     otherParams = ["fields=:basic"],
-    selectList = (data) => data.rows,
     searchQuery = "",
+    selectList = (data) => data.rows,
   } = {}
 ) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,17 +22,22 @@ const useServerList = (
 
   const changePager = (key, value) => setPager((prev) => ({ ...prev, [key]: value }));
   const onLoadMore = () => changePager("page", pager.page + 1);
-  const onQueryChange = useCallback(
-    debounceFn((newQuery) => {
-      setQuery(newQuery);
-      setPager(PAGER);
-    }),
+  const clearQuery = () => setQuery("");
+
+  const debounceReSetPager = useCallback(
+    debounceFn(() => setPager(PAGER)),
     []
   );
 
+  const onQueryChange = (newQuery) => {
+    debounceReSetPager();
+    setQuery(newQuery);
+  };
+
+  const debounceQuery = useDebounce(searchQuery || query);
   const { isLoading, data } = useQuery({
-    queryKey: [dataKey, "basic-list", searchQuery || query, pager.page, JSON.stringify(filters), [...otherParams]],
-    queryFn: () => getFn(paging && pager, null, searchQuery || query, filters, otherParams),
+    queryKey: [dataKey, "basic-list", debounceQuery, pager.page, JSON.stringify(filters), [...otherParams]],
+    queryFn: () => getFn(paging && pager, null, debounceQuery, filters, otherParams),
   });
 
   useEffect(() => {
@@ -48,7 +54,7 @@ const useServerList = (
   const ready = Boolean(data);
   const hasMore = ready && pager.pageCount && pager.page < pager.pageCount;
 
-  return { isLoading, query, list, onQueryChange, onLoadMore, hasMore, isOpen, setIsOpen, ready };
+  return { isLoading, query, list, clearQuery, onQueryChange, onLoadMore, hasMore, isOpen, setIsOpen, ready };
 };
 
 export default useServerList;
