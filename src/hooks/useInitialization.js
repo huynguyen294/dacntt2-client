@@ -8,8 +8,6 @@ const useInitialization = () => {
   const user = useAppStore("user");
   const state = useStudentStore();
 
-  console.log(state);
-
   useEffect(() => {
     userApi.refreshProfile();
   }, []);

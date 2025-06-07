@@ -1,3 +1,5 @@
+import { endOfWeek, format, startOfWeek } from "date-fns";
+
 export const PAGER = { page: 1, pageSize: 20 };
 export const ORDER = { order: "DESC", orderBy: "created_at" };
 
@@ -102,4 +104,10 @@ export const ORDER_BY_NAME = { orderBy: "name", order: "asc" };
 export const EXERCISE_STATUSES = {
   submitted: "Đã nộp",
   missing: "Chưa nộp",
+};
+
+export const currentDate = new Date();
+export const defaultWeekCalendarValue = {
+  startDate: format(startOfWeek(currentDate, { weekStartsOn: 1 }), DATE_FORMAT),
+  endDate: format(endOfWeek(currentDate, { weekStartsOn: 1 }), DATE_FORMAT),
 };

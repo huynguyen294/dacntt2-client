@@ -1,7 +1,7 @@
 import { ModuleLayout } from "@/layouts";
 import { timetableBreadcrumbItems } from "../constants";
 import { LoadMoreButton } from "@/components/common";
-import { useServerList } from "@/hooks";
+import { useServerList, useTimetable } from "@/hooks";
 import { classApi, userApi } from "@/apis";
 import { Avatar } from "@heroui/avatar";
 import { TimeTable } from "@/components";
@@ -32,6 +32,12 @@ const TimeTablePage = () => {
 
   const selectedTeacher = teacherList.list.find((t) => t.id == selectedUser) ? selectedUser : null;
   const selectedStudent = !selectedTeacher ? selectedUser : null;
+
+  const timeTable = useTimetable({
+    teacherId: selectedTeacher && Number(selectedTeacher),
+    studentId: selectedStudent && Number(selectedStudent),
+    classId: selectedClass && Number(selectedClass),
+  });
 
   return (
     <ModuleLayout breadcrumbItems={timetableBreadcrumbItems}>
@@ -126,11 +132,7 @@ const TimeTablePage = () => {
         </Select>
       </div>
       <div className="px-2 sm:px-10 mt-4 overflow-y-auto pt-2 pb-6">
-        <TimeTable
-          teacherId={selectedTeacher && Number(selectedTeacher)}
-          studentId={selectedStudent && Number(selectedStudent)}
-          classId={selectedClass && Number(selectedClass)}
-        />
+        <TimeTable timeTable={timeTable} />
       </div>
     </ModuleLayout>
   );

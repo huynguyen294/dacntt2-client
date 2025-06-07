@@ -1,21 +1,11 @@
-import { classApi, enrollmentApi, scheduleApi, userApi } from "@/apis";
-import { DATE_FORMAT, EMPLOYEE_STATUS } from "@/constants";
-import { useMetadata, useServerList } from "@/hooks";
+import { currentDate, DATE_FORMAT } from "@/constants";
+import { useMetadata } from "@/hooks";
 import { cn } from "@/lib/utils";
-import { alpha, arrayToObject, displayDate, shiftFormat, splitTime, unique } from "@/utils";
+import { alpha, displayDate, shiftFormat, splitTime } from "@/utils";
 import { addDays, differenceInMinutes, endOfWeek, format, startOfWeek, subDays } from "date-fns";
 import { Loader } from "./common";
 import { Button } from "@heroui/button";
-import { ArrowRight, ChevronsLeft, ChevronsRight, MoveRight } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { COLORS } from "@/constants/palette";
-
-const currentDate = new Date();
-export const defaultWeekCalendarValue = {
-  startDate: format(startOfWeek(currentDate, { weekStartsOn: 1 }), DATE_FORMAT),
-  endDate: format(endOfWeek(currentDate, { weekStartsOn: 1 }), DATE_FORMAT),
-};
+import { ArrowRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 
 const weeks = ["Th 2", "Th 3", "Th 4", "Th 5", "Th 6", "Th 7", "CN"];
 const START_HOUR = 7;
@@ -24,69 +14,10 @@ const END_HOUR = 21;
 const NUM_OF_ROWS = ((END_HOUR - START_HOUR) * 60) / 5;
 const ONE_HOUR_ROWS = 12;
 
-const TimeTable = ({ generalMode = null, studentId = null, teacherId = null, classId = null }) => {
-  const [value, setValue] = useState(defaultWeekCalendarValue);
-  const metadata = useMetadata();
-  const teacherList = useServerList("users", userApi.get, {
-    filters: { role: "teacher", status: EMPLOYEE_STATUS.active },
-    otherParams: ["role=teacher"],
-    paging: false,
-  });
-  const classList = useServerList("classes", classApi.get, {
-    filters: {
-      openingDay: { lte: format(new Date(), DATE_FORMAT) },
-      closingDay: { gte: format(new Date(), DATE_FORMAT) },
-    },
-    paging: false,
-  });
-  const scheduleList = useServerList("class-schedules", classList.ready && scheduleApi.get, {
-    filters: { classId: classList.list.map((c) => c.id) },
-    otherParams: ["refs=true"],
-    paging: false,
-  });
-  const enrResult = useQuery({
-    queryKey: ["enrollments", "by-student", studentId],
-    queryFn: () => studentId && enrollmentApi.getByStudents([studentId]),
-  });
-
-  const classColors = classList.list.reduce((acc, c, index) => ({ ...acc, [c.id]: COLORS[index] }), []);
-  const studentClasses = enrResult.data ? enrResult.data.rows.map((r) => r.classId) : [];
-
-  const ready = classList.ready && scheduleList.ready && teacherList.ready && Boolean(metadata.shifts);
-  const isLoading = classList.isLoading && scheduleList.isLoading && teacherList.isLoading && metadata.loading;
-  const classObj = arrayToObject(classList.list);
-  const teacherObj = arrayToObject(teacherList.list);
-
-  const filteredSchedules = useMemo(() => {
-    // default mode
-    if (!generalMode) {
-      return scheduleList.list.filter((s) => {
-        const sDate = new Date(s.date);
-        if (sDate < new Date(value.startDate) || sDate > new Date(value.endDate)) return;
-
-        let valid = true;
-        if (teacherId) valid = s.teacherId === teacherId;
-        if (studentId) valid = studentClasses.includes(s.classId);
-        if (classId) valid = s.classId === classId;
-
-        return valid;
-      });
-    }
-
-    // general mode
-    const filtered = unique(scheduleList.list, (i) => `${i.classId},${i.shiftId}`);
-    return filtered.filter((s) => {
-      let valid = true;
-      if (teacherId) valid = s.teacherId === teacherId;
-      if (studentId) valid = studentClasses.includes(s.classId);
-      if (classId) valid = s.classId === classId;
-      return valid;
-    });
-  }, [generalMode, value, classId, studentId, teacherId, enrResult.data, scheduleList.list]);
-
-  const multipleMode = !studentId && !teacherId && !classId;
-
-  const { shiftObj } = metadata;
+const TimeTable = ({ timeTable = {} }) => {
+  const { ready, value, setValue, multipleMode, generalMode, classColors, isLoading, classObj, teacherObj, schedules } =
+    timeTable;
+  const { shiftObj } = useMetadata();
 
   const Block = ({ schedule, className }) => {
     const shift = shiftObj[schedule.shiftId];
@@ -196,12 +127,10 @@ const TimeTable = ({ generalMode = null, studentId = null, teacherId = null, cla
     const currentDay = addDays(new Date(value.startDate), index);
 
     const isToday = format(currentDay, DATE_FORMAT) === format(currentDate, DATE_FORMAT);
-    let filtered = filteredSchedules.filter(
-      (s) => format(new Date(s.date), DATE_FORMAT) === format(currentDay, DATE_FORMAT)
-    );
+    let filtered = schedules.filter((s) => format(new Date(s.date), DATE_FORMAT) === format(currentDay, DATE_FORMAT));
 
     if (generalMode) {
-      filtered = filteredSchedules.filter((s) => {
+      filtered = schedules.filter((s) => {
         const day = new Date(s.date).getDay();
         if (day !== 0) return day - 1 === index;
         return index === 6;
@@ -210,8 +139,6 @@ const TimeTable = ({ generalMode = null, studentId = null, teacherId = null, cla
 
     return generateRows(filtered, isToday, label);
   });
-
-  console.log("re");
 
   return (
     <>

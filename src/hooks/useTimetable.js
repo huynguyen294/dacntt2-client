@@ -1,17 +1,11 @@
 import { classApi, enrollmentApi, scheduleApi, userApi } from "@/apis";
-import { DATE_FORMAT, EMPLOYEE_STATUS } from "@/constants";
+import { DATE_FORMAT, defaultWeekCalendarValue, EMPLOYEE_STATUS } from "@/constants";
 import { useMetadata, useServerList } from "@/hooks";
 import { arrayToObject, unique } from "@/utils";
-import { endOfWeek, format, startOfWeek } from "date-fns";
+import { format } from "date-fns";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { COLORS } from "@/constants/palette";
-
-const currentDate = new Date();
-export const defaultWeekCalendarValue = {
-  startDate: format(startOfWeek(currentDate, { weekStartsOn: 1 }), DATE_FORMAT),
-  endDate: format(endOfWeek(currentDate, { weekStartsOn: 1 }), DATE_FORMAT),
-};
 
 const useTimetable = ({ generalMode = null, studentId = null, teacherId = null, classId = null } = {}) => {
   const [value, setValue] = useState(defaultWeekCalendarValue);
@@ -74,8 +68,6 @@ const useTimetable = ({ generalMode = null, studentId = null, teacherId = null, 
   }, [generalMode, value, classId, studentId, teacherId, enrResult.data, scheduleList.list]);
 
   const multipleMode = !studentId && !teacherId && !classId;
-
-  console.log("re");
 
   return {
     ready,
