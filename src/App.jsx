@@ -31,6 +31,7 @@ import {
   ClassExercisePage,
   ClassStudentExercises,
   Dashboard,
+  StudentSchedule,
 } from "./pages";
 
 import "./App.css";
@@ -99,6 +100,12 @@ const App = () => {
 
         <Route path="/">
           <Route index element={<Dashboard />} />
+          <Route path="classes" element={<Dashboard />} />
+          <Route path="timetable" element={<StudentSchedule />} />
+          <Route path="exam-schedule" element={<Dashboard />} />
+          <Route path="scores" element={<Dashboard />} />
+          <Route path="tuition" element={<Dashboard />} />
+          <Route path="letter" element={<Dashboard />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

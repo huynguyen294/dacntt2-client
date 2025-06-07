@@ -67,11 +67,11 @@ const InformationSheet = () => {
           </ModalContent>
         </Modal>
       )}
-      <Loader isLoading={isLoading} />
       <div className="container mx-auto max-w-3xl">
         <Card>
           <div className="p-2 text-center font-bold bg-primary text-primary-foreground text-lg relative">
             <p>BẢNG THÔNG TIN</p>
+
             {user?.role === "admin" && (
               <Button
                 size="sm"
@@ -85,6 +85,7 @@ const InformationSheet = () => {
             )}
           </div>
           <Divider />
+          <Loader isLoading={isLoading} />
           <div className="p-2 sm:p-6" dangerouslySetInnerHTML={{ __html: data?.data?.item?.content }}></div>
         </Card>
       </div>

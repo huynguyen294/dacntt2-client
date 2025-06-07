@@ -33,25 +33,26 @@ const CheckAttendance = () => {
 
   const defaultValues = useMemo(() => {
     if (!attendResult.data || !ready) return null;
-    let result = attendResult.data.rows.reduce(
-      (acc, row) => ({ ...acc, [row.studentId]: { ...row, isTouched: false } }),
-      {}
-    );
 
-    if (attendResult.data.rows.length === 0) {
-      result = students.reduce((acc, s) => {
-        return {
-          ...acc,
-          [s.id]: {
-            attend: "yes",
-            note: "",
-            isTouched: false,
-            classId: +classId,
-            lessonId: +lessonId,
-            studentId: s.id,
-          },
-        };
-      }, {});
+    let result = students.reduce((acc, s) => {
+      return {
+        ...acc,
+        [s.id]: {
+          attend: "yes",
+          note: "",
+          isTouched: false,
+          classId: +classId,
+          lessonId: +lessonId,
+          studentId: s.id,
+        },
+      };
+    }, {});
+
+    if (attendResult.data.rows.length > 0) {
+      result = {
+        ...result,
+        ...attendResult.data.rows.reduce((acc, row) => ({ ...acc, [row.studentId]: { ...row, isTouched: false } }), {}),
+      };
     }
 
     return result;
@@ -72,29 +73,33 @@ const CheckAttendance = () => {
   const handleSave = async () => {
     setSaving(true);
 
+    const toBeCreateList = Object.values(attendances).reduce((acc, a) => {
+      const { isTouched, ...removed } = a;
+      if (!removed.id) acc.push(removed);
+      return acc;
+    }, []);
+
     if (editMode) {
-      const list = Object.values(attendances).reduce((acc, a) => {
+      const toBeUpdatedList = Object.values(attendances).reduce((acc, a) => {
         const { isTouched, ...removed } = a;
-        if (isTouched) acc.push(removed);
+        if (isTouched && removed.id) acc.push(removed);
         return acc;
       }, []);
 
-      const result = await attendanceApi.update(list);
+      const result = await attendanceApi.update(toBeUpdatedList);
       if (result.ok) {
         queryClient.invalidateQueries({ queryKey: ["classes", classId, "attendances", lessonId] });
       } else {
         addToast({ color: "danger", title: "Lỗi!", description: result.message });
       }
-      setSaving(false);
-      return;
+
+      if (!toBeCreateList.length) {
+        setSaving(false);
+        return;
+      }
     }
 
-    const list = Object.values(attendances).map((a) => {
-      const { isTouched, ...removed } = a;
-      return removed;
-    });
-
-    const result = await attendanceApi.create(list);
+    const result = await attendanceApi.create(toBeCreateList);
     if (result.ok) {
       queryClient.invalidateQueries({ queryKey: ["classes", classId, "attendances", lessonId] });
     } else {
@@ -158,8 +163,8 @@ const CheckAttendance = () => {
                     return (
                       <RadioGroup
                         orientation="horizontal"
-                        defaultValue={attendance.attend}
-                        value={attendance.attend}
+                        defaultValue={attendance?.attend}
+                        value={attendance?.attend}
                         onValueChange={(attend) => changeAttendance(row.id, { ...attendance, attend, isTouched: true })}
                       >
                         {Object.keys(ATTENDANCES).map((a) => (
@@ -206,13 +211,7 @@ const CheckAttendance = () => {
             />
           </TableProvider>
           <div className="flex items-center mt-2 gap-2">
-            <Button
-              isDisabled={!isDirty}
-              isLoading={saving}
-              color="primary"
-              startContent={<Save size="18px" />}
-              onPress={handleSave}
-            >
+            <Button isLoading={saving} color="primary" startContent={<Save size="18px" />} onPress={handleSave}>
               Lưu lại
             </Button>
             <Button

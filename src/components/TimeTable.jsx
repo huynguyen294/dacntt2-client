@@ -88,62 +88,51 @@ const TimeTable = ({ generalMode, studentId, teacherId, classId }) => {
 
   const { shiftObj } = metadata;
 
-  const Block = ({ schedule, rowSpan, isToday }) => {
+  const Block = ({ schedule, className }) => {
     const shift = shiftObj[schedule.shiftId];
     const teacher = teacherObj[schedule.teacherId];
     const classData = classObj[schedule.classId];
 
     return (
-      <td
-        rowSpan={rowSpan}
-        className={cn("!p-[2px] border-b-1", isToday && "bg-secondary-50/50")}
+      <div
         style={{
           "--bg-color": alpha(classColors[schedule.classId], 0.12),
           "--current-color": classColors[schedule.classId],
         }}
+        className={cn(
+          "w-full bg-[var(--bg-color)] border-l-5 border-[var(--current-color)] rounded-small px-1",
+          schedule.isAbsented && "bg-default-100 border-foreground-500",
+          className
+        )}
       >
-        <div className="w-full bg-[var(--bg-color)] border-l-5 border-[var(--current-color)] rounded-small px-1">
-          <p className="font-bold text-[var(--current-color)]">{classData.name}</p>
-          <p className="text-small text-foreground-700">({shiftFormat(shift)})</p>
-          <div className="flex gap-1 items-center py-2">
-            <p className="text-foreground-700">GV: {teacher.name}</p>
-          </div>
-        </div>
-      </td>
+        <p
+          className={cn("font-bold text-[var(--current-color)]", schedule.isAbsented && "text-foreground line-through")}
+        >
+          {classData.name}
+        </p>
+        <p className={cn("text-small text-foreground-700", schedule.isAbsented && "line-through")}>
+          ({shiftFormat(shift)})
+        </p>
+        <p className={cn("text-foreground-700", schedule.isAbsented && "line-through")}>GV: {teacher.name}</p>
+        {schedule.isAbsented && <p className="text-danger font-bold pb-1">GV báo vắng!</p>}
+      </div>
     );
   };
 
-  const OverlapBlock = ({ schedules, rowSpan, isToday }) => {
+  const OverlapBlock = ({ schedules }) => {
     return (
-      <td rowSpan={rowSpan} className={cn("!p-[2px] border-b-1", isToday && "bg-secondary-50/50")}>
-        <div className="flex flex-col gap-[0.5px]">
-          {schedules.map((schedule, index) => {
-            const shift = shiftObj[schedule.shiftId];
-            const teacher = teacherObj[schedule.teacherId];
-            const classData = classObj[schedule.classId];
-
-            return (
-              <div
-                style={{
-                  "--bg-color": alpha(classColors[schedule.classId], 0.12),
-                  "--current-color": classColors[schedule.classId],
-                }}
-                className={cn(
-                  "w-full bg-[var(--bg-color)] border-l-5 border-[var(--current-color)] rounded-sm px-1",
-                  index === schedules.length - 1 && "rounded-b-medium",
-                  index === 0 && "rounded-t-medium"
-                )}
-              >
-                <p className="font-bold text-[var(--current-color)]">{classData.name}</p>
-                <p className="text-small text-foreground-700">({shiftFormat(shift)})</p>
-                <div className="flex gap-1 items-center py-2">
-                  <p className="text-foreground-700">GV: {teacher.name}</p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </td>
+      <div className="flex flex-col gap-[0.5px]">
+        {schedules.map((schedule, index) => (
+          <Block
+            schedule={schedule}
+            className={cn(
+              "rounded-sm",
+              index === schedules.length - 1 && "rounded-b-medium",
+              index === 0 && "rounded-t-medium"
+            )}
+          />
+        ))}
+      </div>
     );
   };
 
@@ -165,7 +154,11 @@ const TimeTable = ({ generalMode, studentId, teacherId, classId }) => {
       merged.forEach((gSchedule) => {
         const startIdx = calcIndexFromTime(getStartTimeFromSchedules(gSchedule, shiftObj));
         const endIdx = calcIndexFromTime(getEndTimeFromSchedules(gSchedule, shiftObj));
-        result[startIdx] = <OverlapBlock isToday={isToday} rowSpan={endIdx - startIdx} schedules={gSchedule} />;
+        result[startIdx] = (
+          <td rowSpan={endIdx - startIdx} className={cn("!p-[2px] border-b-1", isToday && "bg-secondary-50/50")}>
+            <OverlapBlock schedules={gSchedule} className />
+          </td>
+        );
         Array.from({ length: endIdx - startIdx - 1 }).forEach((_, index) => {
           result[startIdx + index + 1] = null;
         });
@@ -176,7 +169,11 @@ const TimeTable = ({ generalMode, studentId, teacherId, classId }) => {
         const startIdx = calcIndexFromTime(shift.startTime);
         const endIdx = calcIndexFromTime(shift.endTime);
 
-        result[startIdx] = <Block isToday={isToday} rowSpan={endIdx - startIdx} schedule={schedule} />;
+        result[startIdx] = (
+          <td rowSpan={endIdx - startIdx} className={cn("!p-[2px] border-b-1", isToday && "bg-secondary-50/50")}>
+            <Block schedule={schedule} />
+          </td>
+        );
         Array.from({ length: endIdx - startIdx - 1 }).forEach((_, index) => {
           result[startIdx + index + 1] = null;
         });

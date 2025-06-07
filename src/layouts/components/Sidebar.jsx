@@ -4,17 +4,24 @@ import { useAppStore } from "@/state";
 import { Accordion, AccordionItem } from "@heroui/accordion";
 import { Button } from "@heroui/button";
 import {
+  CalendarDays,
   ChartColumnBig,
   ChevronDown,
+  CircleDollarSign,
   CircleDot,
   CircleHelp,
+  ClipboardPenLine,
   ClipboardType,
   GraduationCap,
+  House,
   Info,
   LayoutDashboard,
+  LayoutGrid,
   List,
   Podcast,
   School,
+  Star,
+  Target,
   User,
 } from "lucide-react";
 import { useLocation } from "react-router";
@@ -137,7 +144,7 @@ const Sidebar = ({ className }) => {
   );
 };
 
-const dashboard = { label: "Tổng quan", icon: LayoutDashboard };
+const dashboard = { label: "Trang chủ", icon: House };
 const userSidebarItems = {
   admin: [
     {
@@ -200,7 +207,15 @@ const userSidebarItems = {
   ],
   student: [
     {
-      items: [{ ...dashboard, path: "/", isDashboard: true }],
+      items: [
+        { ...dashboard, path: "/", isDashboard: true },
+        { label: "Lớp của tôi", path: "/classes", icon: LayoutGrid },
+        { label: "Thời khóa biểu", path: "/timetable", icon: CalendarDays },
+        { label: "Lịch thi", path: "/exam-schedule", icon: Target },
+        { label: "Kết quả học tập", path: "/scores", icon: Star },
+        { label: "Học phí", path: "/tuition", icon: CircleDollarSign },
+        { label: "Nộp đơn", path: "/letter", icon: ClipboardPenLine },
+      ],
     },
   ],
   consultant: [

@@ -26,6 +26,8 @@ export { default as RegisterStudent } from "./admission/RegisterStudent";
 export { default as Login } from "./auth/Login";
 export { default as Register } from "./auth/Register";
 
+export { default as StudentSchedule } from "./student/StudentSchedule";
+
 export { default as NotFound } from "./NotFound";
 export { default as Profile } from "./Profile";
 export { default as Admin } from "./Admin";

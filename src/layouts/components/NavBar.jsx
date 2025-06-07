@@ -2,7 +2,7 @@ import { Avatar } from "@heroui/avatar";
 import { Button } from "@heroui/button";
 import { Divider } from "@heroui/divider";
 import { Navbar as HeroUiNavBar, NavbarBrand, NavbarContent } from "@heroui/navbar";
-import { Bell, ChevronDown, Info, LayoutDashboard, LogOut, Menu, Search, Settings, UserPen } from "lucide-react";
+import { ArrowDownToLine, Bell, ChevronDown, House, Info, LogOut, Menu, Search, UserPen } from "lucide-react";
 import { BreadcrumbItem, Breadcrumbs } from "@heroui/breadcrumbs";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/dropdown";
 import { resetAppData, useAppStore } from "@/state";
@@ -52,8 +52,8 @@ const NavBar = ({ breadcrumbItems = [], hideMenuButton = false, hideDashboard = 
               }}
             >
               {!hideDashboard && (
-                <BreadcrumbItem onClick={() => navigate("/")} startContent={<LayoutDashboard size="16px" />}>
-                  Tổng quan
+                <BreadcrumbItem onClick={() => navigate("/")} startContent={<House size="16px" />}>
+                  Trang chủ
                 </BreadcrumbItem>
               )}
               {breadcrumbItems.map(({ path, label, startContent }, index) => (
@@ -108,16 +108,17 @@ const NavBar = ({ breadcrumbItems = [], hideMenuButton = false, hideDashboard = 
                 </Button>
               </DropdownTrigger>
               <DropdownMenu aria-label="Profile Actions" variant="flat">
-                <DropdownItem key="user" className="h-14 gap-2">
+                <DropdownItem className="h-14 gap-2">
                   <User avatarProps={{ src: user.imageUrl }} name={user.name} description={user.email} />
                 </DropdownItem>
-                <DropdownItem startContent={<UserPen size="16px" />} key="profile" onPress={() => navigate(`/profile`)}>
+                <DropdownItem startContent={<UserPen size="16px" />} onPress={() => navigate(`/profile`)}>
                   Hồ sơ cá nhân
                 </DropdownItem>
-                <DropdownItem startContent={<Info size="16px" />} key="contact">
-                  Liên hệ
+                <DropdownItem startContent={<ArrowDownToLine size="16px" />} onPress={() => {}}>
+                  Cài đặt ứng dụng
                 </DropdownItem>
-                <DropdownItem startContent={<LogOut size="16px" />} key="logout" color="danger" onPress={handleLogout}>
+                <DropdownItem startContent={<Info size="16px" />}>Liên hệ</DropdownItem>
+                <DropdownItem startContent={<LogOut size="16px" />} color="danger" onPress={handleLogout}>
                   Đăng xuất
                 </DropdownItem>
               </DropdownMenu>

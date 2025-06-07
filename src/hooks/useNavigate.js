@@ -4,7 +4,7 @@ import { useLocation, useNavigate as useRouterNavigate } from "react-router";
 const useNavigate = (hookWithRole = true) => {
   const location = useLocation();
   const routerNavigate = useRouterNavigate();
-  const use = useAppStore("user");
+  const user = useAppStore("user");
   const from = location.state?.from || "";
 
   return (path, navigateFnWithRole = hookWithRole) => {
@@ -16,7 +16,12 @@ const useNavigate = (hookWithRole = true) => {
       return;
     }
 
-    routerNavigate(navigateFnWithRole ? "/" + use?.role + path : path, { state });
+    let finalPath = path;
+    if (navigateFnWithRole && user?.role !== "student") {
+      finalPath = `/${user?.role}${path}`;
+    }
+
+    routerNavigate(finalPath, { state });
   };
 };
 
