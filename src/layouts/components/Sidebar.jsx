@@ -209,7 +209,7 @@ const userSidebarItems = {
     {
       items: [
         { ...dashboard, path: "/", isDashboard: true },
-        { label: "Lớp của tôi", path: "/classes", icon: LayoutGrid },
+        { label: "Lớp học", path: "/classes", icon: LayoutGrid },
         { label: "Thời khóa biểu", path: "/timetable", icon: CalendarDays },
         { label: "Lịch thi", path: "/exam-schedule", icon: Target },
         { label: "Kết quả học tập", path: "/scores", icon: Star },
