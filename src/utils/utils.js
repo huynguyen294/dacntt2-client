@@ -1,6 +1,24 @@
 import Compressor from "compressorjs";
 import { format } from "date-fns";
 
+export const unique = (arr, field) => {
+  const uniqueCheck = new Set([]);
+  return arr.filter((item) => {
+    let key = item[field];
+    if (typeof field === "function") key = field(item);
+    return uniqueCheck.has(key) ? false : uniqueCheck.add(key);
+  });
+};
+
+export const shuffleArray = (array) => {
+  const cloned = [...array];
+  for (let i = cloned.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cloned[i], cloned[j]] = [cloned[j], cloned[i]];
+  }
+  return cloned;
+};
+
 export const blurEmail = (email) => {
   const [localPart, domain] = email.split("@");
   if (!localPart || !domain || localPart.length <= 3) return email;

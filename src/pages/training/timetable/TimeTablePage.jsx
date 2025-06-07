@@ -9,9 +9,11 @@ import { TimeTable } from "@/components";
 import { format } from "date-fns";
 import { DATE_FORMAT, EMPLOYEE_STATUS } from "@/constants";
 import { useState } from "react";
+import { Input } from "@heroui/input";
+import { Select, SelectItem, SelectSection } from "@heroui/select";
 
 const TimeTablePage = () => {
-  const [selectedUser, setSelectedUser] = useState("2");
+  const [selectedUser, setSelectedUser] = useState();
   const [selectedClass, setSelectedClass] = useState();
 
   const studentList = useServerList("users", userApi.get, { filters: { role: "student" } });
@@ -35,7 +37,7 @@ const TimeTablePage = () => {
   return (
     <ModuleLayout breadcrumbItems={timetableBreadcrumbItems}>
       <div className="px-2 sm:px-10 grid grid-cols-1 lg:grid-cols-3 gap-2 sm:gap-4">
-        <Autocomplete
+        <Select
           size="lg"
           variant="bordered"
           label="Lớp học"
@@ -43,49 +45,53 @@ const TimeTablePage = () => {
           labelPlacement="outside"
           placeholder="Tìm theo tên lớp học"
           items={classList.list}
-          selectedKey={selectedClass}
           isVirtualized
           maxListboxHeight={265}
           itemHeight={40}
           isLoading={classList.isLoading}
-          onInputChange={classList.onQueryChange}
-          inputValue={classList.query}
           listboxProps={{
+            topContent: (
+              <Input
+                placeholder="Tìm theo tên"
+                variant="bordered"
+                classNames={{ inputWrapper: "border-1 shadow-none" }}
+                onValueChange={classList.onQueryChange}
+              />
+            ),
             bottomContent: classList.hasMore && <LoadMoreButton onLoadMore={classList.onLoadMore} />,
           }}
-          onSelectionChange={(key) => {
-            setSelectedClass(key);
-            classList.clearQuery();
-          }}
+          onSelectionChange={(keys) => setSelectedClass([...keys][0])}
         >
-          {(item) => <AutocompleteItem key={item.id}>{item.name}</AutocompleteItem>}
-        </Autocomplete>
-        <Autocomplete
+          {(item) => <SelectItem key={item.id}>{item.name}</SelectItem>}
+        </Select>
+        <Select
           size="lg"
           variant="bordered"
-          label="Người dùng"
+          label="Giáo viên/ Học viên"
+          placeholder="Chọn giáo viên/ học viên"
           radius="sm"
           labelPlacement="outside"
-          placeholder="Tìm theo tên, email, số điện thoại..."
           isVirtualized
           maxListboxHeight={265}
           itemHeight={50}
-          selectedKey={selectedUser}
           listboxProps={{
+            topContent: (
+              <Input
+                placeholder="Tìm theo tên, email, số điện thoại"
+                variant="bordered"
+                classNames={{ inputWrapper: "border-1 shadow-none" }}
+                onValueChange={studentList.onQueryChange}
+              />
+            ),
             bottomContent: studentList.hasMore && <LoadMoreButton onLoadMore={studentList.onLoadMore} />,
           }}
           isLoading={studentList.isLoading || teacherList.isLoading}
-          inputValue={studentList.query}
-          onInputChange={studentList.onQueryChange}
-          onSelectionChange={(key) => {
-            setSelectedUser(key);
-            classList.clearQuery();
-          }}
+          onSelectionChange={(keys) => setSelectedUser([...keys][0])}
         >
           {teacherList.list.length > 0 && (
-            <AutocompleteSection title="Giáo viên">
+            <SelectSection title="Giáo viên">
               {teacherList.list.map((item) => (
-                <AutocompleteItem
+                <SelectItem
                   key={item.id}
                   startContent={
                     <div>
@@ -95,14 +101,14 @@ const TimeTablePage = () => {
                   description={item.email}
                 >
                   {item.name}
-                </AutocompleteItem>
+                </SelectItem>
               ))}
-            </AutocompleteSection>
+            </SelectSection>
           )}
           {studentList.list.length > 0 && (
-            <AutocompleteSection title="Học viên">
+            <SelectSection title="Học viên">
               {studentList.list.map((item) => (
-                <AutocompleteItem
+                <SelectItem
                   key={item.id}
                   startContent={
                     <div>
@@ -112,14 +118,15 @@ const TimeTablePage = () => {
                   description={item.email}
                 >
                   {item.name}
-                </AutocompleteItem>
+                </SelectItem>
               ))}
-            </AutocompleteSection>
+            </SelectSection>
           )}
-        </Autocomplete>
+        </Select>
       </div>
       <div className="px-2 sm:px-10 mt-4 overflow-y-auto pt-2 pb-6">
         <TimeTable
+          generalMode
           teacherId={Number(selectedTeacher)}
           studentId={Number(selectedStudent)}
           classId={Number(selectedClass)}

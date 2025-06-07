@@ -2,13 +2,14 @@ import { classApi, enrollmentApi, scheduleApi, userApi } from "@/apis";
 import { DATE_FORMAT, EMPLOYEE_STATUS } from "@/constants";
 import { useMetadata, useServerList } from "@/hooks";
 import { cn } from "@/lib/utils";
-import { arrayToObject, displayDate, shiftFormat, splitTime } from "@/utils";
+import { alpha, arrayToObject, displayDate, shiftFormat, splitTime, unique } from "@/utils";
 import { addDays, differenceInMinutes, endOfWeek, format, startOfWeek, subDays } from "date-fns";
 import { Loader } from "./common";
 import { Button } from "@heroui/button";
 import { ArrowRight, ChevronsLeft, ChevronsRight, MoveRight } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { COLORS } from "@/constants/palette";
 
 const currentDate = new Date();
 export const defaultWeekCalendarValue = {
@@ -43,12 +44,12 @@ const TimeTable = ({ generalMode, studentId, teacherId, classId }) => {
     otherParams: ["refs=true"],
     paging: false,
   });
-
   const enrResult = useQuery({
     queryKey: ["enrollments", [studentId]],
     queryFn: () => studentId && enrollmentApi.getByStudents([studentId]),
   });
 
+  const classColors = classList.list.reduce((acc, c, index) => ({ ...acc, [c.id]: COLORS[index] }), []);
   const studentClasses = enrResult.data ? enrResult.data.rows.map((r) => r.classId) : [];
 
   const ready = classList.ready && scheduleList.ready && teacherList.ready && Boolean(metadata.shifts);
@@ -56,17 +57,32 @@ const TimeTable = ({ generalMode, studentId, teacherId, classId }) => {
   const classObj = arrayToObject(classList.list);
   const teacherObj = arrayToObject(teacherList.list);
 
-  const filteredSchedule = scheduleList.list.filter((s) => {
-    const sDate = new Date(s.date);
-    if (sDate < new Date(value.startDate) || sDate > new Date(value.endDate)) return;
+  const filteredSchedules = useMemo(() => {
+    // default mode
+    if (!generalMode) {
+      return scheduleList.list.filter((s) => {
+        const sDate = new Date(s.date);
+        if (sDate < new Date(value.startDate) || sDate > new Date(value.endDate)) return;
 
-    let valid = true;
-    if (teacherId) valid = s.teacherId === teacherId;
-    if (studentId) valid = studentClasses.includes(s.classId);
-    if (classId) valid = s.classId === classId;
+        let valid = true;
+        if (teacherId) valid = s.teacherId === teacherId;
+        if (studentId) valid = studentClasses.includes(s.classId);
+        if (classId) valid = s.classId === classId;
 
-    return valid;
-  });
+        return valid;
+      });
+    }
+
+    // general mode
+    const filtered = unique(scheduleList.list, (i) => `${i.classId},${i.shiftId}`);
+    return filtered.filter((s) => {
+      let valid = true;
+      if (teacherId) valid = s.teacherId === teacherId;
+      if (studentId) valid = studentClasses.includes(s.classId);
+      if (classId) valid = s.classId === classId;
+      return valid;
+    });
+  }, [generalMode, value, classId, studentId, teacherId, enrResult.data, scheduleList.list]);
 
   const multipleMode = !studentId && !teacherId && !classId;
 
@@ -78,12 +94,19 @@ const TimeTable = ({ generalMode, studentId, teacherId, classId }) => {
     const classData = classObj[schedule.classId];
 
     return (
-      <td rowSpan={rowSpan} className={cn("!p-[2px] border-b-1", isToday && "bg-secondary-50/50")}>
-        <div className="w-full bg-primary-100 border-l-5 border-primary-400 rounded-small text-primary-700 px-1">
-          <p className="font-bold">{classData.name}</p>
-          <p className="text-small">({shiftFormat(shift)})</p>
+      <td
+        rowSpan={rowSpan}
+        className={cn("!p-[2px] border-b-1", isToday && "bg-secondary-50/50")}
+        style={{
+          "--bg-color": alpha(classColors[schedule.classId], 0.12),
+          "--current-color": classColors[schedule.classId],
+        }}
+      >
+        <div className="w-full bg-[var(--bg-color)] border-l-5 border-[var(--current-color)] rounded-small px-1">
+          <p className="font-bold text-[var(--current-color)]">{classData.name}</p>
+          <p className="text-small text-foreground-700">({shiftFormat(shift)})</p>
           <div className="flex gap-1 items-center py-2">
-            <p className="font-semibold">GV: {teacher.name}</p>
+            <p className="text-foreground-700">GV: {teacher.name}</p>
           </div>
         </div>
       </td>
@@ -101,16 +124,20 @@ const TimeTable = ({ generalMode, studentId, teacherId, classId }) => {
 
             return (
               <div
+                style={{
+                  "--bg-color": alpha(classColors[schedule.classId], 0.12),
+                  "--current-color": classColors[schedule.classId],
+                }}
                 className={cn(
-                  "w-full bg-primary-100 border-l-5 border-primary-400 rounded-sm text-primary-700 px-1",
-                  index === schedules.length - 1 && "rounded-b-small",
-                  index === 0 && "rounded-t-small"
+                  "w-full bg-[var(--bg-color)] border-l-5 border-[var(--current-color)] rounded-sm px-1",
+                  index === schedules.length - 1 && "rounded-b-medium",
+                  index === 0 && "rounded-t-medium"
                 )}
               >
-                <p className="font-bold">{classData.name}</p>
-                <p className="text-small">({shiftFormat(shift)})</p>
+                <p className="font-bold text-[var(--current-color)]">{classData.name}</p>
+                <p className="text-small text-foreground-700">({shiftFormat(shift)})</p>
                 <div className="flex gap-1 items-center py-2">
-                  <p className="font-semibold">GV: {teacher.name}</p>
+                  <p className="text-foreground-700">GV: {teacher.name}</p>
                 </div>
               </div>
             );
@@ -120,11 +147,12 @@ const TimeTable = ({ generalMode, studentId, teacherId, classId }) => {
     );
   };
 
-  const generateRows = (schedules, isToday) => {
+  const generateRows = (schedules, isToday, label) => {
     const result = new Array(NUM_OF_ROWS)
       .fill()
       .map((_, index) => (
         <td
+          key={`r-${label}-${index}`}
           className={cn(
             index % ONE_HOUR_ROWS === ONE_HOUR_ROWS - 1 && index < NUM_OF_ROWS - ONE_HOUR_ROWS && "border-b-1",
             isToday && "bg-secondary-50/50"
@@ -132,7 +160,7 @@ const TimeTable = ({ generalMode, studentId, teacherId, classId }) => {
         />
       ));
 
-    if (multipleMode) {
+    if (multipleMode || generalMode) {
       const merged = groupOverlappingSchedules(schedules, shiftObj);
       merged.forEach((gSchedule) => {
         const startIdx = calcIndexFromTime(getStartTimeFromSchedules(gSchedule, shiftObj));
@@ -162,10 +190,19 @@ const TimeTable = ({ generalMode, studentId, teacherId, classId }) => {
     const currentDay = addDays(new Date(value.startDate), index);
 
     const isToday = format(currentDay, DATE_FORMAT) === format(currentDate, DATE_FORMAT);
-    const filtered = filteredSchedule.filter(
+    let filtered = filteredSchedules.filter(
       (s) => format(new Date(s.date), DATE_FORMAT) === format(currentDay, DATE_FORMAT)
     );
-    return generateRows(filtered, isToday);
+
+    if (generalMode) {
+      filtered = filteredSchedules.filter((s) => {
+        const day = new Date(s.date).getDay();
+        if (day !== 0) return day - 1 === index;
+        return index === 6;
+      });
+    }
+
+    return generateRows(filtered, isToday, label);
   });
 
   return (
@@ -173,39 +210,41 @@ const TimeTable = ({ generalMode, studentId, teacherId, classId }) => {
       <Loader isLoading={isLoading} />
       {ready && (
         <>
-          <div className="flex justify-between items-end py-2">
-            <div className="font-semibold pl-2 text-2xl">Năm học: {new Date(value.startDate).getFullYear()}</div>
-            <div className="flex gap-[1px]">
-              <Button
-                color="primary"
-                className="rounded-r-none"
-                startContent={<ChevronsLeft size="18px" />}
-                onPress={() => {
-                  const endDate = format(subDays(new Date(value.startDate), 1), DATE_FORMAT);
-                  const startDate = format(startOfWeek(endDate, { weekStartsOn: 1 }), DATE_FORMAT);
-                  setValue({ startDate, endDate });
-                }}
-              >
-                Tuần trước
-              </Button>
-              <div className="bg-default-200 flex items-center px-2 gap-2 font-semibold">
-                {format(new Date(value.startDate), "dd/MM")} <ArrowRight size="12px" />{" "}
-                {format(new Date(value.endDate), "dd/MM")}
+          {!generalMode && (
+            <div className="flex justify-between items-end py-2">
+              <div className="font-semibold pl-2 text-2xl">Năm học: {new Date(value.startDate).getFullYear()}</div>
+              <div className="flex gap-[1px]">
+                <Button
+                  color="primary"
+                  className="rounded-r-none"
+                  startContent={<ChevronsLeft size="18px" />}
+                  onPress={() => {
+                    const endDate = format(subDays(new Date(value.startDate), 1), DATE_FORMAT);
+                    const startDate = format(startOfWeek(endDate, { weekStartsOn: 1 }), DATE_FORMAT);
+                    setValue({ startDate, endDate });
+                  }}
+                >
+                  Tuần trước
+                </Button>
+                <div className="bg-secondary-50/80 flex items-center px-2 gap-2 font-semibold">
+                  {format(new Date(value.startDate), "dd/MM")} <ArrowRight size="12px" />{" "}
+                  {format(new Date(value.endDate), "dd/MM")}
+                </div>
+                <Button
+                  color="primary"
+                  className="rounded-l-none"
+                  endContent={<ChevronsRight size="18px" />}
+                  onPress={() => {
+                    const startDate = format(addDays(new Date(value.endDate), 1), DATE_FORMAT);
+                    const endDate = format(endOfWeek(startDate, { weekStartsOn: 1 }), DATE_FORMAT);
+                    setValue({ startDate, endDate });
+                  }}
+                >
+                  Tuần sau
+                </Button>
               </div>
-              <Button
-                color="primary"
-                className="rounded-l-none"
-                endContent={<ChevronsRight size="18px" />}
-                onPress={() => {
-                  const startDate = format(addDays(new Date(value.endDate), 1), DATE_FORMAT);
-                  const endDate = format(endOfWeek(startDate, { weekStartsOn: 1 }), DATE_FORMAT);
-                  setValue({ startDate, endDate });
-                }}
-              >
-                Tuần sau
-              </Button>
             </div>
-          </div>
+          )}
           <div className="shadow-small p-2 w-full rounded-large">
             <table className="timetable w-full [&_th]:p-1 sm:[&_th]:p-2 [&_td]:p-0 [&_th]:text-foreground [&_th]:border-r-1 [&_td]:border-r-1 [&_td]: [&_th:last-child]:border-r-0 [&_td:last-child]:border-r-0 rounded-lg overflow-hidden">
               <thead>
@@ -218,8 +257,8 @@ const TimeTable = ({ generalMode, studentId, teacherId, classId }) => {
                     return (
                       <th key={`h-${week}`} className={cn("border-b-1", isToday && "bg-secondary-50/50")}>
                         <div>
-                          <p className="text-sm font-normal">{week}</p>
-                          <div className={cn("text-lg")}>{format(currentDay, "dd/MM")}</div>
+                          <p className={cn("text-sm font-normal", generalMode && "text-lg font-bold")}>{week}</p>
+                          {!generalMode && <div className={cn("text-lg")}>{format(currentDay, "dd/MM")}</div>}
                         </div>
                       </th>
                     );
