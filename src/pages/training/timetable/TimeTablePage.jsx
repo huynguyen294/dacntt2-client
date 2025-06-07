@@ -1,6 +1,5 @@
 import { ModuleLayout } from "@/layouts";
 import { timetableBreadcrumbItems } from "../constants";
-import { Autocomplete, AutocompleteItem, AutocompleteSection } from "@heroui/autocomplete";
 import { LoadMoreButton } from "@/components/common";
 import { useServerList } from "@/hooks";
 import { classApi, userApi } from "@/apis";
@@ -49,10 +48,12 @@ const TimeTablePage = () => {
           maxListboxHeight={265}
           itemHeight={40}
           isLoading={classList.isLoading}
+          onInputChange={classList.onQueryChange}
+          inputValue={classList.query}
           listboxProps={{
             topContent: (
               <Input
-                placeholder="Tìm theo tên"
+                placeholder="Tìm theo tên, email, số điện thoại"
                 variant="bordered"
                 classNames={{ inputWrapper: "border-1 shadow-none" }}
                 onValueChange={classList.onQueryChange}
@@ -126,10 +127,9 @@ const TimeTablePage = () => {
       </div>
       <div className="px-2 sm:px-10 mt-4 overflow-y-auto pt-2 pb-6">
         <TimeTable
-          generalMode
-          teacherId={Number(selectedTeacher)}
-          studentId={Number(selectedStudent)}
-          classId={Number(selectedClass)}
+          teacherId={selectedTeacher && Number(selectedTeacher)}
+          studentId={selectedStudent && Number(selectedStudent)}
+          classId={selectedClass && Number(selectedClass)}
         />
       </div>
     </ModuleLayout>

@@ -7,7 +7,7 @@ import { addDays, differenceInMinutes, endOfWeek, format, startOfWeek, subDays }
 import { Loader } from "./common";
 import { Button } from "@heroui/button";
 import { ArrowRight, ChevronsLeft, ChevronsRight, MoveRight } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { COLORS } from "@/constants/palette";
 
@@ -24,7 +24,7 @@ const END_HOUR = 21;
 const NUM_OF_ROWS = ((END_HOUR - START_HOUR) * 60) / 5;
 const ONE_HOUR_ROWS = 12;
 
-const TimeTable = ({ generalMode, studentId, teacherId, classId }) => {
+const TimeTable = ({ generalMode = null, studentId = null, teacherId = null, classId = null }) => {
   const [value, setValue] = useState(defaultWeekCalendarValue);
   const metadata = useMetadata();
   const teacherList = useServerList("users", userApi.get, {
@@ -45,7 +45,7 @@ const TimeTable = ({ generalMode, studentId, teacherId, classId }) => {
     paging: false,
   });
   const enrResult = useQuery({
-    queryKey: ["enrollments", [studentId]],
+    queryKey: ["enrollments", "by-student", studentId],
     queryFn: () => studentId && enrollmentApi.getByStudents([studentId]),
   });
 
@@ -124,6 +124,7 @@ const TimeTable = ({ generalMode, studentId, teacherId, classId }) => {
       <div className="flex flex-col gap-[0.5px]">
         {schedules.map((schedule, index) => (
           <Block
+            key={schedule.id}
             schedule={schedule}
             className={cn(
               "rounded-sm",
@@ -155,8 +156,12 @@ const TimeTable = ({ generalMode, studentId, teacherId, classId }) => {
         const startIdx = calcIndexFromTime(getStartTimeFromSchedules(gSchedule, shiftObj));
         const endIdx = calcIndexFromTime(getEndTimeFromSchedules(gSchedule, shiftObj));
         result[startIdx] = (
-          <td rowSpan={endIdx - startIdx} className={cn("!p-[2px] border-b-1", isToday && "bg-secondary-50/50")}>
-            <OverlapBlock schedules={gSchedule} className />
+          <td
+            key={JSON.stringify(gSchedule.map((s) => s.id))}
+            rowSpan={endIdx - startIdx}
+            className={cn("!p-[2px] border-b-1", isToday && "bg-secondary-50/50")}
+          >
+            <OverlapBlock schedules={gSchedule} />
           </td>
         );
         Array.from({ length: endIdx - startIdx - 1 }).forEach((_, index) => {
@@ -170,7 +175,11 @@ const TimeTable = ({ generalMode, studentId, teacherId, classId }) => {
         const endIdx = calcIndexFromTime(shift.endTime);
 
         result[startIdx] = (
-          <td rowSpan={endIdx - startIdx} className={cn("!p-[2px] border-b-1", isToday && "bg-secondary-50/50")}>
+          <td
+            key={schedule.id}
+            rowSpan={endIdx - startIdx}
+            className={cn("!p-[2px] border-b-1", isToday && "bg-secondary-50/50")}
+          >
             <Block schedule={schedule} />
           </td>
         );
@@ -201,6 +210,8 @@ const TimeTable = ({ generalMode, studentId, teacherId, classId }) => {
 
     return generateRows(filtered, isToday, label);
   });
+
+  console.log("re");
 
   return (
     <>

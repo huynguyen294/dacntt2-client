@@ -51,7 +51,7 @@ const useServerList = (
     }
   }, [data]);
 
-  const ready = Boolean(data);
+  const ready = Boolean(list?.length);
   const hasMore = ready && pager.pageCount && pager.page < pager.pageCount;
 
   return { isLoading, query, list, clearQuery, onQueryChange, onLoadMore, hasMore, isOpen, setIsOpen, ready };

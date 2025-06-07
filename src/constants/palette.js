@@ -1,14 +1,8 @@
-import { shuffleArray } from "../utils/utils";
-
 export const PALETTE = {
   hot_pink: "#fb6b90",
   lilac: "#b185cc",
-  lilac_darker: "#af6ab0",
-  orange: "#e09d5e",
   blue_green: "#15b5b0",
   carafe2: "#804f69",
-  ivory: "#f9f1f0",
-  coral: "#785066",
   burnt_sienna: "#d48c70",
   khaki: "#c7a27f",
   beige: "#d09064",

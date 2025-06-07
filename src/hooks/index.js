@@ -10,3 +10,4 @@ export { default as useAutocompleteInfinity } from "./useAutocompleteInfinity";
 export { default as useMetadata } from "./useMetadata";
 export { default as useReload } from "./useReload";
 export { default as useServerList } from "./useServerList";
+export { default as useTimetable } from "./useTimetable";
