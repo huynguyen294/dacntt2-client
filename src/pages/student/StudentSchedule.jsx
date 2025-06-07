@@ -1,5 +1,4 @@
 import { ModuleLayout } from "@/layouts";
-import { timetableBreadcrumbItems } from "../training/constants";
 import { TimeTable } from "@/components";
 import { useState } from "react";
 import { defaultWeekCalendarValue } from "@/constants";
@@ -8,17 +7,20 @@ import { COLORS } from "@/constants/palette";
 import { useStudentStore } from "@/state";
 
 const StudentSchedule = () => {
-  const { schedules, classes, teachers } = useStudentStore(["schedules", "classes", "teachers"]);
+  const { schedules, classes, teachers, shifts } = useStudentStore(["schedules", "classes", "teachers", "shifts"]);
   const [value, setValue] = useState(defaultWeekCalendarValue);
 
   const classColors = classes.reduce((acc, c, index) => ({ ...acc, [c.id]: COLORS[index] }), []);
   const classObj = arrayToObject(classes);
   const teacherObj = arrayToObject(teachers);
+  const shiftObj = arrayToObject(shifts);
 
   return (
-    <ModuleLayout breadcrumbItems={timetableBreadcrumbItems}>
+    <ModuleLayout breadcrumbItems={[{ label: "Thời khóa biểu" }]}>
       <div className="px-2 sm:px-10">
-        <TimeTable timeTable={{ ready: true, value, setValue, schedules, classColors, classObj, teacherObj }} />
+        <TimeTable
+          timeTable={{ ready: true, shiftObj, value, setValue, schedules, classColors, classObj, teacherObj }}
+        />
       </div>
     </ModuleLayout>
   );

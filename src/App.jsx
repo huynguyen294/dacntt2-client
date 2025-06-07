@@ -32,6 +32,11 @@ import {
   ClassStudentExercises,
   Dashboard,
   StudentSchedule,
+  StudentClass,
+  StudentExam,
+  StudentScore,
+  StudentTuition,
+  StudentLetter,
 } from "./pages";
 
 import "./App.css";
@@ -100,12 +105,12 @@ const App = () => {
 
         <Route path="/">
           <Route index element={<Dashboard />} />
-          <Route path="classes" element={<Dashboard />} />
+          <Route path="classes" element={<StudentClass />} />
           <Route path="timetable" element={<StudentSchedule />} />
-          <Route path="exam-schedule" element={<Dashboard />} />
-          <Route path="scores" element={<Dashboard />} />
-          <Route path="tuition" element={<Dashboard />} />
-          <Route path="letter" element={<Dashboard />} />
+          <Route path="exam-schedule" element={<StudentExam />} />
+          <Route path="scores" element={<StudentScore />} />
+          <Route path="tuition" element={<StudentTuition />} />
+          <Route path="letter" element={<StudentLetter />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

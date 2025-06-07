@@ -15,9 +15,19 @@ const NUM_OF_ROWS = ((END_HOUR - START_HOUR) * 60) / 5;
 const ONE_HOUR_ROWS = 12;
 
 const TimeTable = ({ timeTable = {} }) => {
-  const { ready, value, setValue, multipleMode, generalMode, classColors, isLoading, classObj, teacherObj, schedules } =
-    timeTable;
-  const { shiftObj } = useMetadata();
+  const {
+    ready,
+    value,
+    setValue,
+    multipleMode,
+    generalMode,
+    classColors,
+    isLoading,
+    classObj,
+    teacherObj,
+    schedules,
+    shiftObj,
+  } = timeTable;
 
   const Block = ({ schedule, className }) => {
     const shift = shiftObj[schedule.shiftId];

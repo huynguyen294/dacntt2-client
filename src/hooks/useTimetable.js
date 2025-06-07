@@ -82,6 +82,7 @@ const useTimetable = ({ generalMode = null, studentId = null, teacherId = null, 
     isLoading,
     classObj,
     teacherObj,
+    shiftObj: metadata.shiftObj,
     schedules: filteredSchedules,
   };
 };
