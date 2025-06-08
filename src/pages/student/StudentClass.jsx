@@ -1,7 +1,7 @@
-import { CLASS_STATUSES, COURSE_LEVELS } from "@/constants";
+import { ADMISSION_STATUSES, CLASS_STATUSES, COURSE_LEVELS, getStatusColor } from "@/constants";
 import { ModuleLayout } from "@/layouts";
 import { cn } from "@/lib/utils";
-import { useStudentStore } from "@/state";
+import { useAppStore, useStudentStore } from "@/state";
 import { arrayToObject, displayDate, getClassStatus, localeString, orderBy, shiftFormat } from "@/utils";
 import { Avatar } from "@heroui/avatar";
 import { Button } from "@heroui/button";
@@ -10,10 +10,22 @@ import { Chip } from "@heroui/chip";
 import { Calendar, ChevronRight, DollarSign, Info, PhoneCall, Users2 } from "lucide-react";
 import { studentClassBreadcrumbItems } from "./constants";
 import { useNavigate } from "@/hooks";
+import { studentConsultationApi } from "@/apis";
+import { useState } from "react";
+import { addToast } from "@heroui/toast";
 
 const StudentClass = () => {
   const navigate = useNavigate();
-  const { classes, shifts, teachers, courses } = useStudentStore(["classes", "shifts", "teachers", "courses"]);
+  const user = useAppStore("user");
+  const { classes, shifts, teachers, courses, consultations } = useStudentStore([
+    "classes",
+    "shifts",
+    "teachers",
+    "courses",
+    "consultations",
+  ]);
+
+  const actions = useStudentStore("studentActions");
 
   const shiftObj = arrayToObject(shifts);
   const teacherObj = arrayToObject(teachers);
@@ -24,12 +36,37 @@ const StudentClass = () => {
     return 1;
   });
 
+  const [loading, setLoading] = useState(false);
+
+  const handleRegisterConsultation = async (expectedCourseId) => {
+    setLoading(true);
+    const { email, name, dateOfBirth, phoneNumber, address, id } = user;
+    const result = await studentConsultationApi.create({
+      email,
+      name,
+      dateOfBirth,
+      phoneNumber,
+      address,
+      status: ADMISSION_STATUSES.pending,
+      studentId: id,
+      expectedCourseId,
+    });
+
+    if (result.ok) {
+      actions.add("consultations", result.created);
+    } else {
+      addToast({ color: "danger", title: "Lỗi!", description: result.message });
+    }
+
+    setLoading(false);
+  };
+
   return (
     <ModuleLayout breadcrumbItems={studentClassBreadcrumbItems}>
       <div className="px-2 sm:px-10 space-y-8 overflow-y-auto pb-10">
         <div>
           <p className="m-4 text-lg font-bold">Lớp học của tôi</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4">
             {sortedClasses.map((classData) => {
               const shift = shiftObj[classData.shiftId];
               const teacher = teacherObj[classData.teacherId];
@@ -106,6 +143,8 @@ const StudentClass = () => {
             {courses
               .filter((course) => !classes.find((c) => c.courseId === course.id))
               .map((course) => {
+                const found = consultations.find((c) => c.expectedCourseId === course.id);
+
                 return (
                   <Card shadow="none" className="border">
                     <div
@@ -137,9 +176,22 @@ const StudentClass = () => {
                         <DollarSign size="16px" />
                         {localeString(course.tuitionFee)}đ
                       </div>
-                      <Button size="sm" color="primary" radius="full" startContent={<PhoneCall size="14px" />}>
-                        Đăng ký tư vấn
-                      </Button>
+                      {!found ? (
+                        <Button
+                          isLoading={loading}
+                          onPress={() => handleRegisterConsultation(course.id)}
+                          size="sm"
+                          color="primary"
+                          radius="full"
+                          startContent={<PhoneCall size="14px" />}
+                        >
+                          Đăng ký tư vấn
+                        </Button>
+                      ) : (
+                        <Chip startContent={<Info size="14px" />} variant="flat" color={getStatusColor(found.status)}>
+                          {found.status}
+                        </Chip>
+                      )}
                     </div>
                   </Card>
                 );

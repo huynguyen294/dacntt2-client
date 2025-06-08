@@ -20,6 +20,7 @@ export const init = async (studentId) => {
     actions.change("tuitions", otherResult.data.tuitions);
     actions.change("courses", otherResult.data.courses);
     actions.change("classTopics", otherResult.data.classTopics);
+    actions.change("consultations", otherResult.data.consultations);
   } catch (error) {
     addToast({
       color: "danger",
