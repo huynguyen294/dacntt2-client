@@ -18,6 +18,8 @@ export const init = async (studentId) => {
     actions.change("classExercises", otherResult.data.classExercises);
     actions.change("classExerciseScores", otherResult.data.classExerciseScores);
     actions.change("tuitions", otherResult.data.tuitions);
+    actions.change("courses", otherResult.data.courses);
+    actions.change("classTopics", otherResult.data.classTopics);
   } catch (error) {
     addToast({
       color: "danger",

@@ -5,3 +5,5 @@ export { default as ClassAssignment } from "./ClassAssignment";
 export { default as SearchUser } from "./SearchUser";
 export { default as TimeTable } from "./TimeTable";
 export { default as InformationSheet } from "./InformationSheet";
+export { default as ExerciseList } from "./ExerciseList";
+export { default as EmptyMessage } from "./EmptyMessage";

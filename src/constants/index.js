@@ -40,6 +40,12 @@ export const COURSE_STATUSES = {
   stopped: "Không còn mở",
 };
 
+export const CLASS_STATUSES = {
+  active: "Đang hoạt động",
+  pending: "Chưa bắt đầu",
+  stopped: "Đã kết thúc",
+};
+
 export const EMPLOYEE_STATUS = {
   active: "Đang làm việc",
   onHold: "Tạm nghỉ việc",

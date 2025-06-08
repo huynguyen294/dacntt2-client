@@ -32,6 +32,8 @@ export { default as StudentExam } from "./student/StudentExam";
 export { default as StudentScore } from "./student/StudentScore";
 export { default as StudentTuition } from "./student/StudentTuition";
 export { default as StudentLetter } from "./student/StudentLetter";
+export { default as StudentClassRoom } from "./student/StudentClassRoom";
+export { default as ClassExerciseDetail } from "./student/ClassExerciseDetail";
 
 export { default as NotFound } from "./NotFound";
 export { default as Profile } from "./Profile";

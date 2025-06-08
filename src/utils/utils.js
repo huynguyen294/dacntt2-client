@@ -1,5 +1,26 @@
 import Compressor from "compressorjs";
+import { CLASS_STATUSES, currentDate } from "@/constants";
 import { format } from "date-fns";
+
+export const orderBy = (list, cb = (item) => item) => {
+  const cloned = [...list];
+  cloned.sort((a, b) => cb(a) - cb(b));
+  return cloned;
+};
+
+export const getClassStatus = (classData) => {
+  const status = { color: "success", text: CLASS_STATUSES.active };
+  if (new Date(classData.openingDay) > currentDate) {
+    status.color = "warning";
+    status.text = CLASS_STATUSES.pending;
+  }
+  if (new Date(classData.closingDay) < currentDate) {
+    status.color = "danger";
+    status.text = CLASS_STATUSES.stopped;
+  }
+
+  return status;
+};
 
 export const unique = (arr, field) => {
   const uniqueCheck = new Set([]);

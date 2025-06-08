@@ -37,6 +37,8 @@ import {
   StudentScore,
   StudentTuition,
   StudentLetter,
+  StudentClassRoom,
+  ClassExerciseDetail,
 } from "./pages";
 
 import "./App.css";
@@ -106,6 +108,8 @@ const App = () => {
         <Route path="/">
           <Route index element={<Dashboard />} />
           <Route path="classes" element={<StudentClass />} />
+          <Route path="classes/:classId" element={<StudentClassRoom />} />
+          <Route path="classes/:classId/exercise/:exerciseId" element={<ClassExerciseDetail />} />
           <Route path="timetable" element={<StudentSchedule />} />
           <Route path="exam-schedule" element={<StudentExam />} />
           <Route path="scores" element={<StudentScore />} />

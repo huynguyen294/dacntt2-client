@@ -3,7 +3,7 @@ import ClassDetailModal from "./ClassDetailModal";
 import { useTableContext } from "@/components/common";
 import { COURSE_LEVELS } from "@/constants";
 import { useMetadata, useNavigate } from "@/hooks";
-import { displayDate, localeString, shiftFormat } from "@/utils";
+import { displayDate, getClassStatus, localeString, shiftFormat } from "@/utils";
 import { Button } from "@heroui/button";
 import { Chip } from "@heroui/chip";
 import { useDisclosure } from "@heroui/modal";
@@ -35,12 +35,7 @@ const ClassCell = ({ dataRefs, rowData, columnKey, rowIndex, onDelete = (id) => 
   if (columnKey === "level") cellValue = COURSE_LEVELS[cellValue];
   if (columnKey === "courseId") cellValue = course?.name || "";
   if (columnKey === "numberOfStudents") cellValue = `${studentCount || 0}/${cellValue}`;
-  if (columnKey === "shiftId")
-    cellValue = (
-      <p>
-        {shift?.name} ({shiftFormat(shift)})
-      </p>
-    );
+  if (columnKey === "shiftId") cellValue = `${shift?.name} (${shiftFormat(shift)})`;
   if (columnKey === "teacherId") {
     cellValue = teacher?.name || "";
     return (
@@ -52,15 +47,7 @@ const ClassCell = ({ dataRefs, rowData, columnKey, rowIndex, onDelete = (id) => 
 
   switch (columnKey) {
     case "status": {
-      const status = { color: "success", text: "Đang hoạt động" };
-      if (new Date(rowData.openingDay) > new Date()) {
-        status.color = "warning";
-        status.text = "Chưa bắt đầu";
-      }
-      if (new Date(rowData.closingDay) < new Date()) {
-        status.color = "danger";
-        status.text = "Đã kết thúc";
-      }
+      const status = getClassStatus(rowData);
       return (
         <Chip size="sm" variant="flat" color={status.color}>
           {status.text}
