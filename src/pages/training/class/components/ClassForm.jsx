@@ -15,6 +15,7 @@ import { useForm, Form, Controller } from "react-simple-formkit";
 import { useMetadata, useNavigate, useServerList } from "@/hooks";
 import { addToast } from "@heroui/toast";
 import { Avatar } from "@heroui/avatar";
+import { UserScheduleButton } from "@/components";
 
 const ClassForm = ({ editMode, defaultValues = {} }) => {
   const queryClient = useQueryClient();
@@ -179,29 +180,27 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
             name="teacherId"
             defaultValue={defaultValues.teacherId && defaultValues.teacherId.toString()}
             render={({ ref, name, defaultValue, value, setValue }) => (
-              <Autocomplete
+              <Select
                 ref={ref}
                 size="lg"
                 radius="sm"
                 name={name}
-                selectedKey={value}
+                selectedKey={value && new Set([value.toString()])}
                 variant="bordered"
                 label="Giáo viên phụ trách"
                 labelPlacement="outside"
                 placeholder="Chọn giáo viên"
                 isLoading={teacherList.isLoading}
-                onSelectionChange={(newValue) => {
-                  setValue(newValue);
+                onSelectionChange={(keys) => {
+                  setValue([...keys][0]);
                   actions.instantChange();
                 }}
                 items={teacherList.list}
-                defaultSelectedKey={defaultValue}
-                listboxProps={{
-                  bottomContent: teacherList.hasMore && <LoadMoreButton onLoadMore={teacherList.onLoadMore} />,
-                }}
+                defaultSelectedKey={defaultValue && new Set([defaultValue.toString()])}
+                listboxProps={teacherList.listboxProps}
               >
                 {(u) => (
-                  <AutocompleteItem
+                  <SelectItem
                     key={u.id.toString()}
                     startContent={
                       <div className="size-10">
@@ -211,9 +210,9 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
                     description={u.email}
                   >
                     {u.name}
-                  </AutocompleteItem>
+                  </SelectItem>
                 )}
-              </Autocomplete>
+              </Select>
             )}
           />
           <DatePicker
@@ -258,14 +257,14 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
             name="courseId"
             defaultValue={defaultValues.courseId && defaultValues.courseId.toString()}
             render={({ ref, name, defaultValue, setValue, value }) => (
-              <Autocomplete
+              <Select
                 ref={ref}
                 name={name}
-                selectedKey={value}
+                selectedKey={value && new Set([value.toString()])}
                 isLoading={courseList.isLoading}
-                defaultSelectedKey={defaultValue}
-                onSelectionChange={(newValue) => {
-                  setValue(newValue);
+                defaultSelectedKey={defaultValue && new Set([defaultValue.toString()])}
+                onSelectionChange={(keys) => {
+                  setValue([...keys][0]);
                   actions.instantChange();
                 }}
                 items={courseList.list}
@@ -274,10 +273,11 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
                 label="Khóa học"
                 radius="sm"
                 labelPlacement="outside"
-                placeholder="Chọn lớp học"
+                placeholder="Chọn khóa học"
+                listboxProps={courseList.listboxProps}
               >
-                {(course) => <AutocompleteItem key={course.id}>{course.name}</AutocompleteItem>}
-              </Autocomplete>
+                {(course) => <SelectItem key={course.id.toString()}>{course.name}</SelectItem>}
+              </Select>
             )}
           />
           <Controller

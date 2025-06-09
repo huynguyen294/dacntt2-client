@@ -30,13 +30,14 @@ const AdmissionForm = ({ defaultValues = {}, editMode, onReload }) => {
   const form = useForm({ numberFields });
   const { isDirty, isError, actions } = form;
 
-  const [selectedCourse, setSelectedCourse] = useState(defaultValues.courseId);
+  const [selectedCourse, setSelectedCourse] = useState(defaultValues.expectedCourseId);
 
   const { loading: metadataLoading, shiftObj } = useMetadata();
 
   const consultantList = useServerList("users", userApi.get, {
     filters: { status: EMPLOYEE_STATUS.active },
     otherParams: ["fields=:basic", "role=consultant"],
+    searchPlaceholder: "Tìm theo tên, email...",
   });
 
   const statusActive = { status: COURSE_STATUSES.active };
@@ -121,7 +122,7 @@ const AdmissionForm = ({ defaultValues = {}, editMode, onReload }) => {
               name="consultantId"
               defaultValue={user.role === "consultant" ? user.id.toString() : defaultValues.consultantId}
               render={({ ref, name, defaultValue, value, setValue }) => (
-                <Autocomplete
+                <Select
                   ref={ref}
                   name={name}
                   size="lg"
@@ -129,26 +130,23 @@ const AdmissionForm = ({ defaultValues = {}, editMode, onReload }) => {
                   variant="bordered"
                   label="Tư vấn viên"
                   labelPlacement="outside"
-                  placeholder="Tìm theo tên, email, số điện thoại..."
+                  placeholder="Chọn tư vấn viên"
                   isReadOnly={user.role === "consultant"}
                   isLoading={consultantList.isLoading}
                   items={consultantList.list}
-                  selectedKetuseServerList={user.role === "consultant" ? user.id.toString() : value && value.toString()}
-                  defaultSelectedKey={defaultValue && defaultValue.toString()}
-                  onSelectionChange={(newValue) => {
-                    setValue(newValue);
+                  selectedKey={user.role === "consultant" ? user.id.toString() : value && new Set([value.toString()])}
+                  defaultSelectedKey={defaultValue && new Set([defaultValue.toString()])}
+                  onSelectionChange={(keys) => {
+                    setValue([...keys][0]);
                     actions.instantChange();
                   }}
-                  listboxProps={{
-                    bottomContent: consultantList.hasMore && <LoadMoreButton onLoadMore={consultantList.onLoadMore} />,
-                  }}
-                  onInputChange={consultantList.onQueryChange}
+                  listboxProps={consultantList.listboxProps}
                   isVirtualized
                   maxListboxHeight={265}
                   itemHeight={50}
                 >
                   {(u) => (
-                    <AutocompleteItem
+                    <SelectItem
                       startContent={
                         <div>
                           <Avatar src={u.imageUrl} />
@@ -158,16 +156,16 @@ const AdmissionForm = ({ defaultValues = {}, editMode, onReload }) => {
                       key={u.id.toString()}
                     >
                       {u.name}
-                    </AutocompleteItem>
+                    </SelectItem>
                   )}
-                </Autocomplete>
+                </Select>
               )}
             />
             <Controller
               name="expectedCourseId"
               defaultValue={defaultValues.expectedCourseId}
               render={({ ref, name, value, defaultValue, setValue }) => (
-                <Autocomplete
+                <Select
                   ref={ref}
                   name={name}
                   size="lg"
@@ -179,30 +177,28 @@ const AdmissionForm = ({ defaultValues = {}, editMode, onReload }) => {
                   placeholder="Chọn khóa học dự kiến"
                   isLoading={courseList.isLoading}
                   items={courseList.list}
-                  selectedKey={value && value.toString()}
-                  defaultSelectedKey={defaultValue && defaultValue.toString()}
-                  onSelectionChange={(newValue) => {
+                  selectedKey={value && new Set([value.toString()])}
+                  defaultSelectedKey={defaultValue && new Set([defaultValue.toString()])}
+                  onSelectionChange={(keys) => {
+                    const newValue = [...keys][0];
                     setValue(newValue);
                     setSelectedCourse(newValue);
                     actions.instantChange();
                   }}
-                  listboxProps={{
-                    bottomContent: courseList.hasMore && <LoadMoreButton onLoadMore={courseList.onLoadMore} />,
-                  }}
-                  onInputChange={courseList.onQueryChange}
+                  listboxProps={courseList.listboxProps}
                   isVirtualized
                   maxListboxHeight={265}
                   itemHeight={40}
                 >
-                  {(c) => <AutocompleteItem key={c.id.toString()}>{c.name}</AutocompleteItem>}
-                </Autocomplete>
+                  {(c) => <SelectItem key={c.id.toString()}>{c.name}</SelectItem>}
+                </Select>
               )}
             />
             <Controller
               name="expectedClassId"
               defaultValue={defaultValues.expectedClassId}
               render={({ ref, name, defaultValue, value, setValue }) => (
-                <Autocomplete
+                <Select
                   ref={ref}
                   name={name}
                   size="lg"
@@ -211,28 +207,24 @@ const AdmissionForm = ({ defaultValues = {}, editMode, onReload }) => {
                   label="Lớp dự kiến"
                   labelPlacement="outside"
                   placeholder="Chọn lớp học dự kiến"
-                  selectedKey={value && value.toString()}
-                  defaultSelectedKey={defaultValue && defaultValue.toString()}
+                  selectedKey={value && new Set([value.toString()])}
+                  defaultSelectedKey={defaultValue && new Set([defaultValue.toString()])}
                   isLoading={classList.isLoading || metadataLoading}
-                  items={classList.list}
                   onSelectionChange={(newValue) => {
                     setValue(newValue);
                     actions.instantChange();
                   }}
-                  listboxProps={{
-                    bottomContent: classList.hasMore && <LoadMoreButton onLoadMore={classList.onLoadMore} />,
-                  }}
-                  onInputChange={classList.onQueryChange}
+                  listboxProps={courseList.listboxProps}
                   isVirtualized
                   maxListboxHeight={265}
                   itemHeight={40}
                 >
-                  {(c) => (
-                    <AutocompleteItem key={c.id.toString()} description={shiftFormat(shiftObj[c.shiftId])}>
+                  {classList.list.map((c) => (
+                    <SelectItem key={c.id.toString()} description={shiftFormat(shiftObj[c.shiftId])}>
                       {c.name}
-                    </AutocompleteItem>
-                  )}
-                </Autocomplete>
+                    </SelectItem>
+                  ))}
+                </Select>
               )}
             />
             <Controller

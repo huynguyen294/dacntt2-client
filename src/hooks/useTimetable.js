@@ -57,7 +57,11 @@ const useTimetable = ({ generalMode = null, studentId = null, teacherId = null, 
     }
 
     // general mode
-    const filtered = unique(scheduleList.list, (i) => `${i.classId},${i.shiftId}`);
+    const filtered = unique(scheduleList.list, (i) => {
+      const day = new Date(i.date).getDay();
+      return `${i.classId},${i.shiftId},${day}`;
+    });
+
     return filtered.filter((s) => {
       let valid = true;
       if (teacherId) valid = s.teacherId === teacherId;

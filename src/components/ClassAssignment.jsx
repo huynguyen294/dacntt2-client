@@ -13,6 +13,8 @@ import { arrayToObject, displayDate, shiftFormat } from "@/utils";
 import { Spinner } from "@heroui/spinner";
 import { addToast } from "@heroui/toast";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
+import { Select, SelectItem } from "@heroui/select";
+import UserScheduleButton from "./UserScheduleButton";
 
 const ClassAssignment = ({ studentIds = [], isSingleMode, onDone }) => {
   const queryClient = useQueryClient();
@@ -24,7 +26,7 @@ const ClassAssignment = ({ studentIds = [], isSingleMode, onDone }) => {
 
   const classList = useServerList("classes", classApi.get, {
     filters: { courseId: selectedCourse, shiftId: selectedShift, teacherId: selectedTeacher },
-    otherParams: ["fields=:basic"],
+    otherParams: ["fields=:full"],
   });
   const studentList = useServerList("users", userApi.get, {
     otherParams: ["fields=:basic", "filter=id:in:" + studentIds.join(",")],
@@ -33,7 +35,7 @@ const ClassAssignment = ({ studentIds = [], isSingleMode, onDone }) => {
   const courseList = useServerList("users", courseApi.get, { filters: { status: COURSE_STATUSES.active } });
 
   const { data: enrData, isLoading: enrLoading } = useQuery({
-    queryKey: ["enrollments", studentIds[0]],
+    queryKey: ["enrollments", studentIds[0] || null],
     queryFn: () => isSingleMode && enrollmentApi.getByStudents(studentIds),
   });
 
@@ -81,7 +83,12 @@ const ClassAssignment = ({ studentIds = [], isSingleMode, onDone }) => {
         <div className="flex gap-1 flex-wrap">
           {studentList.ready &&
             studentList.list.map((user) => (
-              <Chip key={user.id} variant="flat" avatar={<Avatar src={user.imageUrl} />}>
+              <Chip
+                key={user.id}
+                variant="flat"
+                avatar={<Avatar src={user.imageUrl} />}
+                endContent={<UserScheduleButton studentId={user.id} classNames={{ button: "size-6 min-w-6" }} />}
+              >
                 {user.name}
               </Chip>
             ))}
@@ -89,60 +96,57 @@ const ClassAssignment = ({ studentIds = [], isSingleMode, onDone }) => {
       </div>
       <Divider className="my-4" />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 sm:gap-4">
-        <Autocomplete
-          isLoading={courseList.isLoading}
-          selectedKey={selectedCourse}
-          onSelectionChange={setSelectedCourse}
+        <Select
           size="lg"
           variant="bordered"
           label="Khóa học"
           radius="sm"
-          items={courseList.list}
           labelPlacement="outside"
           placeholder="Chọn khóa học"
           isVirtualized
           maxListboxHeight={265}
           itemHeight={40}
-          listboxProps={{
-            bottomContent: courseList.hasMore && <LoadMoreButton onLoadMore={courseList.onLoadMore} />,
-          }}
+          isLoading={courseList.isLoading}
+          selectedKey={selectedCourse && new Set([selectedCourse])}
+          onSelectionChange={(keys) => setSelectedCourse([...keys][0])}
+          listboxProps={courseList.listboxProps}
         >
-          {(course) => <AutocompleteItem key={course.id}>{course.name}</AutocompleteItem>}
-        </Autocomplete>
+          {courseList.list.map((course) => (
+            <SelectItem key={course.id}>{course.name}</SelectItem>
+          ))}
+        </Select>
         <Autocomplete
-          isLoading={metadataLoading}
-          selectedKey={selectedShift}
-          onSelectionChange={setSelectedShift}
-          items={shifts}
           size="lg"
           variant="bordered"
           label="Ca học"
           radius="sm"
           labelPlacement="outside"
           placeholder="Chọn ca học"
+          isLoading={metadataLoading}
+          selectedKey={selectedShift}
+          onSelectionChange={setSelectedShift}
         >
-          {(s) => <AutocompleteItem key={s.id.toString()}>{`${s.name} ${shiftFormat(s)}`}</AutocompleteItem>}
+          {shifts.map((s) => (
+            <AutocompleteItem key={s.id.toString()}>{`${s.name} ${shiftFormat(s)}`}</AutocompleteItem>
+          ))}
         </Autocomplete>
-        <Autocomplete
-          isLoading={teacherList.isLoading}
-          selectedKey={selectedTeacher}
-          onSelectionChange={setSelectedTeacher}
-          items={teacherList.list}
-          isVirtualized
-          maxListboxHeight={265}
-          itemHeight={50}
+        <Select
           size="lg"
           variant="bordered"
           label="Giáo viên"
           radius="sm"
           labelPlacement="outside"
           placeholder="Chọn giáo viên"
-          listboxProps={{
-            bottomContent: teacherList.hasMore && <LoadMoreButton onLoadMore={teacherList.onLoadMore} />,
-          }}
+          isLoading={teacherList.isLoading}
+          selectedKey={selectedTeacher && new Set([selectedTeacher])}
+          onSelectionChange={(keys) => setSelectedTeacher([...keys][0])}
+          isVirtualized
+          maxListboxHeight={265}
+          itemHeight={50}
+          listboxProps={teacherList.listboxProps}
         >
-          {(t) => (
-            <AutocompleteItem
+          {teacherList.list.map((t) => (
+            <SelectItem
               key={t.id.toString()}
               startContent={
                 <div className="size-10">
@@ -152,9 +156,9 @@ const ClassAssignment = ({ studentIds = [], isSingleMode, onDone }) => {
               description={t.email}
             >
               {t.name}
-            </AutocompleteItem>
-          )}
-        </Autocomplete>
+            </SelectItem>
+          ))}
+        </Select>
       </div>
       <TableProvider value={{ columns }}>
         <Table

@@ -1,8 +1,10 @@
+import useDebounce from "./useDebounce";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import { PAGER } from "@/constants";
 import { debounceFn } from "@/utils";
-import useDebounce from "./useDebounce";
+import { LoadMoreButton } from "@/components/common";
+import { Input } from "@heroui/input";
 
 const useServerList = (
   dataKey = "users",
@@ -13,6 +15,7 @@ const useServerList = (
     otherParams = ["fields=:basic"],
     searchQuery = "",
     selectList = (data) => data.rows,
+    searchPlaceholder = "Tìm theo tên...",
   } = {}
 ) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -54,7 +57,32 @@ const useServerList = (
   const ready = Boolean(list?.length);
   const hasMore = ready && pager.pageCount && pager.page < pager.pageCount;
 
-  return { isLoading, query, list, clearQuery, onQueryChange, onLoadMore, hasMore, isOpen, setIsOpen, ready };
+  const listboxProps = {
+    variant: "flat",
+    topContent: (
+      <Input
+        placeholder={searchPlaceholder}
+        variant="bordered"
+        classNames={{ inputWrapper: "border-1 shadow-none" }}
+        onValueChange={onQueryChange}
+      />
+    ),
+    bottomContent: hasMore && <LoadMoreButton onLoadMore={onLoadMore} />,
+  };
+
+  return {
+    listboxProps,
+    isLoading,
+    query,
+    list,
+    clearQuery,
+    onQueryChange,
+    onLoadMore,
+    hasMore,
+    isOpen,
+    setIsOpen,
+    ready,
+  };
 };
 
 export default useServerList;

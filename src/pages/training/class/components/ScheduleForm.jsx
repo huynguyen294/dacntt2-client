@@ -15,6 +15,7 @@ import { addToast } from "@heroui/toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Button } from "@heroui/button";
+import { Select, SelectItem } from "@heroui/select";
 
 const ScheduleForm = ({ editMode, defaultValues = {}, onClose }) => {
   const form = useForm({ numberFields });
@@ -99,7 +100,7 @@ const ScheduleForm = ({ editMode, defaultValues = {}, onClose }) => {
         name="teacherId"
         defaultValue={defaultValues.teacherId || data.item.teacherId}
         render={({ ref, name, value, setValue, defaultValue }) => (
-          <Autocomplete
+          <Select
             size="lg"
             ref={ref}
             name={name}
@@ -107,21 +108,18 @@ const ScheduleForm = ({ editMode, defaultValues = {}, onClose }) => {
             label="Giáo viên"
             radius="sm"
             labelPlacement="outside"
-            placeholder="Tìm theo tên, email, số điện thoại..."
+            placeholder="Chọn giáo viên"
             isVirtualized
             isLoading={teacherList.isLoading}
-            selectedKey={value && value.toString()}
-            defaultSelectedKey={defaultValue && defaultValue.toString()}
-            onSelectionChange={setValue}
+            selectedKey={value && new Set([value.toString()])}
+            defaultSelectedKey={defaultValue && new Set([defaultValue.toString()])}
+            onSelectionChange={(keys) => setValue([...keys][0])}
             maxListboxHeight={265}
             itemHeight={50}
-            listboxProps={{
-              bottomContent: teacherList.hasMore && <LoadMoreButton onLoadMore={teacherList.onLoadMore} />,
-            }}
-            onInputChange={teacherList.onQueryChange}
+            listboxProps={teacherList.listboxProps}
           >
             {teacherList.list.map((item) => (
-              <AutocompleteItem
+              <SelectItem
                 key={item.id.toString()}
                 startContent={
                   <div>
@@ -131,9 +129,9 @@ const ScheduleForm = ({ editMode, defaultValues = {}, onClose }) => {
                 description={item.email}
               >
                 {item.name}
-              </AutocompleteItem>
+              </SelectItem>
             ))}
-          </Autocomplete>
+          </Select>
         )}
       />
       <Textarea defaultValue={defaultValues.note} name="note" label="Ghi chú" variant="bordered" />

@@ -14,7 +14,8 @@ const END_HOUR = 21;
 const NUM_OF_ROWS = ((END_HOUR - START_HOUR) * 60) / 5;
 const ONE_HOUR_ROWS = 12;
 
-const TimeTable = ({ timeTable = {} }) => {
+const defaultClassNames = { table: "", tableWrapper: "" };
+const TimeTable = ({ timeTable = {}, classNames = defaultClassNames }) => {
   const {
     ready,
     value,
@@ -190,8 +191,13 @@ const TimeTable = ({ timeTable = {} }) => {
               </div>
             </div>
           )}
-          <div className="shadow-small p-2 w-full rounded-large">
-            <table className="timetable w-full [&_th]:p-1 sm:[&_th]:p-2 [&_td]:p-0 [&_th]:text-foreground [&_th]:border-r-1 [&_td]:border-r-1 [&_td]: [&_th:last-child]:border-r-0 [&_td:last-child]:border-r-0 rounded-lg overflow-hidden">
+          <div className={cn("shadow-small p-2 w-full rounded-large", classNames.tableWrapper)}>
+            <table
+              className={cn(
+                "timetable w-full [&_th]:p-1 sm:[&_th]:p-2 [&_td]:p-0 [&_th]:text-foreground [&_th]:border-r-1 [&_td]:border-r-1 [&_td]: [&_th:last-child]:border-r-0 [&_td:last-child]:border-r-0 rounded-lg overflow-hidden",
+                classNames.table
+              )}
+            >
               <thead>
                 <tr>
                   <th className="border-b-1 w-[6rem]"></th>

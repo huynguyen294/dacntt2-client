@@ -7,3 +7,5 @@ export { default as TimeTable } from "./TimeTable";
 export { default as InformationSheet } from "./InformationSheet";
 export { default as ExerciseList } from "./ExerciseList";
 export { default as EmptyMessage } from "./EmptyMessage";
+export { default as UserScheduleButton } from "./UserScheduleButton";
+export { default as TimetableFilter } from "./TimetableFilter";

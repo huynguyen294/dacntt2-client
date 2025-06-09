@@ -13,6 +13,7 @@ import { User } from "@heroui/user";
 import { cn } from "@/lib/utils";
 import { useParams } from "react-router";
 import SidebarDrawer from "./SidebarDrawer";
+import { UserScheduleButton } from "@/components";
 
 const NavBar = ({ breadcrumbItems = [], hideMenuButton = false, hideDashboard = false }) => {
   const navigate = useNavigate(true);
@@ -80,6 +81,7 @@ const NavBar = ({ breadcrumbItems = [], hideMenuButton = false, hideDashboard = 
             <Button size="sm" isIconOnly variant="light" radius="full">
               <Bell size="20px" />
             </Button>
+            {user.role === "admin" && <UserScheduleButton withFilter iconSize="20px" />}
             <Divider orientation="vertical" className="h-6 mx-2" />
             <Dropdown placement="bottom-end">
               <DropdownTrigger>
