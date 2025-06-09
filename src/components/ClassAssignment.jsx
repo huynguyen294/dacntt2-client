@@ -107,7 +107,7 @@ const ClassAssignment = ({ studentIds = [], isSingleMode, onDone }) => {
           maxListboxHeight={265}
           itemHeight={40}
           isLoading={courseList.isLoading}
-          selectedKey={selectedCourse && new Set([selectedCourse])}
+          selectedKeys={selectedCourse && new Set([selectedCourse])}
           onSelectionChange={(keys) => setSelectedCourse([...keys][0])}
           listboxProps={courseList.listboxProps}
         >
@@ -138,7 +138,7 @@ const ClassAssignment = ({ studentIds = [], isSingleMode, onDone }) => {
           labelPlacement="outside"
           placeholder="Chọn giáo viên"
           isLoading={teacherList.isLoading}
-          selectedKey={selectedTeacher && new Set([selectedTeacher])}
+          selectedKeys={selectedTeacher && new Set([selectedTeacher])}
           onSelectionChange={(keys) => setSelectedTeacher([...keys][0])}
           isVirtualized
           maxListboxHeight={265}

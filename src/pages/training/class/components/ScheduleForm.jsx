@@ -111,8 +111,8 @@ const ScheduleForm = ({ editMode, defaultValues = {}, onClose }) => {
             placeholder="Chọn giáo viên"
             isVirtualized
             isLoading={teacherList.isLoading}
-            selectedKey={value && new Set([value.toString()])}
-            defaultSelectedKey={defaultValue && new Set([defaultValue.toString()])}
+            selectedKeys={value && new Set([value.toString()])}
+            defaultSelectedKeys={defaultValue && new Set([defaultValue.toString()])}
             onSelectionChange={(keys) => setValue([...keys][0])}
             maxListboxHeight={265}
             itemHeight={50}

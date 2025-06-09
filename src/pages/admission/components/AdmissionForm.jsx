@@ -134,8 +134,8 @@ const AdmissionForm = ({ defaultValues = {}, editMode, onReload }) => {
                   isReadOnly={user.role === "consultant"}
                   isLoading={consultantList.isLoading}
                   items={consultantList.list}
-                  selectedKey={user.role === "consultant" ? user.id.toString() : value && new Set([value.toString()])}
-                  defaultSelectedKey={defaultValue && new Set([defaultValue.toString()])}
+                  selectedKeys={user.role === "consultant" ? user.id.toString() : value && new Set([value.toString()])}
+                  defaultSelectedKeys={defaultValue && new Set([defaultValue.toString()])}
                   onSelectionChange={(keys) => {
                     setValue([...keys][0]);
                     actions.instantChange();
@@ -164,35 +164,37 @@ const AdmissionForm = ({ defaultValues = {}, editMode, onReload }) => {
             <Controller
               name="expectedCourseId"
               defaultValue={defaultValues.expectedCourseId}
-              render={({ ref, name, value, defaultValue, setValue }) => (
-                <Select
-                  ref={ref}
-                  name={name}
-                  size="lg"
-                  radius="sm"
-                  isRequired
-                  variant="bordered"
-                  label="Khóa học dự kiến"
-                  labelPlacement="outside"
-                  placeholder="Chọn khóa học dự kiến"
-                  isLoading={courseList.isLoading}
-                  items={courseList.list}
-                  selectedKey={value && new Set([value.toString()])}
-                  defaultSelectedKey={defaultValue && new Set([defaultValue.toString()])}
-                  onSelectionChange={(keys) => {
-                    const newValue = [...keys][0];
-                    setValue(newValue);
-                    setSelectedCourse(newValue);
-                    actions.instantChange();
-                  }}
-                  listboxProps={courseList.listboxProps}
-                  isVirtualized
-                  maxListboxHeight={265}
-                  itemHeight={40}
-                >
-                  {(c) => <SelectItem key={c.id.toString()}>{c.name}</SelectItem>}
-                </Select>
-              )}
+              render={({ ref, name, value, defaultValue, setValue }) => {
+                return (
+                  <Select
+                    ref={ref}
+                    name={name}
+                    size="lg"
+                    radius="sm"
+                    isRequired
+                    variant="bordered"
+                    label="Khóa học dự kiến"
+                    labelPlacement="outside"
+                    placeholder="Chọn khóa học dự kiến"
+                    isLoading={courseList.isLoading}
+                    items={courseList.list}
+                    selectedKeys={value && new Set([value.toString()])}
+                    defaultSelectedKes={defaultValue && new Set([defaultValue.toString()])}
+                    onSelectionChange={(keys) => {
+                      const newValue = [...keys][0];
+                      setValue(newValue);
+                      setSelectedCourse(newValue);
+                      actions.instantChange();
+                    }}
+                    listboxProps={courseList.listboxProps}
+                    isVirtualized
+                    maxListboxHeight={265}
+                    itemHeight={40}
+                  >
+                    {(c) => <SelectItem key={c.id.toString()}>{c.name}</SelectItem>}
+                  </Select>
+                );
+              }}
             />
             <Controller
               name="expectedClassId"
@@ -207,8 +209,8 @@ const AdmissionForm = ({ defaultValues = {}, editMode, onReload }) => {
                   label="Lớp dự kiến"
                   labelPlacement="outside"
                   placeholder="Chọn lớp học dự kiến"
-                  selectedKey={value && new Set([value.toString()])}
-                  defaultSelectedKey={defaultValue && new Set([defaultValue.toString()])}
+                  selectedKeys={value && new Set([value.toString()])}
+                  defaultSelectedKeys={defaultValue && new Set([defaultValue.toString()])}
                   isLoading={classList.isLoading || metadataLoading}
                   onSelectionChange={(newValue) => {
                     setValue(newValue);

@@ -185,7 +185,6 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
                 size="lg"
                 radius="sm"
                 name={name}
-                selectedKey={value && new Set([value.toString()])}
                 variant="bordered"
                 label="Giáo viên phụ trách"
                 labelPlacement="outside"
@@ -196,7 +195,8 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
                   actions.instantChange();
                 }}
                 items={teacherList.list}
-                defaultSelectedKey={defaultValue && new Set([defaultValue.toString()])}
+                selectedKeys={value && new Set([value.toString()])}
+                defaultSelectedKeys={defaultValue && new Set([defaultValue.toString()])}
                 listboxProps={teacherList.listboxProps}
               >
                 {(u) => (
@@ -260,9 +260,9 @@ const ClassForm = ({ editMode, defaultValues = {} }) => {
               <Select
                 ref={ref}
                 name={name}
-                selectedKey={value && new Set([value.toString()])}
+                selectedKeys={value && new Set([value.toString()])}
                 isLoading={courseList.isLoading}
-                defaultSelectedKey={defaultValue && new Set([defaultValue.toString()])}
+                defaultSelectedKeys={defaultValue && new Set([defaultValue.toString()])}
                 onSelectionChange={(keys) => {
                   setValue([...keys][0]);
                   actions.instantChange();
