@@ -212,8 +212,8 @@ const AdmissionForm = ({ defaultValues = {}, editMode, onReload }) => {
                   selectedKeys={value && new Set([value.toString()])}
                   defaultSelectedKeys={defaultValue && new Set([defaultValue.toString()])}
                   isLoading={classList.isLoading || metadataLoading}
-                  onSelectionChange={(newValue) => {
-                    setValue(newValue);
+                  onSelectionChange={(keys) => {
+                    setValue([...keys][0]);
                     actions.instantChange();
                   }}
                   listboxProps={courseList.listboxProps}

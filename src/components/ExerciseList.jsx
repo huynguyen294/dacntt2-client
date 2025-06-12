@@ -5,15 +5,16 @@ import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 
-const ExerciseList = ({ exercises, dropdown, onAction = () => {} }) => {
+const ExerciseList = ({ exercises, renderControls = (exercise) => {}, onAction = (exercise) => {} }) => {
   if (!exercises.length) return null;
 
   return (
     <Accordion variant="splitted" className="mt-4" selectionMode="multiple">
       {exercises.map((exercise) => {
         let helperText = "";
-        if (new Date(exercise.releaseDay) > new Date()) {
-          helperText = "Đã lên lịch vào " + format(new Date(exercise.releaseDay), "dd MMM", { locale: vi });
+        const releaseDate = new Date(exercise.releaseDay);
+        if (releaseDate > new Date()) {
+          helperText = "Đã lên lịch vào " + format(releaseDate, "dd MMM", { locale: vi });
         } else if (exercise.isDraft) {
           helperText = "Bản nháp";
         } else if (exercise.dueDay) {
@@ -22,7 +23,7 @@ const ExerciseList = ({ exercises, dropdown, onAction = () => {} }) => {
           helperText = "Đã đăng vào " + format(new Date(exercise.createdAt), "dd MMM", { locale: vi });
         }
 
-        const notAvailable = exercise.isDraft || exercise.releaseDay;
+        const notAvailable = exercise.isDraft || (exercise.releaseDay && releaseDate > new Date());
 
         return (
           <AccordionItem
@@ -46,7 +47,7 @@ const ExerciseList = ({ exercises, dropdown, onAction = () => {} }) => {
                   <p className={cn("text-[12px] text-foreground-500", notAvailable && "italic font-semibold")}>
                     {helperText}
                   </p>
-                  {dropdown}
+                  {renderControls(exercise)}
                 </div>
               </div>
             }

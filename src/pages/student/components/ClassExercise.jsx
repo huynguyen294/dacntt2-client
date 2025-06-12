@@ -11,7 +11,9 @@ const ClassExercise = () => {
   const { classTopics, classExercises } = useStudentStore(["classExercises", "classTopics"]);
 
   const topics = classTopics.filter((ct) => ct.classId === +classId);
-  const exercises = classExercises.filter((ce) => ce.classId === +classId && !ce.isDraft && !ce.releaseDay);
+  const exercises = classExercises.filter(
+    (ce) => ce.classId === +classId && !ce.isDraft && (!ce.releaseDay || new Date(ce.releaseDay) < new Date())
+  );
 
   return (
     <div className="space-y-4">

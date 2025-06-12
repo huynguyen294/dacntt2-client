@@ -15,6 +15,8 @@ import { addToast } from "@heroui/toast";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { Select, SelectItem } from "@heroui/select";
 import UserScheduleButton from "./UserScheduleButton";
+import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
+import { useDisclosure } from "@heroui/modal";
 
 const ClassAssignment = ({ studentIds = [], isSingleMode, onDone }) => {
   const queryClient = useQueryClient();
@@ -23,10 +25,13 @@ const ClassAssignment = ({ studentIds = [], isSingleMode, onDone }) => {
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [enrolling, setEnrolling] = useState(false);
   const { loading: metadataLoading, shifts, shiftObj } = useMetadata();
+  const [selectedClass, setSelectedClass] = useState(null);
+  const confirmModal = useDisclosure();
 
   const classList = useServerList("classes", classApi.get, {
     filters: { courseId: selectedCourse, shiftId: selectedShift, teacherId: selectedTeacher },
-    otherParams: ["fields=:full"],
+    otherParams: ["fields=:full", "refs=true"],
+    order: { orderBy: "name", order: "desc" },
   });
   const studentList = useServerList("users", userApi.get, {
     otherParams: ["fields=:basic", "filter=id:in:" + studentIds.join(",")],
@@ -77,6 +82,22 @@ const ClassAssignment = ({ studentIds = [], isSingleMode, onDone }) => {
 
   return (
     <div className="pb-4 sm:pb-10">
+      <ConfirmDeleteDialog
+        isOpen={confirmModal.isOpen}
+        title="Lớp đầy"
+        message="Lớp đã đầy sỉ số, bạn có chắc muốn xếp học sinh vào lớp này?"
+        deleteBtnText="Xác nhận"
+        onClose={() => {
+          setSelectedClass(null);
+          confirmModal.onClose();
+        }}
+        onDelete={async () => {
+          if (selectedClass) {
+            await handleEnroll(selectedClass);
+            setSelectedClass(null);
+          }
+        }}
+      />
       <div className="flex flex-col justify-start gap-2">
         <p className="font-semibold text-foreground-700 mr-2">Đang xếp lớp cho:</p>
         {studentList.isLoading && <Spinner variant="wave" />}
@@ -170,26 +191,40 @@ const ClassAssignment = ({ studentIds = [], isSingleMode, onDone }) => {
           bottomContent={classList.hasMore && <LoadMoreButton onLoadMore={classList.onLoadMore} />}
           renderCell={(rowData, columnKey, index) => {
             let cellValue = rowData[columnKey];
+            const studentCount = classList.data.refs?.studentCounts?.[rowData.id]?.total;
             if (columnKey === "index") cellValue = index + 1;
             const dateFields = ["openingDay", "closingDay"];
             if (dateFields.includes(columnKey)) {
               cellValue = displayDate(cellValue);
             }
+            if (columnKey === "numberOfStudents") cellValue = `${studentCount || 0}/${cellValue}`;
             if (columnKey === "shiftId") {
               cellValue = shiftFormat(shiftObj[cellValue]);
             }
             if (columnKey === "actions") {
+              let color = "primary";
               const enrolled = isSingleMode ? Boolean(enrObj[rowData.id]) : false;
+              if (enrolled) color = "default";
+              if (studentCount >= Number(rowData.numberOfStudents)) color = "danger";
 
               return (
                 <Button
                   size="sm"
                   isDisabled={enrolled}
                   onClick={(e) => e.stopPropagation()}
-                  onPress={() => !enrolled && handleEnroll(rowData.id)}
+                  onPress={() => {
+                    if (enrolled) return;
+                    if (studentCount >= Number(rowData.numberOfStudents)) {
+                      setSelectedClass(rowData.id);
+                      confirmModal.onOpen();
+                      return;
+                    }
+
+                    handleEnroll(rowData.id);
+                  }}
                   radius="full"
                   isLoading={enrolling}
-                  color={enrolled ? "default" : "primary"}
+                  color={color}
                 >
                   {enrolled ? "Đã đăng ký" : "Xếp vào lớp này"}
                 </Button>
@@ -211,6 +246,7 @@ const columns = [
   { uid: "shiftId", name: "Ca học" },
   { uid: "openingDay", name: "Ngày khai giảng" },
   { uid: "closingDay", name: "Ngày kết thúc" },
+  { uid: "numberOfStudents", name: "Số học sinh" },
   { uid: "actions", name: "Thao tác" },
 ];
 

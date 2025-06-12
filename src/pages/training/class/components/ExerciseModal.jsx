@@ -180,7 +180,7 @@ const ExerciseModal = ({ editMode, defaultValues = {}, onOpenChange, onSave = ()
             </Button>
             <Dropdown>
               <DropdownTrigger>
-                <Button color="primary" isIconOnly>
+                <Button isDisabled={!isDirty || isError || saving} color="primary" isIconOnly>
                   <ChevronDown size="16px" strokeWidth={3} />
                 </Button>
               </DropdownTrigger>
@@ -193,7 +193,11 @@ const ExerciseModal = ({ editMode, defaultValues = {}, onOpenChange, onSave = ()
                 >
                   Giao bài
                 </DropdownItem>
-                <DropdownItem startContent={<Calendar1 size="14px" />} onPress={scheduleModal.onOpen}>
+                <DropdownItem
+                  isDisabled={!isDirty || isError || saving}
+                  startContent={<Calendar1 size="14px" />}
+                  onPress={scheduleModal.onOpen}
+                >
                   Lên lịch
                 </DropdownItem>
                 <DropdownItem

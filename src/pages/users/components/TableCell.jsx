@@ -23,7 +23,7 @@ const TableCell = ({ rowData, columnKey, refs, rowIndex, onDelete = () => {} }) 
   if (dateFields.includes(columnKey)) cellValue = displayDate(cellValue);
   if (columnKey === "index") cellValue = getRowIndex(rowIndex + 1);
   if (columnKey === "salary") cellValue = localeString(cellValue) + "đ";
-  if (columnKey === "tuition") cellValue = localeString(5000000) + "đ";
+  if (columnKey === "tuition") cellValue = "";
 
   switch (columnKey) {
     case "user":

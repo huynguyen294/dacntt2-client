@@ -16,31 +16,36 @@ const UserScheduleButton = ({
   iconSize = "16px",
 }) => {
   const { onClose, onOpen, onOpenChange, isOpen } = useDisclosure();
-  const [value, setValue] = useState({});
-  const timetable = useTimetable({ generalMode: true, studentId, teacherId, classId, ...value });
+
+  const ScheduleModal = ({ onClose, onOpenChange }) => {
+    const [value, setValue] = useState({});
+    const timetable = useTimetable({ generalMode: true, studentId, teacherId, classId, ...value });
+
+    return (
+      <Modal isOpen isKeyboardDismissDisabled size="6xl" onOpenChange={onOpenChange} scrollBehavior="inside">
+        <ModalContent>
+          {() => (
+            <>
+              <ModalHeader>Thời gian biểu</ModalHeader>
+              <ModalBody>
+                {withFilter && <TimetableFilter value={value} onChange={setValue} />}
+                <TimeTable timeTable={timetable} />
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  Đóng
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+    );
+  };
 
   return (
     <>
-      {isOpen && (
-        <Modal isOpen isKeyboardDismissDisabled size="6xl" onOpenChange={onOpenChange} scrollBehavior="inside">
-          <ModalContent>
-            {() => (
-              <>
-                <ModalHeader>Thời gian biểu</ModalHeader>
-                <ModalBody>
-                  {withFilter && <TimetableFilter value={value} onChange={setValue} />}
-                  <TimeTable timeTable={timetable} />
-                </ModalBody>
-                <ModalFooter>
-                  <Button color="danger" variant="light" onPress={onClose}>
-                    Đóng
-                  </Button>
-                </ModalFooter>
-              </>
-            )}
-          </ModalContent>
-        </Modal>
-      )}
+      {isOpen && <ScheduleModal onClose={onClose} onOpenChange={onOpenChange} />}
       <Button
         size="sm"
         isIconOnly

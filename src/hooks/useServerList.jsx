@@ -16,6 +16,7 @@ const useServerList = (
     searchQuery = "",
     selectList = (data) => data.rows,
     searchPlaceholder = "Tìm theo tên...",
+    order = null,
   } = {}
 ) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -39,8 +40,8 @@ const useServerList = (
 
   const debounceQuery = useDebounce(searchQuery || query);
   const { isLoading, data } = useQuery({
-    queryKey: [dataKey, "basic-list", debounceQuery, pager.page, JSON.stringify(filters), [...otherParams]],
-    queryFn: () => getFn(paging && pager, null, debounceQuery, filters, otherParams),
+    queryKey: [dataKey, "basic-list", pager.page, order, debounceQuery, JSON.stringify(filters), [...otherParams]],
+    queryFn: () => getFn(paging && pager, order, debounceQuery, filters, otherParams),
   });
 
   useEffect(() => {
@@ -71,6 +72,7 @@ const useServerList = (
   };
 
   return {
+    data,
     listboxProps,
     isLoading,
     query,

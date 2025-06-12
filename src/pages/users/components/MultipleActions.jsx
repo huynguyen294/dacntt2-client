@@ -34,6 +34,7 @@ const MultipleActions = () => {
                 <ModalBody>
                   <ClassAssignment
                     studentIds={[...selectedKeys]}
+                    isSingleMode={[...selectedKeys].length === 1}
                     onDone={() => {
                       addToast({ title: "Thành công!", description: "Đã thêm các học sinh vào lớp" });
                       queryClient.invalidateQueries({ queryKey: ["classes"] });
