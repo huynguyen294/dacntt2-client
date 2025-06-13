@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useAuthorizationRedirect } from "@/hooks";
+import { useAppStore } from "@/state";
 import { cryptoDecrypt } from "@/utils";
 import { Navigate } from "react-router";
 
@@ -30,11 +31,12 @@ const withAuth =
     };
 
     const valid = useAuthorizationRedirect();
+    const ready = useAppStore("ready");
     const profile = cryptoDecrypt(localStorage.getItem("profile"));
     const user = profile ? JSON.parse(profile) : null;
 
     if (!user?.id) return <Navigate to="/login" />;
-    return valid && <Component {...props} {...other} />;
+    return valid && ready && <Component {...props} {...other} />;
   };
 
 export default withAuth;

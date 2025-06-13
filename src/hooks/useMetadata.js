@@ -14,7 +14,9 @@ const useMetadata = () => {
     return arrayToObject(shiftData?.rows, "id");
   }, [shiftData]);
 
-  return { loading: shiftLoading, shifts: shiftData?.rows || [], shiftObj };
+  const ready = Boolean(shiftData);
+
+  return { loading: shiftLoading, ready, shifts: shiftData?.rows || [], shiftObj };
 };
 
 export default useMetadata;

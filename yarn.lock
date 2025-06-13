@@ -998,6 +998,13 @@
   resolved "https://registry.yarnpkg.com/@heroui/shared-utils/-/shared-utils-2.1.9.tgz#bcfc019250cb1d1c376f4e09ef0f3b8e0cb0ee67"
   integrity sha512-mM/Ep914cYMbw3T/b6+6loYhuNfzDaph76mzw/oIS05gw1Dhp9luCziSiIhqDGgzYck2d74oWTZlahyCsxf47w==
 
+"@heroui/skeleton@^2.2.13":
+  version "2.2.13"
+  resolved "https://registry.yarnpkg.com/@heroui/skeleton/-/skeleton-2.2.13.tgz#77e173fe54615ae4824f0a9c0becef56b5601464"
+  integrity sha512-bi3+jvcRNXuPWY/jKw/0dJg9TWNA5RQPCQgmEs/c5XlnoTX+SkS+TWK4R+ugDZF2svhWTIpim2u++DP2hZ3eFw==
+  dependencies:
+    "@heroui/shared-utils" "2.1.9"
+
 "@heroui/spacer@2.2.14":
   version "2.2.14"
   resolved "https://registry.yarnpkg.com/@heroui/spacer/-/spacer-2.2.14.tgz#d4fdf800b325a18a3e5d063fd8c921aa2df46b3a"

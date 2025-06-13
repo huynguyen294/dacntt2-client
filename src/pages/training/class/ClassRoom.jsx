@@ -2,7 +2,7 @@ import { classApi, getServerErrorMessage } from "@/apis";
 import { ModuleLayout } from "@/layouts";
 import { addToast } from "@heroui/toast";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams, useSearchParams } from "react-router";
 import { classesManagementBreadcrumbItems } from "../constants";
 import { Calendar1, ClipboardCheck, Info, ListChecks, Users } from "lucide-react";
@@ -12,11 +12,13 @@ import CheckAttendance from "./components/CheckAttendance";
 import ClassSchedule from "./components/ClassSchedule";
 import ClassInfo from "./components/ClassInfo";
 import ClassExercise from "./components/ClassExercise";
+import { useAppStore } from "@/state";
 
 const ClassRoom = () => {
   const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const user = useAppStore("user");
   const tab = searchParams.get("tab");
 
   const { data, isError, error } = useQuery({
@@ -44,17 +46,19 @@ const ClassRoom = () => {
             "flex-1 overflow-y-auto container mx-auto max-w-3xl pb-10 px-2 sm:px-10 [&:has(#attendance)]:max-w-7xl [&:has(#info)]:max-w-none",
         }}
       >
-        <Tab
-          key="info"
-          title={
-            <div className="flex items-center space-x-2">
-              <Info size="18px" />
-              <span>Thông tin</span>
-            </div>
-          }
-        >
-          <ClassInfo />
-        </Tab>
+        {["admin", "finance-officer"].includes(user?.role) && (
+          <Tab
+            key="info"
+            title={
+              <div className="flex items-center space-x-2">
+                <Info size="18px" />
+                <span>Thông tin</span>
+              </div>
+            }
+          >
+            <ClassInfo />
+          </Tab>
+        )}
         <Tab
           key="exercise"
           title={

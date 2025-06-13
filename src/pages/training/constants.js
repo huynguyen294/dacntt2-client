@@ -14,5 +14,6 @@ export const examsManagementBreadcrumbItems = [{ label: "Kỳ thi", path: "/exam
 export const addExamBreadcrumbItems = [...examsManagementBreadcrumbItems, { label: "Thêm kỳ thi" }];
 export const editExamBreadcrumbItems = [...examsManagementBreadcrumbItems, { label: "Sửa kỳ thi" }];
 
-export const timetableBreadcrumbItems = [{ label: "Lịch học", path: "/time-table" }];
+export const timetableBreadcrumbItems = [{ label: "Lịch học", path: "/timetable" }];
+export const teacherScheduleBreadcrumbItems = [{ label: "Lịch dạy", path: "/timetable" }];
 export const trainingSettingsBreadcrumbItems = [{ label: "Cài đặt đào tạo", path: "/training-settings" }];

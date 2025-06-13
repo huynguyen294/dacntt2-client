@@ -39,6 +39,7 @@
     "@heroui/progress": "^2.2.15",
     "@heroui/radio": "^2.3.16",
     "@heroui/select": "^2.4.17",
+    "@heroui/skeleton": "^2.2.13",
     "@heroui/spinner": "^2.2.14",
     "@heroui/system": "^2.4.13",
     "@heroui/table": "^2.2.18",

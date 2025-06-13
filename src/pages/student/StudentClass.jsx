@@ -8,11 +8,12 @@ import { Button } from "@heroui/button";
 import { Card } from "@heroui/card";
 import { Chip } from "@heroui/chip";
 import { Calendar, ChevronRight, DollarSign, Info, PhoneCall, Users2 } from "lucide-react";
-import { studentClassBreadcrumbItems } from "./constants";
 import { useNavigate } from "@/hooks";
 import { studentConsultationApi } from "@/apis";
 import { useState } from "react";
 import { addToast } from "@heroui/toast";
+import { classBreadcrumbItems } from "../constants";
+import { withStudentAdditionalReady } from "@/hocs";
 
 const StudentClass = () => {
   const navigate = useNavigate();
@@ -31,9 +32,9 @@ const StudentClass = () => {
   const teacherObj = arrayToObject(teachers);
   const sortedClasses = orderBy(classes, (item) => {
     const status = getClassStatus(item);
-    if (status.text === CLASS_STATUSES.active) return -1;
-    if (status.text === CLASS_STATUSES.pending) return 0;
-    return 1;
+    if (status.text === CLASS_STATUSES.active) return item.name;
+    if (status.text === CLASS_STATUSES.pending) return "z";
+    return "y";
   });
 
   const [loading, setLoading] = useState(false);
@@ -62,7 +63,7 @@ const StudentClass = () => {
   };
 
   return (
-    <ModuleLayout breadcrumbItems={studentClassBreadcrumbItems}>
+    <ModuleLayout breadcrumbItems={classBreadcrumbItems}>
       <div className="px-2 sm:px-10 space-y-8 overflow-y-auto pb-10">
         <div>
           <p className="m-4 text-lg font-bold">Lớp học của tôi</p>
@@ -203,4 +204,4 @@ const StudentClass = () => {
   );
 };
 
-export default StudentClass;
+export default withStudentAdditionalReady(StudentClass, ModuleLayout);

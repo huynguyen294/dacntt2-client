@@ -1,5 +1,5 @@
 import API from "./api";
-import { generateCrudApi, getCommonParams, getServerErrorMessage } from "./utils";
+import { generateCrudApi, getServerErrorMessage } from "./utils";
 import { getAppActions } from "@/state";
 import { cryptoDecrypt, cryptoEncrypt } from "@/utils";
 

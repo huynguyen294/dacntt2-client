@@ -26,7 +26,7 @@ const MultipleActions = () => {
   return (
     <>
       {isOpen && (
-        <Modal size="5xl" isOpen={true} onOpenChange={onOpenChange} scrollBehavior="inside">
+        <Modal size="6xl" isOpen={true} onOpenChange={onOpenChange} scrollBehavior="inside">
           <ModalContent>
             {() => (
               <>

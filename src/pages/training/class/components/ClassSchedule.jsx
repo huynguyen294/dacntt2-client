@@ -1,3 +1,4 @@
+import ScheduleForm from "./ScheduleForm";
 import useClassData from "../hooks/useClassData";
 import { DropDown, Table, TableProvider } from "@/components/common";
 import { Button } from "@heroui/button";
@@ -11,10 +12,11 @@ import { attendanceApi, scheduleApi } from "@/apis";
 import { addToast } from "@heroui/toast";
 import { cn } from "@/lib/utils";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import ScheduleForm from "./ScheduleForm";
+import { useAppStore } from "@/state";
 
 const ClassSchedule = () => {
   const queryClient = useQueryClient();
+  const user = useAppStore("user");
 
   const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -106,8 +108,12 @@ const ClassSchedule = () => {
             startContent: <ListChecks size="18px" className="w-4" />,
             disabled: row.isAbsented,
           },
-          { key: "edit", label: "Chỉnh sửa", startContent: <Edit size="18px" className="w-4" /> },
-          { key: "delete", label: "Xóa", startContent: <Trash2 size="18px" className="w-4" />, color: "danger" },
+          ...(["admin", "finance-officer"].includes(user?.role)
+            ? [
+                ({ key: "edit", label: "Chỉnh sửa", startContent: <Edit size="18px" className="w-4" /> },
+                { key: "delete", label: "Xóa", startContent: <Trash2 size="18px" className="w-4" />, color: "danger" }),
+              ]
+            : []),
         ]}
       />
     );

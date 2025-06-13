@@ -2,9 +2,18 @@ import Compressor from "compressorjs";
 import { CLASS_STATUSES, currentDate } from "@/constants";
 import { format } from "date-fns";
 
-export const orderBy = (list, cb = (item) => item) => {
+export const orderBy = (list, cb = (item) => item, options = { sortOrder: "asc" }) => {
   const cloned = [...list];
-  cloned.sort((a, b) => cb(a) - cb(b));
+  cloned.sort((a, b) => {
+    const aValue = cb(a);
+    const bValue = cb(b);
+    if (typeof aValue === "string") {
+      return options.sortOrder === "asc"
+        ? aValue.localeCompare(bValue, "vi", { sensitivity: "base" })
+        : bValue.localeCompare(aValue, "vi", { sensitivity: "base" });
+    }
+    return options.sortOrder === "asc" ? aValue - bValue : bValue - aValue;
+  });
   return cloned;
 };
 

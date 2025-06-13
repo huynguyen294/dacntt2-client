@@ -1,5 +1,3 @@
-import { ModuleLayout } from "@/layouts";
-import { studentClassBreadcrumbItems } from "../constants";
 import { useParams } from "react-router";
 import { Divider } from "@heroui/divider";
 import { Avatar } from "@heroui/avatar";

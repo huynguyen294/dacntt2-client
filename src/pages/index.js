@@ -35,6 +35,10 @@ export { default as StudentLetter } from "./student/StudentLetter";
 export { default as StudentClassRoom } from "./student/StudentClassRoom";
 export { default as ClassExerciseDetail } from "./student/ClassExerciseDetail";
 
+export { default as TeacherClass } from "./teacher/TeacherClass";
+export { default as Assessment } from "./teacher/Assessment";
+export { default as AttendanceCheck } from "./teacher/AttendanceCheck";
+
 export { default as NotFound } from "./NotFound";
 export { default as Profile } from "./Profile";
 export { default as Admin } from "./Admin";

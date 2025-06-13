@@ -3,9 +3,9 @@ import { useParams, useSearchParams } from "react-router";
 import { ClipboardCheck, Target } from "lucide-react";
 import { Tab, Tabs } from "@heroui/tabs";
 import { useStudentStore } from "@/state";
-import { studentClassBreadcrumbItems } from "./constants";
 import ClassExercise from "./components/ClassExercise";
 import ClassScore from "./components/ClassScore";
+import { classBreadcrumbItems } from "../constants";
 
 const StudentClassRoom = () => {
   const { classId } = useParams();
@@ -16,7 +16,7 @@ const StudentClassRoom = () => {
   const classData = classes.find((c) => c.id === +classId);
 
   return (
-    <ModuleLayout breadcrumbItems={[...studentClassBreadcrumbItems, { label: classData?.name || "..." }]}>
+    <ModuleLayout breadcrumbItems={[...classBreadcrumbItems, { label: classData?.name || "..." }]}>
       <Tabs
         aria-label="ClassRoom tabs"
         defaultSelectedKey="exercise"

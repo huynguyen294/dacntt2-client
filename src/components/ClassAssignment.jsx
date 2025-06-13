@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { classApi, courseApi, enrollmentApi, userApi } from "@/apis";
-import { COURSE_STATUSES } from "@/constants";
+import { COURSE_STATUSES, DATE_FORMAT } from "@/constants";
 import { useMetadata, useServerList } from "@/hooks";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
@@ -9,7 +9,7 @@ import { Button } from "@heroui/button";
 import { Chip } from "@heroui/chip";
 import { Avatar } from "@heroui/avatar";
 import { Divider } from "@heroui/divider";
-import { arrayToObject, displayDate, shiftFormat } from "@/utils";
+import { arrayToObject, displayDate, getClassStatus, shiftFormat } from "@/utils";
 import { Spinner } from "@heroui/spinner";
 import { addToast } from "@heroui/toast";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
@@ -17,6 +17,7 @@ import { Select, SelectItem } from "@heroui/select";
 import UserScheduleButton from "./UserScheduleButton";
 import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
 import { useDisclosure } from "@heroui/modal";
+import { format } from "date-fns";
 
 const ClassAssignment = ({ studentIds = [], isSingleMode, onDone }) => {
   const queryClient = useQueryClient();
@@ -29,7 +30,12 @@ const ClassAssignment = ({ studentIds = [], isSingleMode, onDone }) => {
   const confirmModal = useDisclosure();
 
   const classList = useServerList("classes", classApi.get, {
-    filters: { courseId: selectedCourse, shiftId: selectedShift, teacherId: selectedTeacher },
+    filters: {
+      courseId: selectedCourse,
+      shiftId: selectedShift,
+      teacherId: selectedTeacher,
+      closingDay: { gte: format(new Date(), DATE_FORMAT) },
+    },
     otherParams: ["fields=:full", "refs=true"],
     order: { orderBy: "name", order: "desc" },
   });
@@ -193,13 +199,21 @@ const ClassAssignment = ({ studentIds = [], isSingleMode, onDone }) => {
             let cellValue = rowData[columnKey];
             const studentCount = classList.data.refs?.studentCounts?.[rowData.id]?.total;
             if (columnKey === "index") cellValue = index + 1;
+            if (columnKey === "numberOfStudents") cellValue = `${studentCount || 0}/${cellValue}`;
             const dateFields = ["openingDay", "closingDay"];
             if (dateFields.includes(columnKey)) {
               cellValue = displayDate(cellValue);
             }
-            if (columnKey === "numberOfStudents") cellValue = `${studentCount || 0}/${cellValue}`;
             if (columnKey === "shiftId") {
               cellValue = shiftFormat(shiftObj[cellValue]);
+            }
+            if (columnKey === "status") {
+              const status = getClassStatus(rowData);
+              return (
+                <Chip size="sm" variant="flat" color={status.color}>
+                  {status.text}
+                </Chip>
+              );
             }
             if (columnKey === "actions") {
               let color = "primary";
@@ -247,6 +261,7 @@ const columns = [
   { uid: "openingDay", name: "Ngày khai giảng" },
   { uid: "closingDay", name: "Ngày kết thúc" },
   { uid: "numberOfStudents", name: "Số học sinh" },
+  { uid: "status", name: "Trạng thái" },
   { uid: "actions", name: "Thao tác" },
 ];
 

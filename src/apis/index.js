@@ -10,6 +10,7 @@ import { generateCrudApi } from "./utils";
 
 // images
 export { default as imageApi } from "./image";
+export { default as studentApi } from "./student/index";
 
 // users
 export { default as userApi } from "./user";

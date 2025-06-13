@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 
 import { resetAppData, useAppStore } from "@/state";
 import { cryptoDecrypt, verifyUserToken } from "@/utils";
@@ -9,21 +9,19 @@ const useVerifyUser = () => {
   const navigate = useNavigate(false);
   const appActions = useAppStore("appActions");
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     (async () => {
       let user = cryptoDecrypt(localStorage.getItem("profile"));
       if (!user) return;
 
       user = JSON.parse(user);
+      appActions.change({ user, ready: true });
       const { isRfTokenExpired } = await verifyUserToken();
-      if (!isRfTokenExpired) {
-        appActions.change({ user });
-        return;
+      if (isRfTokenExpired) {
+        addToast({ color: "danger", title: "Phiên đăng nhập hết hạn!", description: "Vui lòng đăng nhập lại." });
+        navigate("/login");
+        resetAppData();
       }
-
-      addToast({ color: "danger", title: "Phiên đăng nhập hết hạn!", description: "Vui lòng đăng nhập lại." });
-      navigate("/login");
-      resetAppData();
     })();
   }, [appActions, navigate]);
 

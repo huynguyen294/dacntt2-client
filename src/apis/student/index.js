@@ -7,20 +7,15 @@ export const init = async (studentId) => {
   try {
     const mainResult = await API.get(`/api-v1/student-data/main/${studentId}`);
     actions.change("ready", true);
-    actions.change("shifts", mainResult.data.shifts);
-    actions.change("classes", mainResult.data.classes);
-    actions.change("schedules", mainResult.data.schedules);
-    actions.change("teachers", mainResult.data.teachers);
+    Object.keys(mainResult.data).forEach((key) => {
+      actions.change(key, mainResult.data[key]);
+    });
 
     const otherResult = await API.get(`/api-v1/student-data/other/${studentId}`);
     actions.change("additionalReady", true);
-    actions.change("attendances", otherResult.data.attendances);
-    actions.change("classExercises", otherResult.data.classExercises);
-    actions.change("classExerciseScores", otherResult.data.classExerciseScores);
-    actions.change("tuitions", otherResult.data.tuitions);
-    actions.change("courses", otherResult.data.courses);
-    actions.change("classTopics", otherResult.data.classTopics);
-    actions.change("consultations", otherResult.data.consultations);
+    Object.keys(otherResult.data).forEach((key) => {
+      actions.change(key, otherResult.data[key]);
+    });
   } catch (error) {
     addToast({
       color: "danger",

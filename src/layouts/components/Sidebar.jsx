@@ -10,6 +10,7 @@ import {
   CircleDollarSign,
   CircleDot,
   CircleHelp,
+  ClipboardCheck,
   ClipboardPenLine,
   ClipboardType,
   GraduationCap,
@@ -18,6 +19,7 @@ import {
   LayoutDashboard,
   LayoutGrid,
   List,
+  ListChecks,
   Podcast,
   School,
   Star,
@@ -202,7 +204,13 @@ const userSidebarItems = {
   ],
   teacher: [
     {
-      items: [{ ...dashboard, path: "/", isDashboard: true }],
+      items: [
+        { ...dashboard, path: "/", isDashboard: true },
+        { label: "Lớp học", path: "/classes", icon: LayoutGrid },
+        { label: "Lịch dạy", path: "/timetable", icon: CalendarDays },
+        { label: "Chấm điểm", path: "/assessment", icon: ClipboardCheck },
+        { label: "Điểm danh", path: "/attendance-check", icon: ListChecks },
+      ],
     },
   ],
   student: [

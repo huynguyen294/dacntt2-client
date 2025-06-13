@@ -39,14 +39,18 @@ import {
   StudentLetter,
   StudentClassRoom,
   ClassExerciseDetail,
+  TeacherClass,
+  Assessment,
+  AttendanceCheck,
 } from "./pages";
 
 import "./App.css";
+import { teacherScheduleBreadcrumbItems } from "./pages/training/constants";
 
 const App = () => {
-  const navigate = useNavigate();
   useVerifyUser();
   useInitialization();
+  const navigate = useNavigate();
 
   return (
     <HeroUIProvider navigate={navigate} useHref={useHref}>
@@ -92,6 +96,13 @@ const App = () => {
 
         <Route path="teacher">
           <Route index element={<Dashboard />} />
+          <Route path="classes" element={<TeacherClass />} />
+          <Route path="classes/:id" element={<ClassRoom />} />
+          <Route path="classes/:id/exercise/:exerciseId" element={<ClassExercisePage />} />
+          <Route path="classes/:id/student/:studentId" element={<ClassStudentExercises />} />
+          <Route path="timetable" element={<TimeTablePage breadcrumbItems={teacherScheduleBreadcrumbItems} />} />
+          <Route path="assessment" element={<Assessment />} />
+          <Route path="attendance-check" element={<AttendanceCheck />} />
         </Route>
 
         <Route path="consultant">

@@ -5,7 +5,7 @@ import { Navbar as HeroUiNavBar, NavbarBrand, NavbarContent } from "@heroui/navb
 import { ArrowDownToLine, Bell, ChevronDown, House, Info, LogOut, Menu, Search, UserPen } from "lucide-react";
 import { BreadcrumbItem, Breadcrumbs } from "@heroui/breadcrumbs";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/dropdown";
-import { resetAppData, useAppStore } from "@/state";
+import { resetAppData, useAppStore, useStudentStore } from "@/state";
 import { useDisclosure } from "@heroui/modal";
 import { signOut } from "@/apis";
 import { useNavigate } from "@/hooks";
@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { useParams } from "react-router";
 import SidebarDrawer from "./SidebarDrawer";
 import { UserScheduleButton } from "@/components";
+import { Skeleton } from "@heroui/skeleton";
 
 const NavBar = ({ breadcrumbItems = [], hideMenuButton = false, hideDashboard = false }) => {
   const navigate = useNavigate(true);
@@ -21,12 +22,15 @@ const NavBar = ({ breadcrumbItems = [], hideMenuButton = false, hideDashboard = 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const user = useAppStore("user");
+  const ready = useStudentStore("ready");
 
   const handleLogout = () => {
     signOut();
     resetAppData();
     navigate("/login", false);
   };
+
+  const studentLoading = user?.role === "student" && !ready;
 
   return (
     user && (
@@ -43,34 +47,36 @@ const NavBar = ({ breadcrumbItems = [], hideMenuButton = false, hideDashboard = 
             <Menu />
           </Button>
           <NavbarBrand>
-            <Breadcrumbs
-              className="ml-2 hidden sm:block"
-              underline="hover"
-              size="lg"
-              separator="/"
-              itemClasses={{
-                separator: "px-2",
-              }}
-            >
-              {!hideDashboard && (
-                <BreadcrumbItem onClick={() => navigate("/")} startContent={<House size="16px" />}>
-                  Trang chủ
-                </BreadcrumbItem>
-              )}
-              {breadcrumbItems.map(({ path, label, startContent }, index) => (
-                <BreadcrumbItem
-                  key={label + path}
-                  startContent={startContent}
-                  onPress={() => {
-                    if (index === breadcrumbItems.length - 1) return;
-                    if (typeof path === "function") return navigate(path(params));
-                    path && navigate(path);
-                  }}
-                >
-                  {label}
-                </BreadcrumbItem>
-              ))}
-            </Breadcrumbs>
+            {studentLoading ? (
+              <Skeleton className="h-2 w-6 rounded-lg" />
+            ) : (
+              <Breadcrumbs
+                className="ml-2 hidden sm:block"
+                underline="hover"
+                size="lg"
+                separator="/"
+                itemClasses={{ separator: "px-2" }}
+              >
+                {!hideDashboard && (
+                  <BreadcrumbItem onClick={() => navigate("/")} startContent={<House size="16px" />}>
+                    Trang chủ
+                  </BreadcrumbItem>
+                )}
+                {breadcrumbItems.map(({ path, label, startContent }, index) => (
+                  <BreadcrumbItem
+                    key={label + path}
+                    startContent={startContent}
+                    onPress={() => {
+                      if (index === breadcrumbItems.length - 1) return;
+                      if (typeof path === "function") return navigate(path(params));
+                      path && navigate(path);
+                    }}
+                  >
+                    {label}
+                  </BreadcrumbItem>
+                ))}
+              </Breadcrumbs>
+            )}
           </NavbarBrand>
         </NavbarContent>
         <NavbarContent justify="end" className="flex justify-end">

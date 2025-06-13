@@ -8,8 +8,8 @@ import { addToast } from "@heroui/toast";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Edit } from "lucide-react";
 import { useEffect, useState } from "react";
-import ReactQuill from "react-quill-new";
 import { Loader } from "./common";
+import ReactQuill from "react-quill-new";
 
 const InformationSheet = () => {
   const user = useAppStore("user");
@@ -55,7 +55,7 @@ const InformationSheet = () => {
                   />
                 </ModalBody>
                 <ModalFooter>
-                  <Button color="danger" variant="light">
+                  <Button color="danger" variant="light" onPress={editModal.onClose}>
                     Hủy
                   </Button>
                   <Button isLoading={loading} color="primary" onPress={handleSave}>

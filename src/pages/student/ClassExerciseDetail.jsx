@@ -6,8 +6,8 @@ import { vi } from "date-fns/locale";
 import { Divider } from "@heroui/divider";
 import { useStudentStore } from "@/state";
 import { ModuleLayout } from "@/layouts";
-import { studentClassBreadcrumbItems } from "./constants";
 import { cn } from "@/lib/utils";
+import { classBreadcrumbItems } from "../constants";
 
 const ClassExerciseDetail = () => {
   const { classId, exerciseId } = useParams();
@@ -24,7 +24,7 @@ const ClassExerciseDetail = () => {
   return (
     <ModuleLayout
       breadcrumbItems={[
-        ...studentClassBreadcrumbItems,
+        ...classBreadcrumbItems,
         { label: classData?.name || "...", path: "/classes/" + classId },
         { label: exercise?.title || "..." },
       ]}

@@ -1,12 +1,9 @@
-import { scheduleApi, userApi } from "@/apis";
-import studentApi from "@/apis/student";
+import { studentApi, userApi } from "@/apis";
 import { useAppStore } from "@/state";
-import useStudentStore from "@/state/useStudentStore";
 import { useEffect } from "react";
 
 const useInitialization = () => {
   const user = useAppStore("user");
-  const state = useStudentStore();
 
   useEffect(() => {
     userApi.refreshProfile();
