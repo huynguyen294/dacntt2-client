@@ -64,7 +64,7 @@ const ClassCell = ({ dataRefs, rowData, columnKey, rowIndex, onDelete = (id) => 
               onOpenChange={onOpenChange}
             />
           )}
-          {user.role === "admin" ? (
+          {["admin", "finance-officer"].includes(user.role) ? (
             <>
               <Tooltip content="Đến trang lớp học">
                 <Button

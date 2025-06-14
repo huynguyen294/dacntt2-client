@@ -1,7 +1,7 @@
 import { useDisclosure } from "@heroui/modal";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { classApi, enrollmentApi } from "@/apis";
-import { Trash2 } from "lucide-react";
+import { ArrowLeftRight, Trash2 } from "lucide-react";
 import { Tooltip } from "@heroui/tooltip";
 import { Button } from "@heroui/button";
 import { Table, TableProvider } from "@/components/common";
@@ -53,7 +53,7 @@ const StudentList = ({ classId }) => {
             { uid: "phoneNumber", name: "Số điện thoại", disableSort: true },
             { uid: "dateOfBirth", name: "Ngày sinh", disableSort: true },
             { uid: "gender", name: "Giới tính", disableSort: true },
-            user.role === "admin" && { uid: "actions", name: "Thao tác", disableSort: true },
+            ["admin", "finance-officer"].includes(user.role) && { uid: "actions", name: "Thao tác", disableSort: true },
           ],
         }}
       >
@@ -69,24 +69,41 @@ const StudentList = ({ classId }) => {
             if (columnKey === "index") cellValue = index + 1;
             if (dateFields.includes(columnKey)) cellValue = displayDate(cellValue);
 
-            if (columnKey === "actions" && user.role === "admin") {
+            if (columnKey === "actions" && ["admin", "finance-officer"].includes(user.role)) {
               return (
-                <Tooltip color="danger" content="Xóa học sinh khỏi lớp">
-                  <Button
-                    onClick={(e) => e.stopPropagation()}
-                    onPress={() => {
-                      setSelectedStudentId(rowData.enrollmentId);
-                      onOpen();
-                    }}
-                    size="sm"
-                    color="danger"
-                    isIconOnly
-                    radius="full"
-                    variant="light"
-                  >
-                    <Trash2 size="18px" />
-                  </Button>
-                </Tooltip>
+                <>
+                  <Tooltip content="Chuyển lớp">
+                    <Button
+                      onClick={(e) => e.stopPropagation()}
+                      onPress={() => {
+                        setSelectedStudentId(rowData.enrollmentId);
+                        onOpen();
+                      }}
+                      size="sm"
+                      isIconOnly
+                      radius="full"
+                      variant="light"
+                    >
+                      <ArrowLeftRight size="18px" />
+                    </Button>
+                  </Tooltip>
+                  <Tooltip color="danger" content="Xóa học sinh khỏi lớp">
+                    <Button
+                      onClick={(e) => e.stopPropagation()}
+                      onPress={() => {
+                        setSelectedStudentId(rowData.enrollmentId);
+                        onOpen();
+                      }}
+                      size="sm"
+                      color="danger"
+                      isIconOnly
+                      radius="full"
+                      variant="light"
+                    >
+                      <Trash2 size="18px" />
+                    </Button>
+                  </Tooltip>
+                </>
               );
             }
 

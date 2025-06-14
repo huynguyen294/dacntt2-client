@@ -42,6 +42,7 @@ import {
   TeacherClass,
   Assessment,
   AttendanceCheck,
+  Tuition,
 } from "./pages";
 
 import "./App.css";
@@ -113,7 +114,34 @@ const App = () => {
         </Route>
 
         <Route path="finance-officer">
+          <Route path="user-management/:role" element={<UserManagement />} />
+          <Route path="user-management/:role/add" element={<AddUser />} />
+          <Route path="user-management/:role/edit/:userId" element={<EditUser />} />
+
           <Route index element={<Dashboard />} />
+          <Route path="certificates" element={<CertificateManagement />} />
+          <Route path="certificates/add" element={<AddCertificate />} />
+          <Route path="certificates/edit/:id" element={<EditCertificate />} />
+
+          <Route path="courses" element={<CourseManagement />} />
+          <Route path="courses/add" element={<AddCourse />} />
+          <Route path="courses/edit/:id" element={<EditCourse />} />
+
+          <Route path="classes" element={<ClassManagement />} />
+          <Route path="classes/add" element={<AddClass />} />
+          <Route path="classes/:id" element={<ClassRoom />} />
+          <Route path="classes/:id/exercise/:exerciseId" element={<ClassExercisePage />} />
+          <Route path="classes/:id/student/:studentId" element={<ClassStudentExercises />} />
+          <Route path="classes/edit/:id" element={<EditClass />} />
+
+          <Route path="exams" element={<ExamManagement />} />
+          <Route path="exams/add" element={<AddExam />} />
+          <Route path="exams/edit/:id" element={<EditExam />} />
+
+          <Route path="training-settings" element={<TrainingSettings />} />
+          <Route path="timetable" element={<TimeTablePage />} />
+
+          <Route path="tuition" element={<Tuition />} />
         </Route>
 
         <Route path="/">

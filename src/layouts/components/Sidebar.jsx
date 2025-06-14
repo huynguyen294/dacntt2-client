@@ -36,12 +36,12 @@ const Sidebar = ({ className }) => {
   const user = useAppStore("user");
   const sidebarItems = userSidebarItems[user?.role];
 
-  const Section = ({ children, title, icon, active }) => {
+  const Section = ({ children, title, icon, active, defaultOpen }) => {
     const activeProps = active ? { selectedKeys: new Set(["1"]) } : null;
     const Icon = icon || CircleDot;
 
     return (
-      <Accordion className="px-0" {...activeProps}>
+      <Accordion defaultExpandedKeys={defaultOpen && new Set(["1"])} className="px-0" {...activeProps}>
         <AccordionItem
           key="1"
           aria-label={title}
@@ -113,7 +113,7 @@ const Sidebar = ({ className }) => {
     );
   };
 
-  const generateSidebarItem = ({ section, sectionIcon, items, idx }) => {
+  const generateSidebarItem = ({ section, sectionIcon, items, idx, defaultOpen }) => {
     if (!section) return items.map((item) => <SidebarItem key={item.label} item={item} />);
 
     const sectionActive = Boolean(
@@ -121,7 +121,7 @@ const Sidebar = ({ className }) => {
     );
 
     return (
-      <Section key={section || idx} title={section} icon={sectionIcon} active={sectionActive}>
+      <Section key={section || idx} title={section} icon={sectionIcon} active={sectionActive} defaultOpen={defaultOpen}>
         {items.map((item) => (
           <SidebarItem key={item.label} item={item} isInSection />
         ))}
@@ -233,6 +233,34 @@ const userSidebarItems = {
         { label: "Đăng ký ứng viên", path: "/register-admission", icon: ClipboardType },
         { label: "Quản lý ứng viên", path: "/admissions", icon: List },
         { label: "Danh sách lớp học", path: "/classes", icon: GraduationCap },
+      ],
+    },
+  ],
+  "finance-officer": [
+    {
+      items: [
+        { ...dashboard, path: "/", isDashboard: true },
+        { label: "Học viên", path: "/user-management/student", icon: User },
+      ],
+    },
+    {
+      section: "Tài chính",
+      sectionIcon: CircleDollarSign,
+      items: [
+        { label: "Học phí", path: "/tuition" },
+        { label: "Cài đặt tài chính", path: "/finance-settings" },
+      ],
+    },
+    {
+      section: "Đào tạo",
+      sectionIcon: GraduationCap,
+      items: [
+        { label: "Chứng chỉ", path: "/certificates" },
+        { label: "Khóa học", path: "/courses" },
+        { label: "Lớp học", path: "/classes" },
+        { label: "Lịch học", path: "/timetable" },
+        { label: "Kỳ thi", path: "/exams" },
+        { label: "Cài đặt đào tạo", path: "/training-settings" },
       ],
     },
   ],

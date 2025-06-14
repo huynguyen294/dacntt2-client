@@ -291,10 +291,11 @@ const ClassSchedule = () => {
         <HeroUiDropdown showArrow>
           <DropdownTrigger>
             <Button
-              // isDisabled={loading || selectedKeys.size === 0}
-              variant="shadow"
+              isDisabled={loading || selectedKeys.size === 0}
+              variant="flat"
               radius="full"
               color="default"
+              className="shadow-lg"
               endContent={<ChevronDown size="16px" strokeWidth={3} />}
             >
               Thao tác
