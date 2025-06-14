@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { userApi } from "@/apis";
+import { shiftApi } from "@/apis";
 import { useServerList } from "@/hooks";
 import { Avatar } from "@heroui/avatar";
 import { Button } from "@heroui/button";
@@ -7,34 +7,30 @@ import { Input } from "@heroui/input";
 import { Listbox, ListboxItem } from "@heroui/listbox";
 import { Search } from "lucide-react";
 import { Loader, LoadMoreButton } from "./common";
+import { shiftFormat } from "@/utils";
 
-const SearchUser = ({ endBtnText, onChange = (key) => {}, filters = { role: "student" }, otherParams }) => {
-  const userList = useServerList("users", userApi.get, { filters, otherParams });
+const SearchShift = ({ endBtnText, onChange = (key) => {}, filters, otherParams }) => {
+  const shiftList = useServerList("shifts", shiftApi.get, { filters, otherParams });
 
   return (
     <div className="pb-4 sm:pb-10">
       <Input
-        onChange={(e) => userList.onQueryChange(e.target.value)}
+        onChange={(e) => shiftList.onQueryChange(e.target.value)}
         startContent={<Search size="14px" />}
-        placeholder="Nhập tên, email..."
+        placeholder="Nhập tên..."
       />
-      <Loader variant="progress" isLoading={userList.isLoading} />
+      <Loader variant="progress" isLoading={shiftList.isLoading} />
       <div className="h-[60dvh]  overflow-y-auto">
         <Listbox
           variant="flat"
           aria-label="Actions"
           onAction={onChange}
           emptyContent="Không có dữ liệu"
-          bottomContent={userList.hasMore && <LoadMoreButton size="md" onLoadMore={userList.onLoadMore} />}
+          bottomContent={shiftList.hasMore && <LoadMoreButton size="md" onLoadMore={shiftList.onLoadMore} />}
         >
-          {userList.list.map((row) => (
+          {shiftList.list.map((row) => (
             <ListboxItem
               className="!text-base"
-              startContent={
-                <div>
-                  <Avatar size="lg" src={row.imageUrl} />
-                </div>
-              }
               endContent={
                 endBtnText && (
                   <Button size="sm" className="h-8" color="primary" onPress={() => onChange(row.id)}>
@@ -42,7 +38,7 @@ const SearchUser = ({ endBtnText, onChange = (key) => {}, filters = { role: "stu
                   </Button>
                 )
               }
-              description={row.email}
+              description={shiftFormat(row)}
               key={row.id.toString()}
             >
               {row.name}
@@ -54,4 +50,4 @@ const SearchUser = ({ endBtnText, onChange = (key) => {}, filters = { role: "stu
   );
 };
 
-export default SearchUser;
+export default SearchShift;

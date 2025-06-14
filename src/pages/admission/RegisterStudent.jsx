@@ -9,14 +9,14 @@ import { MoveLeft, MoveRight } from "lucide-react";
 import { useNavigate, useReload } from "@/hooks";
 import { useSearchParams } from "react-router";
 import { useMemo } from "react";
-import { Modal, ModalBody, ModalContent, ModalHeader, useDisclosure } from "@heroui/modal";
 import { ClassAssignment, SearchUser } from "@/components";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { studentConsultationApi, userApi } from "@/apis";
 import { Spinner } from "@heroui/spinner";
 import { ADMISSION_STATUSES } from "@/constants";
 import { addToast } from "@heroui/toast";
-import { useAppStore } from "@/state";
+import { Loader, Modal } from "@/components/common";
+import { ModalBody, ModalHeader, useDisclosure } from "@heroui/modal";
 
 const RegisterStudent = () => {
   const navigate = useNavigate();
@@ -63,30 +63,19 @@ const RegisterStudent = () => {
 
   return (
     <ModuleLayout breadcrumbItems={registerBreadcrumbItems} className="flex-1 overflow-y-auto pb-10">
-      {isOpen && (
-        <Modal isOpen={true} size="3xl" onOpenChange={onOpenChange}>
-          <ModalContent>
-            {(onClose) => (
-              <>
-                <ModalHeader>Tìm học viên</ModalHeader>
-                <ModalBody>
-                  <SearchUser
-                    onChange={(id) => {
-                      navigate(`/register-admission?userId=${id}&step=1`);
-                      onClose();
-                    }}
-                  />
-                </ModalBody>
-              </>
-            )}
-          </ModalContent>
-        </Modal>
-      )}
-      {loading && (
-        <div className="h-40 w-full flex justify-center items-center">
-          <Spinner variant="wave" />
-        </div>
-      )}
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalHeader>Tìm học viên</ModalHeader>
+        <ModalBody>
+          <SearchUser
+            endBtnText="Đăng ký"
+            onChange={(id) => {
+              navigate(`/register-admission?userId=${id}&step=1`);
+              onClose();
+            }}
+          />
+        </ModalBody>
+      </Modal>
+      <Loader isLoading={loading} />
       {!loading && step && <Stepper step={Number(step)} />}
       {!loading && step === "1" && defaultValues && (
         <div>
