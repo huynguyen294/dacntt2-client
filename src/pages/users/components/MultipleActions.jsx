@@ -1,11 +1,11 @@
 import { Button } from "@heroui/button";
-import { useTableContext } from "@/components/common";
+import { Modal, useTableContext } from "@/components/common";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/dropdown";
 import { ChevronDown } from "lucide-react";
 import { useParams } from "react-router";
 import { EMPLOYEE_ROLES } from "@/constants";
 import { ClassAssignment } from "@/components";
-import { Modal, ModalBody, ModalContent, ModalHeader, useDisclosure } from "@heroui/modal";
+import { ModalBody, ModalContent, ModalHeader, useDisclosure } from "@heroui/modal";
 import { addToast } from "@heroui/toast";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -25,29 +25,21 @@ const MultipleActions = () => {
 
   return (
     <>
-      {isOpen && (
-        <Modal size="6xl" isOpen={true} onOpenChange={onOpenChange} scrollBehavior="inside">
-          <ModalContent>
-            {() => (
-              <>
-                <ModalHeader></ModalHeader>
-                <ModalBody>
-                  <ClassAssignment
-                    studentIds={[...selectedKeys]}
-                    isSingleMode={[...selectedKeys].length === 1}
-                    onDone={() => {
-                      addToast({ title: "Thành công!", description: "Đã thêm các học sinh vào lớp" });
-                      queryClient.invalidateQueries({ queryKey: ["classes"] });
-                      queryClient.invalidateQueries({ queryKey: ["users"] });
-                      onClose();
-                    }}
-                  />
-                </ModalBody>
-              </>
-            )}
-          </ModalContent>
-        </Modal>
-      )}
+      <Modal size="6xl" isOpen={isOpen} onOpenChange={onOpenChange} scrollBehavior="inside">
+        <ModalHeader></ModalHeader>
+        <ModalBody>
+          <ClassAssignment
+            studentIds={[...selectedKeys]}
+            isSingleMode={[...selectedKeys].length === 1}
+            onDone={() => {
+              addToast({ title: "Thành công!", description: "Đã thêm các học sinh vào lớp" });
+              queryClient.invalidateQueries({ queryKey: ["classes"] });
+              queryClient.invalidateQueries({ queryKey: ["users"] });
+              onClose();
+            }}
+          />
+        </ModalBody>
+      </Modal>
       <Dropdown showArrow>
         <DropdownTrigger>
           <Button size="sm" variant="flat" className="font-semibold min-w-fit" endContent={<ChevronDown size="13px" />}>

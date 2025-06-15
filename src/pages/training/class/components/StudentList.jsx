@@ -1,21 +1,23 @@
-import { useDisclosure } from "@heroui/modal";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { classApi, enrollmentApi } from "@/apis";
 import { ArrowLeftRight, Trash2 } from "lucide-react";
 import { Tooltip } from "@heroui/tooltip";
 import { Button } from "@heroui/button";
-import { Table, TableProvider } from "@/components/common";
+import { Modal, Table, TableProvider } from "@/components/common";
 import { displayDate } from "@/utils";
 import { addToast } from "@heroui/toast";
 import { ConfirmDeleteDialog } from "@/components";
 import { useState } from "react";
 import { ORDER_BY_NAME } from "@/constants";
 import { useAppStore } from "@/state";
+import { ModalBody, ModalHeader, useDisclosure } from "@heroui/modal";
+import { ClassAssignment } from "@/components";
 
 const StudentList = ({ classId }) => {
   const queryClient = useQueryClient();
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const [selectedStudentId, setSelectedStudentId] = useState();
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const changeClassModal = useDisclosure();
 
   const user = useAppStore("user");
 
@@ -25,13 +27,13 @@ const StudentList = ({ classId }) => {
   });
 
   const handleDelete = async () => {
-    if (!selectedStudentId) return;
-    const result = await enrollmentApi.delete(selectedStudentId);
+    if (!selectedStudent) return;
+    const result = await enrollmentApi.delete(selectedStudent.id);
     queryClient.invalidateQueries({ queryKey: ["classes"] });
     if (!result.ok) {
       addToast({ color: "danger", title: "Xóa thất bại!", description: result.message });
     }
-    setSelectedStudentId(null);
+    setSelectedStudent(null);
     onClose();
   };
 
@@ -41,9 +43,38 @@ const StudentList = ({ classId }) => {
         isOpen={isOpen}
         title="Xóa học sinh khỏi lớp"
         message="Học sinh này sẽ bị khóa khỏi lớp học"
-        onClose={onClose}
         onDelete={handleDelete}
+        onClose={() => {
+          setSelectedStudent(null);
+          onClose();
+        }}
       />
+      <Modal
+        size="6xl"
+        isOpen={changeClassModal.isOpen}
+        onOpenChange={(open) => {
+          setSelectedStudent(null);
+          changeClassModal.onOpenChange(open);
+        }}
+        scrollBehavior="inside"
+      >
+        <ModalHeader></ModalHeader>
+        <ModalBody>
+          {selectedStudent && (
+            <ClassAssignment
+              studentIds={[selectedStudent.id]}
+              isSingleMode
+              enrollment={{ id: selectedStudent.enrollmentId, oldClassId: classId }}
+              isChangeClass
+              onSuccess={() => {
+                addToast({ color: "success", title: "Thành công!", description: "Đã chuyển học sinh vào lớp" });
+                setSelectedStudent(null);
+                changeClassModal.onClose();
+              }}
+            />
+          )}
+        </ModalBody>
+      </Modal>
       <TableProvider
         value={{
           columns: [
@@ -76,8 +107,8 @@ const StudentList = ({ classId }) => {
                     <Button
                       onClick={(e) => e.stopPropagation()}
                       onPress={() => {
-                        setSelectedStudentId(rowData.enrollmentId);
-                        onOpen();
+                        setSelectedStudent(rowData);
+                        changeClassModal.onOpen();
                       }}
                       size="sm"
                       isIconOnly
@@ -91,7 +122,7 @@ const StudentList = ({ classId }) => {
                     <Button
                       onClick={(e) => e.stopPropagation()}
                       onPress={() => {
-                        setSelectedStudentId(rowData.enrollmentId);
+                        setSelectedStudent(rowData);
                         onOpen();
                       }}
                       size="sm"

@@ -28,6 +28,26 @@ const TimetableFilter = ({ value, onChange }) => {
       <Select
         size="lg"
         variant="bordered"
+        label="Chế độ xem"
+        radius="sm"
+        labelPlacement="outside"
+        defaultSelectedKeys={new Set(["week"])}
+        onSelectionChange={(keys) => {
+          if (keys.size === 0) return;
+          const generalMode = [...keys][0];
+          if (generalMode === "week") {
+            onChange({ ...value, generalMode: false });
+          } else {
+            onChange({ ...value, generalMode: true });
+          }
+        }}
+      >
+        <SelectItem key="week">Xem theo tuần</SelectItem>
+        <SelectItem key="general">Xem tổng quát</SelectItem>
+      </Select>
+      <Select
+        size="lg"
+        variant="bordered"
         label="Lớp học"
         radius="sm"
         labelPlacement="outside"

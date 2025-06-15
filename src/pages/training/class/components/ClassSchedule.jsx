@@ -53,7 +53,7 @@ const ClassSchedule = () => {
 
     setAction(null);
     setSelectedRow(null);
-    onDeleteClose();
+    deleteDialog.onClose();
   };
 
   const handleDelete = async () => {
@@ -68,7 +68,7 @@ const ClassSchedule = () => {
 
     setAction(null);
     setSelectedRow(null);
-    onDeleteClose();
+    deleteDialog.onClose();
   };
 
   const renderActions = (row) => {

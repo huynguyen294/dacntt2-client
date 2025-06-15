@@ -19,7 +19,7 @@ const UserScheduleButton = ({
 
   const ScheduleModal = ({ onClose, onOpenChange }) => {
     const [value, setValue] = useState({});
-    const timetable = useTimetable({ generalMode: true, studentId, teacherId, classId, ...value });
+    const timetable = useTimetable({ studentId, teacherId, classId, ...value });
 
     return (
       <Modal isOpen isKeyboardDismissDisabled size="6xl" onOpenChange={onOpenChange} scrollBehavior="inside">

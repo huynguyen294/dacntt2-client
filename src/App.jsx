@@ -141,7 +141,8 @@ const App = () => {
           <Route path="training-settings" element={<TrainingSettings />} />
           <Route path="timetable" element={<TimeTablePage />} />
 
-          <Route path="tuition" element={<Tuition />} />
+          <Route path="class-tuition" element={<Tuition />} />
+          <Route path="tuition-management" element={<Tuition />} />
         </Route>
 
         <Route path="/">

@@ -19,7 +19,14 @@ import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
 import { useDisclosure } from "@heroui/modal";
 import { format } from "date-fns";
 
-const ClassAssignment = ({ studentIds = [], isSingleMode, onDone }) => {
+const ClassAssignment = ({
+  studentIds = [],
+  isSingleMode,
+  isChangeClass,
+  enrollment,
+  onDone = () => {},
+  onSuccess = () => {},
+}) => {
   const queryClient = useQueryClient();
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [selectedShift, setSelectedShift] = useState(null);
@@ -58,30 +65,35 @@ const ClassAssignment = ({ studentIds = [], isSingleMode, onDone }) => {
   const handleEnroll = async (classId) => {
     setEnrolling(true);
 
-    if (!isSingleMode) {
-      const result = await enrollmentApi.create({
+    let result;
+    // change class case
+    if (isChangeClass) {
+      result = await enrollmentApi.update(enrollment.id, {
+        studentId: studentIds[0],
+        oldClassId: enrollment.classId,
+        classId,
+      });
+
+      if (!result.ok) addToast({ color: "danger", title: "Lỗi!", description: result.message });
+      // single mode
+    } else if (isSingleMode) {
+      result = await enrollmentApi.create({ studentId: studentIds[0], classId });
+      if (!result.ok) addToast({ color: "danger", title: "Lỗi!", description: result.message });
+      // multiple mode
+    } else {
+      result = await enrollmentApi.create({
         enrollments: studentIds.map((studentId) => ({ studentId, classId })),
       });
-      if (!result.ok) {
-        addToast({ color: "danger", title: "Lỗi!", description: result.message });
-        setEnrolling(false);
-        return;
-      }
-
-      setEnrolling(false);
-      onDone();
-      return;
+      if (!result.ok) addToast({ color: "danger", title: "Lỗi!", description: result.message });
     }
 
-    const result = await enrollmentApi.create({ studentId: studentIds[0], classId });
-    if (!result.ok) {
-      addToast({ color: "danger", title: "Lỗi!", description: result.message });
-      setEnrolling(false);
-      return;
+    if (result.ok) {
+      studentIds.forEach((id) => queryClient.invalidateQueries({ queryKey: ["enrollments", id] }));
+      queryClient.invalidateQueries({ queryKey: ["classes"] });
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      onSuccess();
     }
 
-    queryClient.invalidateQueries({ queryKey: ["enrollments", studentIds[0]] });
-    queryClient.invalidateQueries({ queryKey: ["classes"] });
     setEnrolling(false);
     onDone();
   };
@@ -192,8 +204,8 @@ const ClassAssignment = ({ studentIds = [], isSingleMode, onDone }) => {
           isLoading={classList.isLoading || enrLoading}
           isHeaderSticky={false}
           classNames={{ wrapper: "shadow-none p-0 rounded-none mt-4" }}
-          rows={classList.list}
           selectionMode="none"
+          rows={classList.list.filter((rowData) => (isChangeClass ? !Boolean(enrObj[rowData.id]) : true))}
           bottomContent={classList.hasMore && <LoadMoreButton onLoadMore={classList.onLoadMore} />}
           renderCell={(rowData, columnKey, index) => {
             let cellValue = rowData[columnKey];
@@ -240,7 +252,7 @@ const ClassAssignment = ({ studentIds = [], isSingleMode, onDone }) => {
                   isLoading={enrolling}
                   color={color}
                 >
-                  {enrolled ? "Đã đăng ký" : "Xếp vào lớp này"}
+                  {enrolled ? "Đã đăng ký" : isChangeClass ? "Chuyển vào lớp này" : "Xếp vào lớp này"}
                 </Button>
               );
             }
