@@ -16,7 +16,7 @@ const useServerList = (
     searchQuery = "",
     selectList = (data) => data.rows,
     searchPlaceholder = "Tìm theo tên...",
-    order = null,
+    order = {},
   } = {}
 ) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -40,7 +40,14 @@ const useServerList = (
 
   const debounceQuery = useDebounce(searchQuery || query);
   const { isLoading, data } = useQuery({
-    queryKey: [dataKey, "basic-list", pager.page, order, debounceQuery, JSON.stringify(filters), [...otherParams]],
+    queryKey: [
+      dataKey,
+      JSON.stringify(pager),
+      JSON.stringify(order),
+      JSON.stringify(filters),
+      debounceQuery,
+      [...otherParams],
+    ],
     queryFn: () => getFn(paging && pager, order, debounceQuery, filters, otherParams),
   });
 

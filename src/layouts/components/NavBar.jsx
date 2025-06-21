@@ -11,7 +11,7 @@ import { signOut } from "@/apis";
 import { useNavigate } from "@/hooks";
 import { User } from "@heroui/user";
 import { cn } from "@/lib/utils";
-import { useParams } from "react-router";
+import { useLocation, useParams } from "react-router";
 import SidebarDrawer from "./SidebarDrawer";
 import { UserScheduleButton } from "@/components";
 import { Skeleton } from "@heroui/skeleton";
@@ -19,6 +19,8 @@ import { Skeleton } from "@heroui/skeleton";
 const NavBar = ({ breadcrumbItems = [], hideMenuButton = false, hideDashboard = false }) => {
   const navigate = useNavigate(true);
   const params = useParams();
+  const location = useLocation();
+  const pathname = location.pathname;
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const user = useAppStore("user");
@@ -68,11 +70,12 @@ const NavBar = ({ breadcrumbItems = [], hideMenuButton = false, hideDashboard = 
                     startContent={startContent}
                     onPress={() => {
                       if (index === breadcrumbItems.length - 1) return;
-                      if (typeof path === "function") return navigate(path(params));
+                      if (path === -1) return navigate((from) => from);
+                      if (typeof path === "function") return navigate(path({ params, pathname }));
                       path && navigate(path);
                     }}
                   >
-                    {label}
+                    {typeof label === "function" ? label({ params, pathname }) : label}
                   </BreadcrumbItem>
                 ))}
               </Breadcrumbs>

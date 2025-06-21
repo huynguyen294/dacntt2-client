@@ -13,6 +13,7 @@ const Table = ({
   renderCell = defaultCellRenderer,
   selectionMode = "multiple",
   isHeaderSticky = true,
+  emptyContent,
   ...other
 }) => {
   const table = useTableContext();
@@ -62,10 +63,12 @@ const Table = ({
       </TableHeader>
       <TableBody
         emptyContent={
-          <div className="text-foreground-500 font-semibold flex gap-2 w-full justify-center items-center">
-            <Ban size="18px" />
-            Không có dữ liệu
-          </div>
+          emptyContent || (
+            <div className="text-foreground-500 font-semibold flex gap-2 w-full justify-center items-center">
+              <Ban size="18px" />
+              Không có dữ liệu
+            </div>
+          )
         }
         loadingContent={<Spinner variant="wave" />}
         loadingState={loadingState}

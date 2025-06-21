@@ -28,7 +28,7 @@ const trainingSection = {
     { label: "Lớp học", path: "/classes" },
     { label: "Lịch học", path: "/timetable" },
     { label: "Kỳ thi", path: "/exams" },
-    { label: "Cài đặt đào tạo", path: "/training-settings" },
+    { label: "Cài đặt đào tạo", path: "/training-settings", disabled: true },
   ],
 };
 const financeSection = {
@@ -38,7 +38,7 @@ const financeSection = {
     { label: "Học phí lớp học", path: "/class-tuition" },
     { label: "Quản lý học phí", path: "/tuition-management" },
     { label: "Miễn giảm học phí", path: "/tuition-discount" },
-    { label: "Cài đặt tài chính", path: "/finance-settings" },
+    { label: "Cài đặt tài chính", path: "/finance-settings", disabled: true },
   ],
 };
 
@@ -104,7 +104,6 @@ export const userSidebarItems = {
         { label: "Lịch thi", path: "/exam-schedule", icon: Target },
         { label: "Kết quả học tập", path: "/scores", icon: Star },
         { label: "Học phí", path: "/tuition", icon: CircleDollarSign },
-        { label: "Nộp đơn", path: "/letter", icon: ClipboardPenLine },
       ],
     },
   ],

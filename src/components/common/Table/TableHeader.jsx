@@ -15,23 +15,28 @@ const TableHeader = ({
   addBtnPath,
   addBtnText = "Thêm mới",
   multiAction = MultipleAction,
+  disabledSearch,
+  startContent,
   filter,
 }) => {
   const navigate = useNavigate();
   const { query, setQuery, allColumns, selectedKeys, selectedColumns, setSelectedColumns } = useTableContext();
 
   return (
-    <div className="mt-2 flex justify-between items-center gap-4">
-      <div className="flex gap-2 items-center overflow-x-auto">
-        <Input
-          size="sm"
-          className="min-w-[300px]"
-          classNames={{ input: "px-2" }}
-          placeholder={searchPlaceholder}
-          endContent={<Search size="16px" />}
-          value={query}
-          onValueChange={setQuery}
-        />
+    <div className="mt-2 flex justify-between items-center gap-4 ">
+      <div className="flex gap-2 items-center overflow-x-auto overflow-y-hidden">
+        {startContent}
+        {!disabledSearch && (
+          <Input
+            size="sm"
+            className="min-w-[300px]"
+            classNames={{ input: "px-2" }}
+            placeholder={searchPlaceholder}
+            endContent={<Search size="16px" />}
+            value={query}
+            onValueChange={setQuery}
+          />
+        )}
         {filter}
         <Dropdown showArrow>
           <DropdownTrigger>

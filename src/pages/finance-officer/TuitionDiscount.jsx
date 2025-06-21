@@ -1,11 +1,11 @@
 import { ModuleLayout } from "@/layouts";
 
-const Tuition = () => {
+const TuitionDiscount = () => {
   return (
     <ModuleLayout breadcrumbItems={[{ label: "Học phí lớp học" }]}>
-      <div className="px-2 sm:px-10">Tuition</div>
+      <div className="px-2 sm:px-10">TuitionDiscount</div>
     </ModuleLayout>
   );
 };
 
-export default Tuition;
+export default TuitionDiscount;

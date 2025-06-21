@@ -1,6 +1,6 @@
 import { Modal as HeroUiModal, ModalContent } from "@heroui/modal";
 
-const Modal = ({ isOpen, onOpenChange, children, size = "3xl", scrollBehavior, ...other }) => {
+const Modal = ({ isOpen, onOpenChange, children, size = "3xl", onClose, scrollBehavior, ...other }) => {
   if (!isOpen) return null;
   return (
     <HeroUiModal
@@ -9,6 +9,7 @@ const Modal = ({ isOpen, onOpenChange, children, size = "3xl", scrollBehavior, .
       size={size}
       onOpenChange={onOpenChange}
       scrollBehavior={scrollBehavior}
+      onClose={onClose}
       {...other}
     >
       <ModalContent>{() => children}</ModalContent>

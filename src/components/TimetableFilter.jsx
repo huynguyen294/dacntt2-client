@@ -63,7 +63,7 @@ const TimetableFilter = ({ value, onChange }) => {
           onChange({ ...value, classId });
         }}
       >
-        {(item) => <SelectItem key={item.id}>{item.name}</SelectItem>}
+        {(item) => <SelectItem key={item.id?.toString()}>{item.name}</SelectItem>}
       </Select>
       <Select
         size="lg"
@@ -97,7 +97,7 @@ const TimetableFilter = ({ value, onChange }) => {
           <SelectSection title="Giáo viên">
             {teacherList.list.map((item) => (
               <SelectItem
-                key={item.id}
+                key={item.id.toString()}
                 startContent={
                   <div>
                     <Avatar src={item.imageUrl} />

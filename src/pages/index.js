@@ -39,7 +39,11 @@ export { default as TeacherClass } from "./teacher/TeacherClass";
 export { default as Assessment } from "./teacher/Assessment";
 export { default as AttendanceCheck } from "./teacher/AttendanceCheck";
 
-export { default as Tuition } from "./finance-officer/Tuition";
+export { default as ClassTuition } from "./finance-officer/ClassTuition";
+export { default as TuitionManagement } from "./finance-officer/TuitionManagement";
+export { default as TuitionDiscount } from "./finance-officer/TuitionDiscount";
+export { default as AddTuition } from "./finance-officer/AddTuition";
+export { default as EditTuition } from "./finance-officer/EditTuition";
 
 export { default as NotFound } from "./NotFound";
 export { default as Profile } from "./Profile";

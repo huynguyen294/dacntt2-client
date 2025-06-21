@@ -60,3 +60,7 @@ export const attendanceApi = { ...commonAttendanceApi, ...otherAttendanceApis };
 // exercise scores
 const commonExerciseScoreApi = generateCrudApi("class-exercise-scores");
 export const exerciseScoreApi = { ...commonExerciseScoreApi, ...otherExerciseScoreApis };
+
+// tuition
+const commonTuitionApi = generateCrudApi("tuitions");
+export const tuitionApi = { ...commonTuitionApi };

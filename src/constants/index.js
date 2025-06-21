@@ -117,3 +117,9 @@ export const defaultWeekCalendarValue = {
   startDate: format(startOfWeek(currentDate, { weekStartsOn: 1 }), DATE_FORMAT),
   endDate: format(endOfWeek(currentDate, { weekStartsOn: 1 }), DATE_FORMAT),
 };
+const studentCode = "HV";
+const classCode = "LH";
+export const CODES = [studentCode, classCode];
+export const getStudentCode = (id) => studentCode + id;
+export const getClassCode = (id) => classCode + id;
+export const getYearCode = () => new Date().getFullYear().toString().slice(2);

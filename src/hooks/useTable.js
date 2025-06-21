@@ -13,7 +13,7 @@ const useTable = ({
 } = {}) => {
   const [query, setQuery] = useState("");
   const [pager, setPager] = useState(DEFAULT_PAGER);
-  const [order, setOrder] = useState({ order: "desc", orderBy: defaultOrderBy });
+  const [order, setOrder] = useState({ order: "asc", orderBy: defaultOrderBy });
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
   const [selectedColumns, setSelectedColumns] = useState(new Set(defaultSelectedColumns));
   const [filters, setFilters] = useState({});
@@ -32,7 +32,7 @@ const useTable = ({
   const reset = useCallback(() => {
     setQuery("");
     setPager(DEFAULT_PAGER);
-    setOrder({ order: "desc", orderBy: defaultOrderBy });
+    setOrder({ order: "asc", orderBy: defaultOrderBy });
     setSelectedKeys(new Set([]));
     setSelectedColumns(new Set(defaultSelectedColumns));
     setFilters({});
