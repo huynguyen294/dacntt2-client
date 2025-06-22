@@ -47,6 +47,8 @@ import {
   ClassTuition,
   AddTuition,
   EditTuition,
+  AddTuitionDiscount,
+  EditTuitionDiscount,
 } from "./pages";
 
 import "./App.css";
@@ -98,13 +100,15 @@ const App = () => {
           <Route path="training-settings" element={<TrainingSettings />} />
           <Route path="timetable" element={<TimeTablePage />} />
 
-          <Route path="class-tuition" element={<ClassTuition />} />
           <Route path="tuition-management" element={<TuitionManagement />} />
           <Route path="tuition-management/add" element={<AddTuition />} />
-          <Route path="class-tuition/add" element={<AddTuition />} />
           <Route path="tuition-management/edit/:id" element={<EditTuition />} />
+          <Route path="class-tuition" element={<ClassTuition />} />
+          <Route path="class-tuition/add" element={<AddTuition />} />
           <Route path="class-tuition/edit/:id" element={<EditTuition />} />
           <Route path="tuition-discount" element={<TuitionDiscount />} />
+          <Route path="tuition-discount/add" element={<AddTuitionDiscount />} />
+          <Route path="tuition-discount/edit/:id" element={<EditTuitionDiscount />} />
         </Route>
 
         <Route path="teacher">
@@ -153,13 +157,16 @@ const App = () => {
           <Route path="training-settings" element={<TrainingSettings />} />
           <Route path="timetable" element={<TimeTablePage />} />
 
-          <Route path="class-tuition" element={<ClassTuition />} />
           <Route path="tuition-management" element={<TuitionManagement />} />
           <Route path="tuition-management/add" element={<AddTuition />} />
-          <Route path="class-tuition/add" element={<AddTuition />} />
           <Route path="tuition-management/edit/:id" element={<EditTuition />} />
+          <Route path="tuition-discount" element={<TuitionDiscount />} />
+          <Route path="class-tuition" element={<ClassTuition />} />
+          <Route path="class-tuition/add" element={<AddTuition />} />
           <Route path="class-tuition/edit/:id" element={<EditTuition />} />
           <Route path="tuition-discount" element={<TuitionDiscount />} />
+          <Route path="tuition-discount/add" element={<AddTuitionDiscount />} />
+          <Route path="tuition-discount/edit/:id" element={<EditTuitionDiscount />} />
         </Route>
 
         <Route path="/">

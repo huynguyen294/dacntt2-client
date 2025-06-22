@@ -1,24 +1,21 @@
-import { classApi, tuitionApi, userApi } from "@/apis";
+import { classApi, tuitionDiscountApi } from "@/apis";
 import { CurrencyInput, Section } from "@/components/common";
-import { DATE_FORMAT, getClassCode, getStudentCode, getYearCode, ORDER_BY_NAME } from "@/constants";
+import { getClassCode, getStudentCode, getYearCode, ORDER_BY_NAME } from "@/constants";
 import { useMetadata, useNavigate, useServerList } from "@/hooks";
 import { generateUid, shiftFormat } from "@/utils";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { Avatar } from "@heroui/avatar";
 import { Button } from "@heroui/button";
-import { DatePicker } from "@heroui/date-picker";
 import { Input } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
 import { addToast } from "@heroui/toast";
-import { parseDate } from "@internationalized/date";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { format } from "date-fns";
 import { Plus, RefreshCcw, Save } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
 import { Controller, Form, useForm } from "react-simple-formkit";
 
-const TuitionForm = ({ defaultValues = {}, editMode }) => {
+const TuitionDiscountForm = ({ defaultValues = {}, editMode }) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const form = useForm({ numberFields });
@@ -42,7 +39,7 @@ const TuitionForm = ({ defaultValues = {}, editMode }) => {
     setLoading(true);
     if (editMode) {
       const { id, ...removed } = defaultValues;
-      const result = await tuitionApi.update(id, { ...removed, ...data });
+      const result = await tuitionDiscountApi.update(id, { ...removed, ...data });
       if (result.ok) {
         queryClient.invalidateQueries({ queryKey: ["tuitions"] });
         navigate(-1);
@@ -52,7 +49,7 @@ const TuitionForm = ({ defaultValues = {}, editMode }) => {
       return;
     }
 
-    const result = await tuitionApi.create(data);
+    const result = await tuitionDiscountApi.create(data);
     if (result.ok) {
       queryClient.invalidateQueries({ queryKey: ["tuitions"] });
       navigate(-1);
@@ -62,24 +59,11 @@ const TuitionForm = ({ defaultValues = {}, editMode }) => {
     setLoading(false);
   };
 
-  const handleChange = ({ studentId, classId, content }) => {
-    if (studentId && classId && !content) {
-      const newContent = [getYearCode(), getStudentCode(studentId), getClassCode(classId), generateUid()].join("_");
-      actions.setValue("content", newContent, { shouldOnChange: false });
-    }
-  };
-
-  useEffect(() => {
-    const classId = searchParams.get("classId");
-    if (classId && classId !== "undefined") setSelectedClass(classId);
-    actions.setValue({}, null, { shouldOnChange: true });
-  }, []);
-
   const studentId = searchParams.get("studentId");
   const defaultStudentId = defaultValues.studentId || (studentId !== "undefined" && Number(studentId));
 
   return (
-    <Form form={form} onSubmit={handleSubmit} onChange={handleChange} className="w-full space-y-4">
+    <Form form={form} onSubmit={handleSubmit} className="w-full space-y-4">
       <Section title="Thông tin" className="w-full">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-start gap-4 pb-4">
           <Controller
@@ -156,29 +140,18 @@ const TuitionForm = ({ defaultValues = {}, editMode }) => {
               </Autocomplete>
             )}
           />
-          <Controller
-            name="content"
-            defaultValue={defaultValues.content}
-            render={({ ref, name, defaultValue, value, setValue }) => (
-              <Input
-                ref={ref}
-                isRequired
-                isReadOnly
-                defaultValue={defaultValue}
-                name={name}
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                size="lg"
-                variant="bordered"
-                label="Mã thanh toán"
-                radius="sm"
-                labelPlacement="outside"
-                placeholder="Hiển thị mã thanh toán"
-              />
-            )}
+          <Input
+            isRequired
+            name="reason"
+            size="lg"
+            variant="bordered"
+            label="Lý do"
+            radius="sm"
+            labelPlacement="outside"
+            defaultValue={defaultValues.reason}
+            placeholder="Nhập lý do miễn giảm"
           />
           <CurrencyInput
-            autoFocus={searchParams.get("studentId")}
             defaultValue={defaultValues.amount}
             isRequired
             name="amount"
@@ -188,33 +161,6 @@ const TuitionForm = ({ defaultValues = {}, editMode }) => {
             radius="sm"
             labelPlacement="outside"
             placeholder="Nhập số tiền"
-          />
-          <DatePicker
-            isRequired
-            onChange={actions.instantChange}
-            defaultValue={
-              defaultValues.date
-                ? parseDate(format(defaultValues.date, DATE_FORMAT))
-                : parseDate(format(new Date(), DATE_FORMAT))
-            }
-            name="date"
-            calendarProps={{ showMonthAndYearPickers: true }}
-            size="lg"
-            variant="bordered"
-            label="Ngày thanh toán"
-            radius="sm"
-            labelPlacement="outside"
-            classNames={{ label: "-mt-1" }}
-          />
-          <Input
-            name="note"
-            size="lg"
-            variant="bordered"
-            label="Ghi chú"
-            radius="sm"
-            labelPlacement="outside"
-            placeholder="Nhập ghi chú"
-            defaultValue={defaultValues.note}
           />
         </div>
       </Section>
@@ -227,7 +173,7 @@ const TuitionForm = ({ defaultValues = {}, editMode }) => {
           className="shadow-xl"
           color="primary"
         >
-          {editMode ? "Lưu thay đổi" : "Thêm học phí"}
+          {editMode ? "Lưu thay đổi" : "Thêm miễn giảm"}
         </Button>
         <Button
           isDisabled={!isDirty}
@@ -243,6 +189,6 @@ const TuitionForm = ({ defaultValues = {}, editMode }) => {
   );
 };
 
-const numberFields = ["amount", "classId", "studentId"];
+const numberFields = ["amount", "classId"];
 
-export default TuitionForm;
+export default TuitionDiscountForm;

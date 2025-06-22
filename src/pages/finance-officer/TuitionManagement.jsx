@@ -61,7 +61,7 @@ const TuitionManagement = () => {
         <div className="px-2 sm:px-10">
           <ConfirmDeleteDialog
             title="Xóa học phí"
-            message="Khóa học này sẽ bị xóa vĩnh viễn khỏi hệ thống."
+            message="Học phí này sẽ bị xóa vĩnh viễn khỏi hệ thống."
             isOpen={isOpen}
             onClose={onClose}
             onDelete={handleDeleteTuition}

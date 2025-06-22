@@ -64,3 +64,7 @@ export const exerciseScoreApi = { ...commonExerciseScoreApi, ...otherExerciseSco
 // tuition
 const commonTuitionApi = generateCrudApi("tuitions");
 export const tuitionApi = { ...commonTuitionApi };
+
+// tuition-discounts
+const commonTuitionDiscountApi = generateCrudApi("tuition-discounts");
+export const tuitionDiscountApi = { ...commonTuitionDiscountApi };

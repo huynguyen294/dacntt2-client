@@ -137,7 +137,7 @@ export const ID_CODES = {
   exerciseScore: "DS",
   infoSheet: "TB",
   tuition: "HP",
-  tuitionDiscount: "GG",
+  "tuition-discounts": "MG",
 };
 
 export const getCode = (key, id) => ID_CODES[key] + id;

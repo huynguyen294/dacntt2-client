@@ -6,8 +6,8 @@ import { Table, TableProvider } from "@/components/common";
 import { useDisclosure } from "@heroui/modal";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { classApi, tuitionApi } from "@/apis";
-import { Ban, Info, Plus, PlusCircle } from "lucide-react";
+import { classApi, tuitionApi, tuitionDiscountApi } from "@/apis";
+import { Ban, ChevronDown, Info, Plus, PlusCircle } from "lucide-react";
 import { Button } from "@heroui/button";
 import { Select, SelectItem } from "@heroui/select";
 import { format } from "date-fns";
@@ -18,6 +18,9 @@ import { User } from "@heroui/user";
 import { Chip } from "@heroui/chip";
 import { Tooltip } from "@heroui/tooltip";
 import StudentTuitionModal from "./components/StudentTuitionModal";
+import { Divider } from "@heroui/divider";
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/dropdown";
+import { addToast } from "@heroui/toast";
 
 const ClassTuition = () => {
   const navigate = useNavigate();
@@ -42,6 +45,10 @@ const ClassTuition = () => {
     queryKey: ["tuitions", null, null, null, JSON.stringify(mergedFilters)],
     queryFn: () => (selectedClass ? tuitionApi.get(null, null, null, mergedFilters) : null),
   });
+  const tuitionDiscountResult = useQuery({
+    queryKey: ["tuition-discounts", null, null, null, JSON.stringify(mergedFilters)],
+    queryFn: () => (selectedClass ? tuitionDiscountApi.get(null, null, null, mergedFilters) : null),
+  });
   const studentResult = useQuery({
     queryKey: ["classes", selectedClass || null, "students", "refFields=:full", JSON.stringify(order)],
     queryFn: () => (selectedClass ? classApi.getClassStudents(selectedClass, order, ["refFields=:full"]) : null),
@@ -49,6 +56,7 @@ const ClassTuition = () => {
 
   const students = studentResult.data?.students || [];
   const tuitions = tuitionResult.data?.rows || [];
+  const tuitionDiscounts = tuitionDiscountResult.data?.rows || [];
   const foundClass = classList.list.find((c) => c.id == selectedClass);
 
   useEffect(() => {
@@ -92,6 +100,33 @@ const ClassTuition = () => {
               <Chip className="rounded-medium h-10 bg-default-100" variant="flat">
                 Học phí: {localeString(foundClass?.tuitionFee)}đ
               </Chip>
+              <Divider orientation="vertical" className="h-6 mx-1" />
+              <p className="whitespace-nowrap">
+                {table.selectedKeys === "all" ? students.length || 0 : table.selectedKeys.size} Đã chọn
+              </p>
+              {(table.selectedKeys === "all" || table.selectedKeys.size > 0) && (
+                <Dropdown showArrow>
+                  <DropdownTrigger>
+                    <Button
+                      size="sm"
+                      variant="flat"
+                      className="font-semibold min-w-fit"
+                      endContent={<ChevronDown size="13px" />}
+                    >
+                      Thao tác nhiều
+                    </Button>
+                  </DropdownTrigger>
+                  <DropdownMenu disallowEmptySelection variant="flat">
+                    <DropdownItem
+                      onPress={() => {
+                        addToast({ color: "danger", title: "Lỗi!", description: "Chức năng chưa hỗ trợ" });
+                      }}
+                    >
+                      Thêm học phí
+                    </DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+              )}
             </div>
           </div>
         </div>
@@ -112,6 +147,7 @@ const ClassTuition = () => {
             }
             if (columnKey === "paid") {
               const filtered = tuitions.filter((t) => t.studentId === row.id);
+
               if (!filtered.length) {
                 return (
                   <Chip size="sm" color="danger" variant="flat">
@@ -120,21 +156,24 @@ const ClassTuition = () => {
                 );
               }
               const total = filtered.reduce((acc, curr) => acc + curr.amount, 0);
+              const discounts = tuitionDiscounts.filter((td) => td.studentId === row.id);
+              const discountDiscount = tuitionDiscounts.reduce((acc, curr) => acc + curr.amount, 0);
               return (
                 <Tooltip content="Xem chi tiết">
-                  <Chip
-                    className="!px-2 gap-1 text-small cursor-pointer select-none"
+                  <Button
                     size="sm"
+                    radius="full"
+                    className="h-6 text-sm"
                     variant="flat"
-                    onClick={(e) => {
-                      e.stopPropagation();
+                    onClick={(e) => e.stopPropagation()}
+                    onPress={() => {
                       studentTuitionModal.onOpen();
-                      setSelectedRow({ student: row, tuitions: filtered });
+                      setSelectedRow({ student: row, tuitions: filtered, discounts });
                     }}
                     endContent={<Info size="12px" />}
                   >
-                    {localeString(total)}đ
-                  </Chip>
+                    {localeString(total + discountDiscount)}đ
+                  </Button>
                 </Tooltip>
               );
             }

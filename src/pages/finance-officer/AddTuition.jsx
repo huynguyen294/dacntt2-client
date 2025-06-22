@@ -2,7 +2,7 @@ import TuitionForm from "./components/TuitionForm";
 import { FormPage, ModuleLayout } from "@/layouts";
 import { addTuitionBreadcrumbItems } from "./constants";
 
-const AddCourse = () => {
+const AddTuition = () => {
   return (
     <ModuleLayout breadcrumbItems={addTuitionBreadcrumbItems}>
       <FormPage title="Thêm học phí">
@@ -12,4 +12,4 @@ const AddCourse = () => {
   );
 };
 
-export default AddCourse;
+export default AddTuition;
