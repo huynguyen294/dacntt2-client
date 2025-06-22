@@ -77,7 +77,7 @@ const UserForm = ({ defaultValues = {}, editMode }) => {
       return;
     }
 
-    const result = await userApi.create(payload, { role });
+    const result = await userApi.create(payload, ["role=" + role]);
     if (result.ok) {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       navigate("/user-management/" + paramRole);

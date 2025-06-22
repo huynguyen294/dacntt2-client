@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useTableContext } from "@/components/common";
-import { ADMISSION_STATUSES } from "@/constants";
+import { ADMISSION_STATUSES, getCode } from "@/constants";
 import { useNavigate } from "@/hooks";
 import { useAppStore } from "@/state";
 import { displayDate } from "@/utils";
@@ -19,21 +19,12 @@ const AdmissionCell = ({ rowData, refs, columnKey, rowIndex, onDelete = (id) => 
   let cellValue = rowData[columnKey];
 
   const dateFields = ["createdAt", "lastUpdatedAt"];
-  if (dateFields.includes(columnKey)) {
-    cellValue = displayDate(cellValue);
-  }
-  if (columnKey === "index") {
-    cellValue = getRowIndex(rowIndex + 1);
-  }
-  if (columnKey === "consultantId") {
-    cellValue = users[cellValue]?.name;
-  }
-  if (columnKey === "expectedClassId") {
-    cellValue = classes[cellValue]?.name;
-  }
-  if (columnKey === "expectedCourseId") {
-    cellValue = courses[cellValue]?.name;
-  }
+  if (dateFields.includes(columnKey)) cellValue = displayDate(cellValue);
+  if (columnKey === "index") cellValue = getRowIndex(rowIndex + 1);
+  if (columnKey === "code") cellValue = getCode("studentConsultation", rowData.id);
+  if (columnKey === "consultantId") cellValue = users[cellValue]?.name;
+  if (columnKey === "expectedClassId") cellValue = classes[cellValue]?.name;
+  if (columnKey === "expectedCourseId") cellValue = courses[cellValue]?.name;
 
   switch (columnKey) {
     case "status": {

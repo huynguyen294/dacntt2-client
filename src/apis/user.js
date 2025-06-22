@@ -3,15 +3,6 @@ import { generateCrudApi, getServerErrorMessage } from "./utils";
 import { getAppActions } from "@/state";
 import { cryptoDecrypt, cryptoEncrypt } from "@/utils";
 
-const getUserById = async (id, { role, refs } = {}) => {
-  const params = [];
-  if (role) params.push("role=" + role);
-  if (refs) params.push("refs=true");
-
-  const result = await API.get(`/api-v1/users/${id}?${params.join("&")}`);
-  return result.data;
-};
-
 const refreshProfile = async () => {
   let profile = cryptoDecrypt(localStorage.getItem("profile"));
   if (!profile) return;
@@ -25,15 +16,6 @@ const refreshProfile = async () => {
   appActions.change({ user });
 
   return result.data;
-};
-
-const deleteUserById = async (id) => {
-  try {
-    await API.delete(`/api-v1/users/${id}`);
-    return { ok: true };
-  } catch (error) {
-    return getServerErrorMessage(error);
-  }
 };
 
 const signUp = async (data) => {
@@ -111,11 +93,8 @@ const commonUserApi = generateCrudApi("users");
 
 export default {
   ...commonUserApi,
-  create: createUser,
-  getById: getUserById,
   update: updateUser,
   updateProfile,
-  delete: deleteUserById,
   signUp,
   checkEmailAvailable,
   refreshProfile,

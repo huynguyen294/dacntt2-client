@@ -14,7 +14,7 @@ import { courseApi } from "@/apis";
 
 const CourseManagement = () => {
   const queryClient = useQueryClient();
-  const table = useTable({ allColumns: columns, defaultSelectedColumns });
+  const table = useTable({ allColumns: columns, defaultSelectedColumns, Api: courseApi });
   const { pager, filters, debounceQuery, order, setPager } = table;
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [selectedCourseId, setSelectedCourseId] = useState(null);
@@ -62,12 +62,7 @@ const CourseManagement = () => {
               <span className="bg-default-100 px-2 py-1 rounded-full text-[13px] font-normal ml-1">{pager.total}</span>
             </h3>
           </div>
-          <TableHeader
-            searchPlaceholder="Nhập tên khóa học"
-            filter={<CourseFilter />}
-            addBtnPath={`/courses/add`}
-            rowSize={data?.rows?.length || 0}
-          />
+          <TableHeader filter={<CourseFilter />} addBtnPath={`/courses/add`} rowSize={data?.rows?.length || 0} />
         </div>
         <Table
           isLoading={isLoading}
@@ -95,6 +90,7 @@ const CourseManagement = () => {
 
 const columns = [
   { name: "STT", uid: "index", disableSort: true },
+  { name: "Mã", uid: "code", disableSort: true },
   { name: "Tên khóa học", uid: "name" },
   { name: "Cấp độ", uid: "level" },
   { name: "Số buổi học", uid: "numberOfLessons" },
@@ -108,6 +104,7 @@ const columns = [
 
 const defaultSelectedColumns = [
   "index",
+  "code",
   "name",
   "level",
   "numberOfLessons",

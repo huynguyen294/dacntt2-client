@@ -11,6 +11,7 @@ const CurrencyInput = ({
   variant,
   classNames,
   startContent,
+  autoFocus,
   onChange = ({ target: { value } }) => {},
   onBlur = ({ target: { value } }) => {},
   isClearable = true,
@@ -44,6 +45,7 @@ const CurrencyInput = ({
 
   return (
     <NumberInput
+      autoFocus={autoFocus}
       aria-labelledby="number-input"
       isWheelDisabled
       name={name}

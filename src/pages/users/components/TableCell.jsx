@@ -1,6 +1,6 @@
 import { UserDetailModal } from "@/components";
 import { useTableContext } from "@/components/common";
-import { DATE_FORMAT, getStatusColor, ROLE_LABELS, ROLE_PALLET } from "@/constants";
+import { DATE_FORMAT, getCode, getStatusColor, ROLE_LABELS, ROLE_PALLET } from "@/constants";
 import { useNavigate } from "@/hooks";
 import { alpha, convertImageSrc, displayDate, localeString } from "@/utils";
 import { Button } from "@heroui/button";
@@ -22,6 +22,7 @@ const TableCell = ({ rowData, columnKey, refs, rowIndex, onDelete = () => {} }) 
   const dateFields = ["createdAt", "dateOfBirth", "lastUpdatedAt"];
   if (dateFields.includes(columnKey)) cellValue = displayDate(cellValue);
   if (columnKey === "index") cellValue = getRowIndex(rowIndex + 1);
+  if (columnKey === "code") cellValue = getCode("user", rowData.id);
   if (columnKey === "salary") cellValue = localeString(cellValue) + "đ";
   if (columnKey === "tuition") cellValue = "";
 

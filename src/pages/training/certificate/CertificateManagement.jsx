@@ -13,7 +13,7 @@ import CertificateCell from "./components/CertificateCell";
 
 const CertificateManagement = () => {
   const queryClient = useQueryClient();
-  const table = useTable({ allColumns: columns, defaultSelectedColumns });
+  const table = useTable({ allColumns: columns, defaultSelectedColumns, Api: certificateApi });
   const { pager, filters, debounceQuery, order, setPager } = table;
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [selectedCertificateId, setSelectedCertificateId] = useState(null);
@@ -61,11 +61,7 @@ const CertificateManagement = () => {
               <span className="bg-default-100 px-2 py-1 rounded-full text-[13px] font-normal ml-1">{pager.total}</span>
             </h3>
           </div>
-          <TableHeader
-            searchPlaceholder="Nhập tên chứng chỉ"
-            addBtnPath={`/certificates/add`}
-            rowSize={data?.rows?.length || 0}
-          />
+          <TableHeader addBtnPath={`/certificates/add`} rowSize={data?.rows?.length || 0} />
         </div>
         <Table
           isLoading={isLoading}
@@ -94,6 +90,7 @@ const CertificateManagement = () => {
 
 const columns = [
   { name: "STT", uid: "index", disableSort: true },
+  { name: "Mã", uid: "code", disableSort: true },
   { name: "Ảnh", uid: "image" },
   { name: "Tên chứng chỉ", uid: "name" },
   { name: "Kỹ năng", uid: "skill" },
@@ -107,6 +104,7 @@ const columns = [
 
 const defaultSelectedColumns = [
   "index",
+  "code",
   "image",
   "name",
   "skill",

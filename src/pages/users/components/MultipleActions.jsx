@@ -4,27 +4,45 @@ import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/d
 import { ChevronDown } from "lucide-react";
 import { useParams } from "react-router";
 import { EMPLOYEE_ROLES } from "@/constants";
-import { ClassAssignment } from "@/components";
+import { ClassAssignment, ConfirmDeleteDialog } from "@/components";
 import { ModalBody, ModalContent, ModalHeader, useDisclosure } from "@heroui/modal";
 import { addToast } from "@heroui/toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { userApi } from "@/apis";
+import { useState } from "react";
 
 const MultipleActions = () => {
   const queryClient = useQueryClient();
-  const { selectedKeys } = useTableContext();
+  const { selectedKeys, setSelectedKeys } = useTableContext();
   const { role } = useParams();
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const deleteDialog = useDisclosure();
 
   const handleUpdateStatus = async () => {
     console.log(selectedKeys);
   };
 
   const handleDelete = async () => {
-    console.log(selectedKeys);
+    if (!selectedKeys.size === 0) return;
+    const result = await userApi.deleteMany([...selectedKeys]);
+    if (result.ok) {
+      queryClient.invalidateQueries({ queryKey: [userApi.key] });
+      setSelectedKeys(new Set([]));
+    } else {
+      addToast({ color: "danger", title: "Lỗi!", description: result.message });
+    }
+    deleteDialog.onClose();
   };
 
   return (
     <>
+      <ConfirmDeleteDialog
+        title="Xóa người dùng"
+        message="Những người dùng này sẽ bị xóa vĩnh viễn khỏi hệ thống."
+        isOpen={deleteDialog.isOpen}
+        onClose={deleteDialog.onClose}
+        onDelete={handleDelete}
+      />
       <Modal size="6xl" isOpen={isOpen} onOpenChange={onOpenChange} scrollBehavior="inside">
         <ModalHeader></ModalHeader>
         <ModalBody>
@@ -57,7 +75,7 @@ const MultipleActions = () => {
               Cập nhật trạng thái
             </DropdownItem>
           )}
-          <DropdownItem color="danger" key="delete" onPress={handleDelete}>
+          <DropdownItem color="danger" key="delete" onPress={deleteDialog.onOpen}>
             Xóa
           </DropdownItem>
         </DropdownMenu>

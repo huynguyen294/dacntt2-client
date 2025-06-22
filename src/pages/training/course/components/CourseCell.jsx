@@ -1,5 +1,5 @@
 import { useTableContext } from "@/components/common";
-import { COURSE_LEVELS, DATE_FORMAT } from "@/constants";
+import { COURSE_LEVELS, DATE_FORMAT, getCode } from "@/constants";
 import { useNavigate } from "@/hooks";
 import { displayDate, localeString } from "@/utils";
 import { Button } from "@heroui/button";
@@ -17,6 +17,7 @@ const CourseCell = ({ rowData, columnKey, rowIndex, onDelete = (id) => {} }) => 
   const dateFields = ["createdAt", "dateOfBirth", "lastUpdatedAt"];
   if (dateFields.includes(columnKey)) cellValue = displayDate(cellValue);
   if (columnKey === "index") cellValue = getRowIndex(rowIndex + 1);
+  if (columnKey === "code") cellValue = getCode("course", rowData.id);
   if (columnKey === "tuitionFee") cellValue = localeString(cellValue) + "đ";
   if (columnKey === "level") cellValue = COURSE_LEVELS[cellValue];
 

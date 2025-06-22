@@ -1,7 +1,7 @@
 import useDebounce from "./useDebounce";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
-import { PAGER } from "@/constants";
+import { DEFAULT_SEARCH_PLACEHOLDER, PAGER } from "@/constants";
 import { debounceFn } from "@/utils";
 import { LoadMoreButton } from "@/components/common";
 import { Input } from "@heroui/input";
@@ -15,7 +15,7 @@ const useServerList = (
     otherParams = ["fields=:basic"],
     searchQuery = "",
     selectList = (data) => data.rows,
-    searchPlaceholder = "Tìm theo tên...",
+    searchPlaceholder = DEFAULT_SEARCH_PLACEHOLDER,
     order = {},
   } = {}
 ) => {

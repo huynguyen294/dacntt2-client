@@ -21,7 +21,7 @@ import StudentTuitionModal from "./components/StudentTuitionModal";
 
 const ClassTuition = () => {
   const navigate = useNavigate();
-  const table = useTable({ allColumns: columns, defaultSelectedColumns, defaultOrderBy: "name" });
+  const table = useTable({ allColumns: columns, defaultSelectedColumns, defaultOrder });
   const { order } = table;
 
   const studentTuitionModal = useDisclosure();
@@ -81,11 +81,13 @@ const ClassTuition = () => {
                   setSelectedClass(classId);
                 }}
               >
-                {(item) => (
-                  <SelectItem key={item.id?.toString()} description={shiftFormat(shiftObj[item.shiftId])}>
-                    {item.name}
-                  </SelectItem>
-                )}
+                {(item) => {
+                  return (
+                    <SelectItem key={item.id?.toString()} description={shiftFormat(shiftObj[item.shiftId])}>
+                      {item.name}
+                    </SelectItem>
+                  );
+                }}
               </Select>
               <Chip className="rounded-medium h-10 bg-default-100" variant="flat">
                 Học phí: {localeString(foundClass?.tuitionFee)}đ
@@ -167,6 +169,7 @@ const columns = [
   { name: "Thao tác", uid: "actions", disableSort: true },
 ];
 
+const defaultOrder = ORDER_BY_NAME;
 const defaultSelectedColumns = ["index", "name", "phoneNumber", "paid", "actions"];
 
 export default ClassTuition;

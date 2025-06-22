@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import ClassDetailModal from "./ClassDetailModal";
 import { useTableContext } from "@/components/common";
-import { COURSE_LEVELS } from "@/constants";
+import { COURSE_LEVELS, getCode } from "@/constants";
 import { useMetadata, useNavigate } from "@/hooks";
 import { displayDate, getClassStatus, localeString, shiftFormat } from "@/utils";
 import { Button } from "@heroui/button";
@@ -31,6 +31,7 @@ const ClassCell = ({ dataRefs, rowData, columnKey, rowIndex, onDelete = (id) => 
   const dateFields = ["createdAt", "openingDay", "closingDay", "lastUpdatedAt"];
   if (dateFields.includes(columnKey)) cellValue = displayDate(cellValue);
   if (columnKey === "index") cellValue = getRowIndex(rowIndex + 1);
+  if (columnKey === "code") cellValue = getCode("class", rowData.id);
   if (columnKey === "tuitionFee") cellValue = localeString(cellValue) + "đ";
   if (columnKey === "level") cellValue = COURSE_LEVELS[cellValue];
   if (columnKey === "courseId") cellValue = course?.name || "";

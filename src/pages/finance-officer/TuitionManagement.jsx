@@ -1,45 +1,30 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { ModuleLayout } from "@/layouts";
 import { classTuitionBreadcrumbItems } from "./constants";
-import { useMetadata, useNavigate, useServerList, useTable } from "@/hooks";
+import { useNavigate, useTable } from "@/hooks";
 import { Table, TableFooter, TableHeader, TableProvider } from "@/components/common";
 import { ConfirmDeleteDialog } from "@/components";
 import { useDisclosure } from "@heroui/modal";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { addToast } from "@heroui/toast";
-import { classApi, tuitionApi, userApi } from "@/apis";
-import { Select, SelectItem } from "@heroui/select";
-import { displayDate, localeString, shiftFormat } from "@/utils";
-import { format } from "date-fns";
-import { DATE_FORMAT, ORDER_BY_NAME } from "@/constants";
+import { tuitionApi } from "@/apis";
+import { displayDate, localeString } from "@/utils";
+import { getCode } from "@/constants";
 import { User } from "@heroui/user";
 import { Button } from "@heroui/button";
 import { Tooltip } from "@heroui/tooltip";
 import { Edit, Trash2 } from "lucide-react";
-import { Avatar } from "@heroui/avatar";
 
 const TuitionManagement = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const table = useTable({ allColumns: columns, defaultSelectedColumns });
+  const table = useTable({ allColumns: columns, defaultSelectedColumns, Api: tuitionApi });
   const { pager, filters, debounceQuery, order, setPager } = table;
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [selectedTuitionId, setSelectedTuitionId] = useState(null);
-  const [selectedClassId, setSelectedClassId] = useState(null);
-  const [selectedStudentId, setSelectedStudentId] = useState(null);
 
-  const { shiftObj } = useMetadata();
-  const classList = useServerList("classes", classApi.get, {
-    filters: { closingDay: { gte: format(new Date(), DATE_FORMAT) } },
-    order: ORDER_BY_NAME,
-    otherParams: ["fields=id,name,teacherId,shiftId,tuitionFee"],
-    paging: false,
-  });
-  const studentList = useServerList("users", userApi.get, { filters: { role: "student" } });
   const mergedFilters = { ...filters };
-  if (selectedClassId) mergedFilters.classId = selectedClassId;
-  if (selectedStudentId) mergedFilters.studentId = selectedStudentId;
   const { isLoading, data, isSuccess } = useQuery({
     queryKey: [
       "tuitions",
@@ -88,67 +73,8 @@ const TuitionManagement = () => {
             </h3>
           </div>
           <TableHeader
-            disabledSearch
-            searchPlaceholder="Nhập nội dung"
+            searchPlaceholder="Nhập mã học phí hoặc mã thanh toán"
             addBtnPath={`/tuition-management/add`}
-            startContent={[
-              <Select
-                size="sm"
-                placeholder="Chọn lớp học"
-                isVirtualized
-                aria-label="select"
-                className="min-w-[200px]"
-                maxListboxHeight={265}
-                itemHeight={50}
-                items={classList.list}
-                isLoading={classList.isLoading}
-                listboxProps={classList.listboxProps}
-                selectedKeys={new Set(selectedClassId ? [selectedClassId.toString()] : [])}
-                onSelectionChange={(keys) => {
-                  const classId = [...keys][0] && Number([...keys][0]);
-                  setSelectedClassId(classId);
-                  setSelectedStudentId(null);
-                }}
-              >
-                {(item) => (
-                  <SelectItem key={item.id?.toString()} description={shiftFormat(shiftObj[item.shiftId])}>
-                    {item.name}
-                  </SelectItem>
-                )}
-              </Select>,
-              <Select
-                size="sm"
-                placeholder="Chọn học sinh"
-                isVirtualized
-                aria-label="select"
-                className="min-w-[250px]"
-                maxListboxHeight={265}
-                itemHeight={50}
-                items={studentList.list}
-                isLoading={studentList.isLoading}
-                listboxProps={studentList.listboxProps}
-                selectedKeys={new Set(selectedStudentId ? [selectedStudentId.toString()] : [])}
-                onSelectionChange={(keys) => {
-                  const classId = [...keys][0] && Number([...keys][0]);
-                  setSelectedStudentId(classId);
-                  setSelectedClassId(null);
-                }}
-              >
-                {(item) => (
-                  <SelectItem
-                    key={item.id.toString()}
-                    startContent={
-                      <div>
-                        <Avatar src={item.imageUrl} />
-                      </div>
-                    }
-                    description={item.email}
-                  >
-                    {item.name}
-                  </SelectItem>
-                )}
-              </Select>,
-            ]}
             rowSize={data?.rows?.length || 0}
           />
         </div>
@@ -162,6 +88,7 @@ const TuitionManagement = () => {
             const classes = data.refs?.classes || {};
             if (columnKey === "date") return displayDate(new Date(cellValue));
             if (columnKey === "amount") return localeString(cellValue) + "đ";
+            if (columnKey === "code") return getCode("tuition", row.id);
             if (columnKey === "student")
               return (
                 <User
@@ -218,6 +145,7 @@ const TuitionManagement = () => {
 
 const columns = [
   { name: "STT", uid: "index", disableSort: true },
+  { name: "Mã", uid: "code", disableSort: true },
   { name: "Học viên", uid: "student", disableSort: true },
   { name: "Số điện thoại", uid: "phoneNumber", disableSort: true },
   { name: "Lớp học", uid: "class", disableSort: true },
@@ -229,6 +157,6 @@ const columns = [
   { name: "Thao tác", uid: "actions", disableSort: true },
 ];
 
-const defaultSelectedColumns = ["index", "student", "amount", "content", "class", "date", "actions"];
+const defaultSelectedColumns = ["index", "code", "student", "amount", "content", "class", "date", "actions"];
 
 export default TuitionManagement;

@@ -106,20 +106,41 @@ export const ATTENDANCES = {
 };
 
 export const ORDER_BY_NAME = { orderBy: "name", order: "asc" };
+export const ORDER_BY_CREATED_AT = { orderBy: "createdAt", order: "desc" };
 
 export const EXERCISE_STATUSES = {
   submitted: "Đã nộp",
   missing: "Chưa nộp",
 };
+export const DEFAULT_SEARCH_PLACEHOLDER = "Tìm theo tên hoặc mã...";
 
 export const currentDate = new Date();
 export const defaultWeekCalendarValue = {
   startDate: format(startOfWeek(currentDate, { weekStartsOn: 1 }), DATE_FORMAT),
   endDate: format(endOfWeek(currentDate, { weekStartsOn: 1 }), DATE_FORMAT),
 };
-const studentCode = "HV";
-const classCode = "LH";
-export const CODES = [studentCode, classCode];
-export const getStudentCode = (id) => studentCode + id;
-export const getClassCode = (id) => classCode + id;
+export const ID_CODES = {
+  user: "ND",
+  course: "KH",
+  employee: "NV",
+  class: "LH",
+  enrollment: "DK",
+  certificate: "CC",
+  shift: "CH",
+  exam: "KT",
+  studentExam: "HKT",
+  studentConsultation: "TV",
+  classSchedule: "LH",
+  classExercise: "BT",
+  classTopic: "CD",
+  classAttendance: "DD",
+  exerciseScore: "DS",
+  infoSheet: "TB",
+  tuition: "HP",
+  tuitionDiscount: "GG",
+};
+
+export const getCode = (key, id) => ID_CODES[key] + id;
+export const getStudentCode = (id) => ID_CODES.user + id;
+export const getClassCode = (id) => ID_CODES.class + id;
 export const getYearCode = () => new Date().getFullYear().toString().slice(2);

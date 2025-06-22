@@ -18,7 +18,7 @@ const UserDetailModal = ({ user, onOpenChange }) => {
 
   const { data } = useQuery({
     queryKey: ["users", "detail", user.id, "refs=true"],
-    queryFn: () => userApi.getById(user.id, { refs: true }),
+    queryFn: () => userApi.getById(user.id, ["refs=true"]),
   });
 
   const handleDelete = () => {};

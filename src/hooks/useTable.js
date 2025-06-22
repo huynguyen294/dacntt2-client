@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { DEFAULT_PAGER } from "@/constants";
+import { DEFAULT_PAGER, ORDER_BY_CREATED_AT } from "@/constants";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import useDebounce from "./useDebounce";
 
@@ -9,11 +9,12 @@ const tableAllColumns = [];
 const useTable = ({
   defaultSelectedColumns = tableDefaultSelectedColumns,
   allColumns = tableAllColumns,
-  defaultOrderBy = "createdAt",
+  defaultOrder = ORDER_BY_CREATED_AT,
+  Api,
 } = {}) => {
   const [query, setQuery] = useState("");
   const [pager, setPager] = useState(DEFAULT_PAGER);
-  const [order, setOrder] = useState({ order: "asc", orderBy: defaultOrderBy });
+  const [order, setOrder] = useState(defaultOrder);
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
   const [selectedColumns, setSelectedColumns] = useState(new Set(defaultSelectedColumns));
   const [filters, setFilters] = useState({});
@@ -32,7 +33,7 @@ const useTable = ({
   const reset = useCallback(() => {
     setQuery("");
     setPager(DEFAULT_PAGER);
-    setOrder({ order: "asc", orderBy: defaultOrderBy });
+    setOrder(defaultOrder);
     setSelectedKeys(new Set([]));
     setSelectedColumns(new Set(defaultSelectedColumns));
     setFilters({});
@@ -47,6 +48,7 @@ const useTable = ({
   }, [reset, defaultSelectedColumns]);
 
   return {
+    Api,
     setQuery,
     pager,
     columns,

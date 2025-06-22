@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useTableContext } from "@/components/common";
-import { DATE_FORMAT } from "@/constants";
+import { DATE_FORMAT, getCode } from "@/constants";
 import { useNavigate } from "@/hooks";
 import { displayDate } from "@/utils";
 import { Button } from "@heroui/button";
@@ -17,6 +17,7 @@ const ExamCell = ({ rowData, columnKey, rowIndex, onDelete = (id) => {} }) => {
   const dateFields = ["createdAt", "date", "lastUpdatedAt"];
   if (dateFields.includes(columnKey)) cellValue = displayDate(cellValue);
   if (columnKey === "index") cellValue = getRowIndex(rowIndex + 1);
+  if (columnKey === "code") cellValue = getCode("exam", rowData.id);
   if (columnKey === "time") cellValue = cellValue.slice(0, 5);
 
   switch (columnKey) {

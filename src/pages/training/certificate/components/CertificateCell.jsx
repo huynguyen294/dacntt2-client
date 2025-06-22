@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useTableContext } from "@/components/common";
+import { getCode } from "@/constants";
 import { useNavigate } from "@/hooks";
 import { convertImageSrc, displayDate } from "@/utils";
 import { Button } from "@heroui/button";
@@ -15,6 +16,7 @@ const CertificateCell = ({ rowData, columnKey, rowIndex, onDelete = (id) => {} }
 
   const dateFields = ["createdAt", "lastUpdatedAt"];
   if (columnKey === "index") cellValue = getRowIndex(rowIndex + 1);
+  if (columnKey === "code") cellValue = getCode("certificate", rowData.id);
   if (dateFields.includes(columnKey)) cellValue = displayDate(cellValue);
 
   switch (columnKey) {

@@ -11,7 +11,7 @@ const TimetableFilter = ({ value, onChange }) => {
     filters: { role: "teacher", status: EMPLOYEE_STATUS.active },
     otherParams: ["role=teacher"],
     searchQuery: studentList.query,
-    searchPlaceholder: "Tìm theo tên, email...",
+    searchPlaceholder: "Tìm theo mã, tên, email...",
     paging: false,
   });
   const classList = useServerList("classes", classApi.get, {
@@ -19,7 +19,7 @@ const TimetableFilter = ({ value, onChange }) => {
       openingDay: { lte: format(new Date(), DATE_FORMAT) },
       closingDay: { gte: format(new Date(), DATE_FORMAT) },
     },
-    searchPlaceholder: "Tìm theo tên, email...",
+    searchPlaceholder: "Tìm theo mã, tên, email...",
     paging: false,
   });
 

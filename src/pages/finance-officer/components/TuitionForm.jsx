@@ -2,7 +2,7 @@ import { classApi, tuitionApi, userApi } from "@/apis";
 import { CurrencyInput, Section } from "@/components/common";
 import { DATE_FORMAT, getClassCode, getStudentCode, getYearCode, ORDER_BY_NAME } from "@/constants";
 import { useMetadata, useNavigate, useServerList } from "@/hooks";
-import { shiftFormat } from "@/utils";
+import { generateUid, shiftFormat } from "@/utils";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { Avatar } from "@heroui/avatar";
 import { Button } from "@heroui/button";
@@ -64,7 +64,7 @@ const TuitionForm = ({ defaultValues = {}, editMode }) => {
 
   const handleChange = ({ studentId, classId, content }) => {
     if (studentId && classId && !content) {
-      const newContent = [getYearCode(), getStudentCode(studentId), getClassCode(classId)].join("_");
+      const newContent = [getYearCode(), getStudentCode(studentId), getClassCode(classId), generateUid()].join("_");
       actions.setValue("content", newContent, { shouldOnChange: false });
     }
   };
@@ -176,6 +176,7 @@ const TuitionForm = ({ defaultValues = {}, editMode }) => {
             )}
           />
           <CurrencyInput
+            autoFocus={searchParams.get("studentId")}
             defaultValue={defaultValues.amount}
             isRequired
             name="amount"

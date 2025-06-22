@@ -12,10 +12,11 @@ import { classApi } from "@/apis";
 import { addToast } from "@heroui/toast";
 import { useAppStore } from "@/state";
 import ClassFilter from "./components/ClassFilter";
+import { ORDER_BY_NAME } from "@/constants";
 
 const ClassManagement = () => {
   const queryClient = useQueryClient();
-  const table = useTable({ allColumns: columns, defaultSelectedColumns, defaultOrderBy: "name" });
+  const table = useTable({ allColumns: columns, defaultSelectedColumns, defaultOrder, Api: classApi });
   const { pager, filters, debounceQuery, order, setPager } = table;
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [selectedClassId, setSelectedClassId] = useState(null);
@@ -64,7 +65,6 @@ const ClassManagement = () => {
           </div>
           <TableHeader
             filter={<ClassFilter />}
-            searchPlaceholder="Nhập tên lớp học"
             addBtnPath={`/classes/add`}
             rowSize={data?.rows?.length || 0}
             hideAddBtn={user?.role !== "admin"}
@@ -97,6 +97,7 @@ const ClassManagement = () => {
 
 const columns = [
   { name: "STT", uid: "index", disableSort: true },
+  { name: "Mã", uid: "code", disableSort: true },
   { name: "Tên lớp học", uid: "name" },
   { name: "Giáo viên phụ trách", uid: "teacherId", disableSort: true },
   { name: "Lịch học", uid: "weekDays" },
@@ -117,6 +118,7 @@ const columns = [
 
 const defaultSelectedColumns = [
   "index",
+  "code",
   "name",
   "teacherId",
   "weekDays",
@@ -128,5 +130,7 @@ const defaultSelectedColumns = [
   "status",
   "actions",
 ];
+
+const defaultOrder = ORDER_BY_NAME;
 
 export default ClassManagement;

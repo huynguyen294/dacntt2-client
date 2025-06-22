@@ -14,7 +14,7 @@ import ExamCell from "./components/ExamCell";
 
 const ExamManagement = () => {
   const queryClient = useQueryClient();
-  const table = useTable({ allColumns: columns, defaultSelectedColumns });
+  const table = useTable({ allColumns: columns, defaultSelectedColumns, Api: examApi });
   const { pager, filters, debounceQuery, order, setPager } = table;
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [selectedExamId, setSelectedExamId] = useState(null);
@@ -59,12 +59,7 @@ const ExamManagement = () => {
               <span className="bg-default-100 px-2 py-1 rounded-full text-[13px] font-normal ml-1">{pager.total}</span>
             </h3>
           </div>
-          <TableHeader
-            searchPlaceholder="Nhập tên kỳ thi"
-            filter={<ExamFilter />}
-            addBtnPath={`/exams/add`}
-            rowSize={data?.rows?.length || 0}
-          />
+          <TableHeader filter={<ExamFilter />} addBtnPath={`/exams/add`} rowSize={data?.rows?.length || 0} />
         </div>
         <Table
           isLoading={isLoading}
@@ -92,6 +87,7 @@ const ExamManagement = () => {
 
 const columns = [
   { name: "STT", uid: "index", disableSort: true },
+  { name: "Mã", uid: "code", disableSort: true },
   { name: "Tên kỳ thi", uid: "name" },
   { name: "Ngày thi", uid: "date" },
   { name: "Giờ thi", uid: "time" },
@@ -102,6 +98,6 @@ const columns = [
   { name: "Thao tác", uid: "actions", disableSort: true },
 ];
 
-const defaultSelectedColumns = ["index", "name", "date", "time", "location", "createdAt", "actions"];
+const defaultSelectedColumns = ["index", "code", "name", "date", "time", "location", "createdAt", "actions"];
 
 export default ExamManagement;

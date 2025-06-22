@@ -19,7 +19,7 @@ const UserManagement = () => {
   const { role } = useParams();
   const { columns, defaultSelectedColumns } = columnsByRole[role];
 
-  const table = useTable({ allColumns: columns, defaultSelectedColumns });
+  const table = useTable({ allColumns: columns, defaultSelectedColumns, Api: userApi });
   const { pager, filters, debounceQuery, order, setPager } = table;
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [selectedUserId, setSelectedUserId] = useState(null);
@@ -70,6 +70,7 @@ const UserManagement = () => {
             </h3>
           </div>
           <TableHeader
+            searchPlaceholder="Tìm theo mã, tên, email hoặc số điện thoại"
             filter={<TableFilter role={role} />}
             multiAction={<MultipleActions />}
             addBtnPath={`/user-management/${role}/add`}
@@ -104,6 +105,7 @@ const UserManagement = () => {
 
 const commonColumns = [
   { name: "STT", uid: "index", disableSort: true },
+  { name: "Mã", uid: "code", disableSort: true },
   { name: "Tài khoản", uid: "user", sortUid: "name" },
   { name: "Vai trò", uid: "role", disableSort: true },
   { name: "Ngày sinh", uid: "dateOfBirth" },
@@ -149,7 +151,7 @@ const financeOfficerColumns = [
   { name: "Thao tác", uid: "actions", disableSort: true },
 ];
 
-const commonSelectedColumns = ["index", "user", "phoneNumber", "createdAt", "actions"];
+const commonSelectedColumns = ["index", "code", "user", "phoneNumber", "createdAt", "actions"];
 const adminDefaultSelectedColumns = [...commonSelectedColumns, "role", "dateOfBirth", "gender"];
 const studentDefaultSelectedColumns = [...commonSelectedColumns, "classes", "tuition"];
 const teacherDefaultSelectedColumns = [...commonSelectedColumns, "major", "classes", "salary", "status"];

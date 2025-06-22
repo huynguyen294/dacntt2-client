@@ -17,7 +17,7 @@ import AdmissionFilter from "./components/AdmissionFilter";
 
 const AdmissionManagement = () => {
   const queryClient = useQueryClient();
-  const table = useTable({ allColumns: columns, defaultSelectedColumns });
+  const table = useTable({ allColumns: columns, defaultSelectedColumns, Api: studentConsultationApi });
   const { pager, filters, debounceQuery, order, setPager, setSelectedKeys } = table;
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [selectedId, setSelectedId] = useState(null);
@@ -121,6 +121,7 @@ const AdmissionManagement = () => {
 
 const columns = [
   { name: "STT", uid: "index", disableSort: true },
+  { name: "Mã", uid: "code", disableSort: true },
   { name: "Tên ứng viên", uid: "name" },
   { name: "Email", uid: "email" },
   { name: "Ngày sinh", uid: "dateOfBirth" },
@@ -142,6 +143,7 @@ const columns = [
 
 const defaultSelectedColumns = [
   "index",
+  "code",
   "name",
   "email",
   "status",

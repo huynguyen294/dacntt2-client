@@ -5,6 +5,7 @@ import API from "./api";
 
 export const generateCrudApi = (key) => {
   return {
+    key,
     get: async (pager, order, search, filters, otherParams = []) => {
       const params = getCommonParams(pager, order, search, filters);
       params.push(...otherParams);
@@ -14,20 +15,17 @@ export const generateCrudApi = (key) => {
     },
 
     getById: async (id, otherParams = []) => {
-      const params = [];
-      params.push(...otherParams);
-
-      const result = await API.get(`/api-v1/${key}/${id}?${params.join("&")}`);
+      const result = await API.get(`/api-v1/${key}/${id}?${otherParams.join("&")}`);
       return result.data;
     },
 
-    create: async (data) => {
+    create: async (data, otherParams = []) => {
       try {
         if (Array.isArray(data)) {
-          const result = await API.post(`/api-v1/${key}`, { [camelCase(key)]: data });
+          const result = await API.post(`/api-v1/${key}?${otherParams.join("&")}`, { [camelCase(key)]: data });
           return { ok: true, created: result.data.created };
         }
-        const result = await API.post(`/api-v1/${key}`, data);
+        const result = await API.post(`/api-v1/${key}?${otherParams.join("&")}`, data);
         return { ok: true, created: result.data.created };
       } catch (error) {
         return getServerErrorMessage(error);
@@ -50,6 +48,15 @@ export const generateCrudApi = (key) => {
     delete: async (id) => {
       try {
         await API.delete(`/api-v1/${key}/${id}`);
+        return { ok: true };
+      } catch (error) {
+        return getServerErrorMessage(error);
+      }
+    },
+
+    deleteMany: async (ids) => {
+      try {
+        await API.delete(`/api-v1/${key}?ids=${ids.join(",")}`);
         return { ok: true };
       } catch (error) {
         return getServerErrorMessage(error);
