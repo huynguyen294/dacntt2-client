@@ -18,7 +18,7 @@ export default defineConfig({
     VitePWA({
       manifest,
       srcDir: "src",
-      filename: "sw.js",
+      filename: "service-worker.js",
       registerType: "autoUpdate",
       strategies: "injectManifest",
       workbox: {
