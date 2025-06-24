@@ -11,3 +11,4 @@ export { default as EmptyMessage } from "./EmptyMessage";
 export { default as UserScheduleButton } from "./UserScheduleButton";
 export { default as TimetableFilter } from "./TimetableFilter";
 export { default as UserClasses } from "./UserClasses";
+export { default as IosInstallModal } from "./IosInstallModal";

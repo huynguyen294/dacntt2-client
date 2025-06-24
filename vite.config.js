@@ -1,8 +1,10 @@
 /* eslint-disable no-undef */
 import { defineConfig } from "vite";
-import path from "path";
+import { VitePWA } from "vite-plugin-pwa";
 
+import path from "path";
 import react from "@vitejs/plugin-react";
+import manifest from "./manifest.json";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -11,17 +13,29 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  plugins: [react()],
+  plugins: [
+    react(),
+    VitePWA({
+      manifest,
+      srcDir: "src",
+      filename: "sw.js",
+      registerType: "autoUpdate",
+      strategies: "injectManifest",
+      workbox: {
+        globPatterns: ["**/*.{js,css,html,ico,png,jpg,svg,webmanifest}"],
+      },
+      // devOptions: {
+      //   enabled: true,
+      //   type: "module",
+      // },
+    }),
+  ],
   build: {
     rollupOptions: {
       output: {
         manualChunks(id) {
           if (id.includes("node_modules")) {
-            // if (id.includes("@fortawesome")) return "@fortawesome";
             if (id.includes("@heroui")) return "@heroui";
-            // if (id.includes("lodash")) return "lodash";
-            // if (id.includes("chart")) return "chart";
-            // if (id.includes("react-aria")) return "react-aria";
           }
         },
       },

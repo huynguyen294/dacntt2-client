@@ -2,6 +2,11 @@ import Compressor from "compressorjs";
 import { CLASS_STATUSES, currentDate } from "@/constants";
 import { format } from "date-fns";
 
+export const isIOS = () => {
+  const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+  return /iPhone|iPad|iPod/i.test(userAgent);
+};
+
 export const orderBy = (list, cb = (item) => item, options = { sortOrder: "asc" }) => {
   const cloned = [...list];
   cloned.sort((a, b) => {

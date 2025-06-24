@@ -1,3 +1,4 @@
+import SidebarDrawer from "./SidebarDrawer";
 import { Avatar } from "@heroui/avatar";
 import { Button } from "@heroui/button";
 import { Divider } from "@heroui/divider";
@@ -12,17 +13,20 @@ import { useNavigate } from "@/hooks";
 import { User } from "@heroui/user";
 import { cn } from "@/lib/utils";
 import { useLocation, useParams } from "react-router";
-import SidebarDrawer from "./SidebarDrawer";
-import { UserScheduleButton } from "@/components";
+import { IosInstallModal, UserScheduleButton } from "@/components";
 import { Skeleton } from "@heroui/skeleton";
+import usePwaInstaller from "@/hooks/usePwaInstaller";
 
 const NavBar = ({ breadcrumbItems = [], hideMenuButton = false, hideDashboard = false }) => {
   const navigate = useNavigate(true);
   const params = useParams();
   const location = useLocation();
   const pathname = location.pathname;
+  const iosInstallModal = useDisclosure();
+
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
+  const handleInstall = usePwaInstaller(iosInstallModal.onOpen);
   const user = useAppStore("user");
   const ready = useStudentStore("ready");
 
@@ -37,6 +41,7 @@ const NavBar = ({ breadcrumbItems = [], hideMenuButton = false, hideDashboard = 
   return (
     user && (
       <HeroUiNavBar maxWidth="full" shouldHideOnScroll classNames={{ wrapper: "px-2 sm:px-6" }}>
+        <IosInstallModal isOpen={iosInstallModal.isOpen} onClose={iosInstallModal.onClose} />
         <SidebarDrawer isOpen={isOpen} onOpenChange={onOpenChange} />
         <NavbarContent justify="start" className="gap-1">
           <Button
@@ -125,7 +130,11 @@ const NavBar = ({ breadcrumbItems = [], hideMenuButton = false, hideDashboard = 
                 <DropdownItem startContent={<UserPen size="16px" />} onPress={() => navigate(`/profile`)}>
                   Hồ sơ cá nhân
                 </DropdownItem>
-                <DropdownItem startContent={<ArrowDownToLine size="16px" />} onPress={() => {}}>
+                <DropdownItem
+                  isDisabled={!handleInstall}
+                  startContent={<ArrowDownToLine size="16px" />}
+                  onPress={handleInstall}
+                >
                   Cài đặt ứng dụng
                 </DropdownItem>
                 <DropdownItem startContent={<Info size="16px" />}>Liên hệ</DropdownItem>
