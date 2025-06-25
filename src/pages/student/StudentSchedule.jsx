@@ -1,6 +1,6 @@
 import { ModuleLayout } from "@/layouts";
 import { TimeTable } from "@/components";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { defaultWeekCalendarValue } from "@/constants";
 import { arrayToObject } from "@/utils";
 import { COLORS } from "@/constants/palette";
@@ -15,23 +15,8 @@ const StudentSchedule = () => {
   const teacherObj = arrayToObject(teachers);
   const shiftObj = arrayToObject(shifts);
 
-  useEffect(() => {
-    const siteWidth = 1024;
-    const scale = screen.width / siteWidth;
-
-    document
-      .querySelector('meta[name="viewport"]')
-      .setAttribute("content", "width=" + siteWidth + ", initial-scale=" + scale + "");
-
-    return () => {
-      document
-        .querySelector('meta[name="viewport"]')
-        .setAttribute("content", "width=width=device-width, initial-scale=1.0");
-    };
-  }, []);
-
   return (
-    <ModuleLayout breadcrumbItems={[{ label: "Thời khóa biểu" }]}>
+    <ModuleLayout breadcrumbItems={[{ label: "Thời khóa biểu" }]} className="min-w-[800px] overflow-x-auto">
       <div className="px-2 sm:px-10">
         <TimeTable
           timeTable={{ ready: true, shiftObj, value, setValue, schedules, classColors, classObj, teacherObj }}

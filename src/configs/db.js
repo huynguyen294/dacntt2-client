@@ -13,6 +13,7 @@ localDB.version(1).stores({
   classTopics: "id",
   consultations: "id",
   tuitions: "id",
+  tuitionDiscounts: "id",
 });
 
 export default localDB;

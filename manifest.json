@@ -2,10 +2,10 @@
   "name": "Center Management",
   "short_name": "CM",
   "start_url": ".",
-  "background_color": "#ecf9f0",
+  "background_color": "#fff",
   "description": "Center Management",
   "display": "standalone",
-  "theme_color": "#ecf9f0",
+  "theme_color": "#fff",
   "cache-busting": {
     "strategy": "hash",
     "parameters": { "algorithm": "sha256" }
