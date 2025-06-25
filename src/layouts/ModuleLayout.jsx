@@ -10,7 +10,13 @@ const ModuleLayout = withAuth(({ title, breadcrumbItems, children, className }) 
 
   return (
     <main className={cn("h-[100dvh] flex flex-col overflow-hidden container mx-auto", className)}>
-      <NavBar title={title} shouldHideOnScroll breadcrumbItems={breadcrumbItems} />
+      <NavBar
+        ready={ready && additionalReady}
+        title={title}
+        isModule
+        shouldHideOnScroll
+        breadcrumbItems={breadcrumbItems}
+      />
       {user?.role === "student" && <Loader isLoading={!ready} />}
       {user?.role !== "student" ? children : ready && additionalReady && children}
     </main>

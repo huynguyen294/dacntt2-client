@@ -34,7 +34,6 @@ const ClassTuition = () => {
 
   const { shiftObj } = useMetadata();
   const classList = useServerList("classes", classApi.get, {
-    filters: { closingDay: { gte: format(new Date(), DATE_FORMAT) } },
     order: ORDER_BY_NAME,
     otherParams: ["fields=id,name,teacherId,shiftId,tuitionFee"],
     paging: false,

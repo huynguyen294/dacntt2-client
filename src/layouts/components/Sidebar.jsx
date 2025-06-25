@@ -6,14 +6,17 @@ import { Button } from "@heroui/button";
 import { ChevronDown, CircleDot, School } from "lucide-react";
 import { useLocation } from "react-router";
 import { userSidebarItems } from "../constants";
+import { Skeleton } from "@heroui/skeleton";
 
-const Sidebar = ({ className }) => {
+const Sidebar = ({ ready, className }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const pathname = location.pathname;
 
   const user = useAppStore("user");
   const sidebarItems = userSidebarItems[user?.role];
+
+  const studentLoading = user?.role === "student" && !ready;
 
   const Section = ({ children, title, icon, active, defaultOpen }) => {
     const activeProps = active ? { selectedKeys: new Set(["1"]) } : null;
@@ -61,7 +64,9 @@ const Sidebar = ({ className }) => {
 
     const Icon = item.icon || CircleDot;
 
-    return (
+    return studentLoading ? (
+      <Skeleton className="w-full h-12 rounded-large" />
+    ) : (
       <Button
         size="lg"
         fullWidth

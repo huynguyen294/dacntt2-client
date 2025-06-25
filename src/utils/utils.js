@@ -146,6 +146,8 @@ export const currencyToNumber = (str = "") => parseInt(String(str).replaceAll(/[
 
 export const localeString = (number) => Number(number || 0).toLocaleString("zh-CN");
 
+export const calcTotal = (list = [], field = "amount") => list.reduce((acc, curr) => acc + curr[field], 0);
+
 const sample = (d = [], fn = Math.random) => {
   if (d.length === 0) return;
   return d[Math.round(fn() * (d.length - 1))];

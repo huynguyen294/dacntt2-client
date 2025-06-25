@@ -12,6 +12,7 @@ const initialStore = {
   classExercises: [],
   classExerciseScores: [],
   tuitions: [],
+  tuitionDiscounts: [],
 };
 
 export const useStudentStoreBase = create((set) => ({
