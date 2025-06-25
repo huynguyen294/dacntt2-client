@@ -3,6 +3,7 @@ import Dexie from "dexie";
 import { studentApi, userApi } from "@/apis";
 import { useAppStore } from "@/state";
 import { useEffect } from "react";
+import localDB from "@/configs/db";
 
 const useInitialization = () => {
   const user = useAppStore("user");
@@ -24,7 +25,7 @@ const useInitialization = () => {
         await studentApi.init(user?.id);
       } else {
         //keep db for offline
-        await dexieDB.open();
+        await localDB.open();
         await studentApi.initOffline();
       }
     })();

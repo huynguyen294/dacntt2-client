@@ -40,6 +40,8 @@ export const initOffline = async () => {
       localDB.teachers.toArray(),
     ]);
 
+    console.log(classes);
+
     actions.change("ready", true);
     actions.change("shifts", shifts);
     actions.change("classes", classes);

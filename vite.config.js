@@ -24,10 +24,10 @@ export default defineConfig({
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,jpg,svg,webmanifest}"],
       },
-      // devOptions: {
-      //   enabled: true,
-      //   type: "module",
-      // },
+      devOptions: {
+        enabled: true,
+        type: "module",
+      },
     }),
   ],
   build: {
