@@ -68,7 +68,7 @@ const InformationSheet = () => {
         </Modal>
       )}
       <div className="container mx-auto max-w-3xl">
-        <Card>
+        <Card shadow="sm">
           <div className="p-2 text-center font-bold bg-primary text-primary-foreground text-lg relative">
             <p>BẢNG THÔNG TIN</p>
 

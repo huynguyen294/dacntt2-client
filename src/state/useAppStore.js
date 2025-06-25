@@ -6,6 +6,7 @@ const initialStore = {
   ready: false,
   theme: "light",
   showInstaller: false,
+  isOnline: null,
 };
 
 export const useAppStoreBase = create((set) => ({

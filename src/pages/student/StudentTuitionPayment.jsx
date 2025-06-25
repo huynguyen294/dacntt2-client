@@ -36,7 +36,7 @@ const StudentTuitionPayment = () => {
 
   return (
     <ModuleLayout breadcrumbItems={tuitionPaymentBreadcrumbItems}>
-      <div className="px-2 sm:px-10 container mx-auto max-w-5xl grid grid-cols-1 sm:grid-cols-3 gap-4 overflow-y-auto">
+      <div className="px-2 sm:px-10 container mx-auto max-w-5xl grid grid-cols-1 sm:grid-cols-3 gap-4 overflow-y-auto pb-12">
         <div className="col-span-1 space-y-10 sm:space-y-12">
           <p className="text-xl font-bold">Thông tin học viên</p>
           <Input size="lg" label="Mã học viên" labelPlacement="outside" isReadOnly value={getCode("user", user.id)} />

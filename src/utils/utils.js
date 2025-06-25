@@ -18,6 +18,15 @@ export const isIOS = () => {
   return /iPhone|iPad|iPod/i.test(userAgent);
 };
 
+export const checkOnline = async (imageUrl) => {
+  try {
+    await fetch(imageUrl, { cache: "no-cache", headers: { "Cache-Control": "no-cache" } });
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
 export const orderBy = (list, cb = (item) => item, options = { sortOrder: "asc" }) => {
   const cloned = [...list];
   cloned.sort((a, b) => {
