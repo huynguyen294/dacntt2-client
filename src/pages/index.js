@@ -47,6 +47,7 @@ export { default as AddTuition } from "./finance-officer/AddTuition";
 export { default as AddTuitionDiscount } from "./finance-officer/AddTuitionDiscount";
 export { default as EditTuition } from "./finance-officer/EditTuition";
 export { default as EditTuitionDiscount } from "./finance-officer/EditTuitionDiscount";
+export { default as TuitionPayment } from "./finance-officer/TuitionPayment";
 
 // student
 export { default as StudentSchedule } from "./student/StudentSchedule";

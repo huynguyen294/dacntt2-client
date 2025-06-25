@@ -38,6 +38,7 @@ const financeSection = {
     { label: "Học phí lớp học", path: "/class-tuition" },
     { label: "Quản lý học phí", path: "/tuition-management" },
     { label: "Miễn giảm học phí", path: "/tuition-discount" },
+    { label: "Mã Qr thanh toán", path: "/tuition-payment" },
     { label: "Cài đặt tài chính", path: "/finance-settings", disabled: true },
   ],
 };

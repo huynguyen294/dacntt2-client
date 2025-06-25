@@ -11,7 +11,7 @@ import { Ban, ChevronDown, Info, Plus, PlusCircle } from "lucide-react";
 import { Button } from "@heroui/button";
 import { Select, SelectItem } from "@heroui/select";
 import { format } from "date-fns";
-import { DATE_FORMAT, ORDER_BY_NAME } from "@/constants";
+import { DATE_FORMAT, getCode, ORDER_BY_NAME } from "@/constants";
 import { localeString, shiftFormat } from "@/utils";
 import { useSearchParams } from "react-router";
 import { User } from "@heroui/user";
@@ -91,7 +91,7 @@ const ClassTuition = () => {
                 {(item) => {
                   return (
                     <SelectItem key={item.id?.toString()} description={shiftFormat(shiftObj[item.shiftId])}>
-                      {item.name}
+                      {`${getCode("class", item.id)}: ${item.name}`}
                     </SelectItem>
                   );
                 }}

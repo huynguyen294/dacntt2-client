@@ -1,6 +1,6 @@
-import { classApi, tuitionApi, userApi } from "@/apis";
+import { classApi, tuitionApi } from "@/apis";
 import { CurrencyInput, Section } from "@/components/common";
-import { DATE_FORMAT, getClassCode, getStudentCode, getYearCode, ORDER_BY_NAME } from "@/constants";
+import { DATE_FORMAT, getClassCode, getCode, getStudentCode, getYearCode, ORDER_BY_NAME } from "@/constants";
 import { useMetadata, useNavigate, useServerList } from "@/hooks";
 import { generateUid, shiftFormat } from "@/utils";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
@@ -109,7 +109,7 @@ const TuitionForm = ({ defaultValues = {}, editMode }) => {
               >
                 {(c) => (
                   <SelectItem key={c.id.toString()} description={shiftFormat(shiftObj[c.shiftId])}>
-                    {c.name}
+                    {`${getCode("class", c.id)}: ${c.name}`}
                   </SelectItem>
                 )}
               </Select>
@@ -150,7 +150,7 @@ const TuitionForm = ({ defaultValues = {}, editMode }) => {
                       }
                       description={item.email}
                     >
-                      {item.name}
+                      {`${getCode("user", item.id)}: ${item.name}`}
                     </AutocompleteItem>
                   ))}
               </Autocomplete>

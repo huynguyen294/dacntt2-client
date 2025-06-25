@@ -50,6 +50,7 @@ import {
   AddTuitionDiscount,
   EditTuitionDiscount,
   StudentTuitionPayment,
+  TuitionPayment,
 } from "./pages";
 
 import "./App.css";
@@ -111,6 +112,7 @@ const App = () => {
           <Route path="tuition-discount" element={<TuitionDiscount />} />
           <Route path="tuition-discount/add" element={<AddTuitionDiscount />} />
           <Route path="tuition-discount/edit/:id" element={<EditTuitionDiscount />} />
+          <Route path="tuition-payment" element={<TuitionPayment />} />
         </Route>
 
         <Route path="teacher">
@@ -169,6 +171,7 @@ const App = () => {
           <Route path="tuition-discount" element={<TuitionDiscount />} />
           <Route path="tuition-discount/add" element={<AddTuitionDiscount />} />
           <Route path="tuition-discount/edit/:id" element={<EditTuitionDiscount />} />
+          <Route path="tuition-payment" element={<TuitionPayment />} />
         </Route>
 
         <Route path="/">

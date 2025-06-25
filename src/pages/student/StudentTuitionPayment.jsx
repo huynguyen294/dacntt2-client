@@ -26,7 +26,6 @@ const StudentTuitionPayment = () => {
     const totalPaid = calcTotal(paid, "amount");
     const totalDiscount = calcTotal(discounts, "amount");
     const total = totalPaid + totalDiscount;
-    console.log(foundClass.tuitionFee - total);
     setAmount(foundClass.tuitionFee - total);
   }, [classId, classes, tuitions, tuitionDiscounts, user]);
 
