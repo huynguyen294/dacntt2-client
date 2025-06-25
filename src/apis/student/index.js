@@ -30,6 +30,8 @@ export const init = async (studentId) => {
 };
 
 export const initOffline = async () => {
+  const actions = getStudentActions();
+
   try {
     const [shifts, classes, schedules, teachers] = await Promise.all([
       localDB.shifts.toArray(),
