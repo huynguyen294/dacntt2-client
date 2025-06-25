@@ -49,6 +49,7 @@ import {
   EditTuition,
   AddTuitionDiscount,
   EditTuitionDiscount,
+  StudentTuitionPayment,
 } from "./pages";
 
 import "./App.css";
@@ -178,6 +179,7 @@ const App = () => {
           <Route path="exam-schedule" element={<StudentExam />} />
           <Route path="scores" element={<StudentScore />} />
           <Route path="tuition" element={<StudentTuition />} />
+          <Route path="tuition/payment/:classId" element={<StudentTuitionPayment />} />
           <Route path="letter" element={<StudentLetter />} />
         </Route>
 

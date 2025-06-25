@@ -16,6 +16,7 @@ import { useLocation, useParams } from "react-router";
 import { IosInstallModal, UserScheduleButton } from "@/components";
 import { Skeleton } from "@heroui/skeleton";
 import usePwaInstaller from "@/hooks/usePwaInstaller";
+import { getCode, ROLE_LABELS } from "@/constants";
 
 const NavBar = ({ breadcrumbItems = [], ready, isModule, hideMenuButton = false, hideDashboard = false }) => {
   const navigate = useNavigate(true);
@@ -134,8 +135,11 @@ const NavBar = ({ breadcrumbItems = [], ready, isModule, hideMenuButton = false,
                   </Button>
                 </DropdownTrigger>
                 <DropdownMenu aria-label="Profile Actions" variant="flat">
-                  <DropdownItem className="h-14 gap-2">
+                  <DropdownItem className="gap-2">
                     <User avatarProps={{ src: user.imageUrl }} name={user.name} description={user.email} />
+                    <p className="text-sm text-foreground-500 pb-2">
+                      Mã {ROLE_LABELS[user.role].toLowerCase()}: {getCode("user", user.id)}
+                    </p>
                   </DropdownItem>
                   <DropdownItem startContent={<UserPen size="16px" />} onPress={() => navigate(`/profile`)}>
                     Hồ sơ cá nhân

@@ -1,4 +1,5 @@
 import { InformationSheet } from "@/components";
+import { withStudentReady } from "@/hocs";
 import { MainLayout } from "@/layouts";
 
 const Dashboard = () => {
@@ -9,4 +10,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default withStudentReady(Dashboard, MainLayout);

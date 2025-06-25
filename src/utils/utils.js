@@ -2,6 +2,17 @@ import Compressor from "compressorjs";
 import { CLASS_STATUSES, currentDate } from "@/constants";
 import { format } from "date-fns";
 
+export const getVietQrQuickLink = ({
+  bankId = "970423",
+  stk = "0978520403",
+  format = "print",
+  amount = 0,
+  content = "",
+  accountName = "NGUYEN HOANG HUY",
+}) => {
+  return `https://img.vietqr.io/image/${bankId}-${stk}-${format}.png?amount=${amount}&addInfo=${content}&accountName=${accountName}`;
+};
+
 export const isIOS = () => {
   const userAgent = navigator.userAgent || navigator.vendor || window.opera;
   return /iPhone|iPad|iPod/i.test(userAgent);

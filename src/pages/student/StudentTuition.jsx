@@ -4,8 +4,11 @@ import { useStudentStore } from "@/state";
 import { arrayToObject, calcTotal, displayDate, localeString, orderBy } from "@/utils";
 import { Button } from "@heroui/button";
 import { Chip } from "@heroui/chip";
+import { tuitionBreadcrumbItems } from "./constants";
+import { useNavigate } from "@/hooks";
 
 const StudentTuition = () => {
+  const navigate = useNavigate();
   const { classes, teachers, tuitions, tuitionDiscounts } = useStudentStore([
     "classes",
     "teachers",
@@ -19,7 +22,7 @@ const StudentTuition = () => {
   });
 
   return (
-    <ModuleLayout breadcrumbItems={[{ label: "Học phí" }]}>
+    <ModuleLayout breadcrumbItems={tuitionBreadcrumbItems}>
       <div className="px-2 sm:px-10 container mx-auto max-w-5xl overflow-y-auto">
         <p className="sm:px-4 text-lg font-bold">Học phí của tôi</p>
         <TableProvider
@@ -61,7 +64,7 @@ const StudentTuition = () => {
                       <p className="text-foreground-500">
                         Còn lại: <span className="text-danger-500">{localeString(row.tuitionFee - total)}đ</span>
                       </p>
-                      <Button size="sm" color="primary">
+                      <Button size="sm" color="primary" onPress={() => navigate("/tuition/payment/" + row.id)}>
                         Thanh toán
                       </Button>
                     </div>

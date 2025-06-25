@@ -27,7 +27,7 @@ const trainingSection = {
     { label: "Khóa học", path: "/courses" },
     { label: "Lớp học", path: "/classes" },
     { label: "Lịch học", path: "/timetable" },
-    { label: "Kỳ thi", path: "/exams" },
+    // { label: "Kỳ thi", path: "/exams" },
     { label: "Cài đặt đào tạo", path: "/training-settings", disabled: true },
   ],
 };
@@ -101,7 +101,7 @@ export const userSidebarItems = {
         { ...dashboard, path: "/", isDashboard: true },
         { label: "Lớp học", path: "/classes", icon: LayoutGrid },
         { label: "Thời khóa biểu", path: "/timetable", icon: CalendarDays },
-        { label: "Lịch thi", path: "/exam-schedule", icon: Target },
+        // { label: "Lịch thi", path: "/exam-schedule", icon: Target },
         { label: "Kết quả học tập", path: "/scores", icon: Star },
         { label: "Học phí", path: "/tuition", icon: CircleDollarSign },
       ],

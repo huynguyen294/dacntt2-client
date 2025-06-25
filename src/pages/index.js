@@ -1,3 +1,13 @@
+// common
+export { default as NotFound } from "./NotFound";
+export { default as Profile } from "./Profile";
+export { default as Admin } from "./Admin";
+
+// auth
+export { default as Login } from "./auth/Login";
+export { default as Register } from "./auth/Register";
+
+// admin
 export { default as Dashboard } from "./Dashboard";
 export { default as UserManagement } from "./users/UserManagement";
 export { default as AddUser } from "./users/AddUser";
@@ -18,27 +28,18 @@ export { default as AddExam } from "./training/exam/AddExam";
 export { default as EditExam } from "./training/exam/EditExam";
 export { default as ExamManagement } from "./training/exam/ExamManagement";
 
+// consultant
 export { default as TimeTablePage } from "./training/timetable/TimeTablePage";
 export { default as TrainingSettings } from "./training/TrainingSettings";
 export { default as AdmissionManagement } from "./admission/AdmissionManagement";
 export { default as RegisterStudent } from "./admission/RegisterStudent";
 
-export { default as Login } from "./auth/Login";
-export { default as Register } from "./auth/Register";
-
-export { default as StudentSchedule } from "./student/StudentSchedule";
-export { default as StudentClass } from "./student/StudentClass";
-export { default as StudentExam } from "./student/StudentExam";
-export { default as StudentScore } from "./student/StudentScore";
-export { default as StudentTuition } from "./student/StudentTuition";
-export { default as StudentLetter } from "./student/StudentLetter";
-export { default as StudentClassRoom } from "./student/StudentClassRoom";
-export { default as ClassExerciseDetail } from "./student/ClassExerciseDetail";
-
+// teacher
 export { default as TeacherClass } from "./teacher/TeacherClass";
 export { default as Assessment } from "./teacher/Assessment";
 export { default as AttendanceCheck } from "./teacher/AttendanceCheck";
 
+// finance-officer
 export { default as ClassTuition } from "./finance-officer/ClassTuition";
 export { default as TuitionManagement } from "./finance-officer/TuitionManagement";
 export { default as TuitionDiscount } from "./finance-officer/TuitionDiscount";
@@ -47,6 +48,13 @@ export { default as AddTuitionDiscount } from "./finance-officer/AddTuitionDisco
 export { default as EditTuition } from "./finance-officer/EditTuition";
 export { default as EditTuitionDiscount } from "./finance-officer/EditTuitionDiscount";
 
-export { default as NotFound } from "./NotFound";
-export { default as Profile } from "./Profile";
-export { default as Admin } from "./Admin";
+// student
+export { default as StudentSchedule } from "./student/StudentSchedule";
+export { default as StudentClass } from "./student/StudentClass";
+export { default as StudentExam } from "./student/StudentExam";
+export { default as StudentScore } from "./student/StudentScore";
+export { default as StudentTuition } from "./student/StudentTuition";
+export { default as StudentLetter } from "./student/StudentLetter";
+export { default as StudentClassRoom } from "./student/StudentClassRoom";
+export { default as ClassExerciseDetail } from "./student/ClassExerciseDetail";
+export { default as StudentTuitionPayment } from "./student/StudentTuitionPayment";
