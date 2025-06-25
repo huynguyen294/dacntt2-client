@@ -16,6 +16,10 @@
   z-index: 3;
 }
 
+input {
+  font-size: 16px !important;
+}
+
 @keyframes shine {
   to {
     background-position-x: -200%;

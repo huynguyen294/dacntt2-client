@@ -9,8 +9,6 @@ const useInitialization = () => {
   const user = useAppStore("user");
   const isOnline = useAppStore("isOnline");
 
-  console.log(isOnline);
-
   useOnline();
 
   useEffect(() => {

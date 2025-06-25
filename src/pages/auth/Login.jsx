@@ -70,7 +70,17 @@ const Login = () => {
               onBlur={actions.checkValidity}
             />
             <div className="flex w-full items-center justify-between px-1 py-2">
-              <Link className="text-default-500" size="sm" onPress={() => navigate("/forget-password")}>
+              <Link
+                className="text-default-500"
+                size="sm"
+                onPress={() => {
+                  addToast({
+                    color: "default",
+                    title: "Chưa hỗ trợ!",
+                    description: "Vui lòng liên hệ quản trị viên để được hỗ trợ đặt lại mật khẩu",
+                  });
+                }}
+              >
                 Quên mật khẩu?
               </Link>
             </div>
@@ -101,7 +111,7 @@ const Login = () => {
           </div>
           <p className="text-foreground-500 text-center text-small">
             Bạn chưa tài khoản ?&nbsp;
-            <Link href="#" size="sm" onPress={() => navigate("/register")}>
+            <Link size="sm" onPress={() => navigate("/register")}>
               Đăng ký
             </Link>
           </p>

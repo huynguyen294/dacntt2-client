@@ -66,7 +66,7 @@ const StudentClass = () => {
     <ModuleLayout breadcrumbItems={classBreadcrumbItems}>
       <div className="px-2 sm:px-10 space-y-8 overflow-y-auto pb-10">
         <div>
-          <p className="m-4 text-lg font-bold">Lớp học của tôi</p>
+          <p className="m-2 mt-0 sm:m-4 text-lg font-bold">Lớp học của tôi</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4">
             {sortedClasses.length === 0 && (
               <div className="h-40 flex justify-center items-center w-full col-span-full">
@@ -107,7 +107,7 @@ const StudentClass = () => {
                   </div>
                   <div
                     className={cn(
-                      "px-3 relative mt-2",
+                      "px-3 relative mt-2 w-full",
                       status.text === CLASS_STATUSES.stopped && "[&_p]:!text-foreground-500"
                     )}
                   >
@@ -124,7 +124,7 @@ const StudentClass = () => {
                       <p className="text-left mt-4 mb-2">{teacher.name}</p>
                     </div>
                   </div>
-                  <div className={cn("border-t-1 px-3 py-2 flex justify-between items-center")}>
+                  <div className={cn("border-t-1 px-3 py-2 flex justify-between items-center w-full")}>
                     <div
                       className={cn(
                         "flex items-center gap-2 !text-small",
@@ -146,8 +146,8 @@ const StudentClass = () => {
           </div>
         </div>
         <div>
-          <p className="m-4 text-lg font-bold ">Lớp học khác</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <p className="mx-2 mt-0 sm:m-4 text-lg font-bold">Lớp học khác</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4">
             {courses
               .filter((course) => !classes.find((c) => c.courseId === course.id))
               .map((course) => {
