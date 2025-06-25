@@ -4,6 +4,7 @@ import { addToast } from "@heroui/toast";
 import { useEffect } from "react";
 
 const useOnline = () => {
+  const user = useAppStore("user");
   const appActions = useAppStore("appActions");
 
   useEffect(() => {
@@ -28,7 +29,7 @@ const useOnline = () => {
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
     };
-  }, []);
+  }, [user?.id]);
 };
 
 export default useOnline;

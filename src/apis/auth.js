@@ -32,6 +32,22 @@ export const signIn = async (data, navigate) => {
   }
 };
 
+export const googleSignIn = async (data, navigate) => {
+  const appActions = getAppActions();
+  try {
+    const res = await API.post("/api-v1/auth/google-signin", data, { withCredentials: true });
+    const user = res.data.user;
+    if (!user.imageUrl) user.imageUrl = "";
+    user.accessToken = res.data.accessToken;
+    localStorage.setItem("profile", cryptoEncrypt(JSON.stringify(user)));
+    appActions.change({ user });
+    navigate("/" + (user.role !== "student" ? user.role : ""));
+    return { ok: true, user };
+  } catch (error) {
+    return getServerErrorMessage(error);
+  }
+};
+
 export const signOut = async () => {
   try {
     // clear refresh token

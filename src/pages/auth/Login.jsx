@@ -1,4 +1,4 @@
-import { signIn } from "@/apis";
+import { googleSignIn, signIn } from "@/apis";
 import { PasswordInput } from "@/components/common";
 import { AuthLayout } from "@/layouts";
 import { useNavigate } from "@/hooks";
@@ -11,6 +11,7 @@ import { Link } from "@heroui/link";
 import { useState } from "react";
 import { Form, useForm } from "react-simple-formkit";
 import { addToast } from "@heroui/toast";
+import { useGoogleLogin } from "@react-oauth/google";
 
 const Login = () => {
   const navigate = useNavigate(false);
@@ -18,6 +19,18 @@ const Login = () => {
 
   const form = useForm();
   const { isDirty, isError, errors, actions } = form;
+
+  const login = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setSigning(true);
+      const result = await googleSignIn(tokenResponse, navigate);
+      if (!result.ok) {
+        addToast({ classNames: { base: "dark" }, color: "danger", title: "Lỗi!", description: result.message });
+      }
+      setSigning(false);
+    },
+    onError: (e) => console.log(e),
+  });
 
   const handleLogin = async (data) => {
     setSigning(true);
@@ -77,7 +90,12 @@ const Login = () => {
             <Divider className="flex-1" />
           </div>
           <div className="flex flex-col gap-2">
-            <Button isLoading={signing} startContent={<FontAwesomeIcon icon={faGoogle} />} variant="bordered">
+            <Button
+              isLoading={signing}
+              onPress={login}
+              startContent={<FontAwesomeIcon icon={faGoogle} />}
+              variant="bordered"
+            >
               Đăng nhập bằng Google
             </Button>
           </div>

@@ -7,7 +7,7 @@ import { Avatar } from "@heroui/avatar";
 import { Button } from "@heroui/button";
 import { Card } from "@heroui/card";
 import { Chip } from "@heroui/chip";
-import { Calendar, ChevronRight, DollarSign, Info, PhoneCall, Users2 } from "lucide-react";
+import { Ban, Calendar, ChevronRight, DollarSign, Info, PhoneCall, Users2 } from "lucide-react";
 import { useNavigate } from "@/hooks";
 import { studentConsultationApi } from "@/apis";
 import { useState } from "react";
@@ -68,6 +68,13 @@ const StudentClass = () => {
         <div>
           <p className="m-4 text-lg font-bold">Lớp học của tôi</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4">
+            {sortedClasses.length === 0 && (
+              <div className="h-40 flex justify-center items-center w-full col-span-full">
+                <div className="flex gap-1 text-foreground-500 items-center">
+                  <Ban size="20px" /> Bạn chưa có khóa học nào
+                </div>
+              </div>
+            )}
             {sortedClasses.map((classData) => {
               const shift = shiftObj[classData.shiftId];
               const teacher = teacherObj[classData.teacherId];
