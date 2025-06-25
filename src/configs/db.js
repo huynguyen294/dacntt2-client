@@ -6,7 +6,7 @@ localDB.version(1).stores({
   classes: "id",
   schedules: "id",
   teachers: "id",
-  attendances: "id",
+  attendances: "++id",
   classExercises: "id",
   classExerciseScores: "id",
   courses: "id",

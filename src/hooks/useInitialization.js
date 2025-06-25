@@ -11,14 +11,7 @@ const useInitialization = () => {
   useOnline();
 
   useEffect(() => {
-    userApi.refreshProfile();
-  }, []);
-
-  useEffect(() => {
-    //keep db for offline
-    if (isOnline === false) dexieDB.open();
-    //clear and create for new session
-    if (isOnline === true) Dexie.delete("dacntt2");
+    if (isOnline) userApi.refreshProfile();
   }, [isOnline]);
 
   useEffect(() => {
@@ -26,8 +19,12 @@ const useInitialization = () => {
     (async () => {
       if (!user?.id || user?.role !== "student" || isOnline === null) return;
       if (isOnline) {
+        //clear and create for new session
+        await Dexie.delete("dacntt2");
         await studentApi.init(user?.id);
       } else {
+        //keep db for offline
+        await dexieDB.open();
         await studentApi.initOffline();
       }
     })();
