@@ -10,12 +10,11 @@ const AdmissionStatusPie = () => {
       {
         data: [3, 50, 40, 23, 20],
         backgroundColor: [
-          alpha(PALETTE.SUCCESS, 0.9),
-          alpha(PALETTE.SUCCESS, 0.9),
-          alpha(PALETTE.SUCCESS, 0.9),
-          alpha(PALETTE.WARNING, 0.9),
-          alpha(PALETTE.DANGER, 0.9),
-          alpha(PALETTE.scarlet, 0.9),
+          alpha(PALETTE.charcoal, 0.3),
+          PALETTE.WARNING,
+          PALETTE.SUCCESS,
+          PALETTE.DANGER,
+          alpha(PALETTE.forest_green, 0.6),
         ],
       },
     ],

@@ -15,14 +15,14 @@ const ClassIndicator = () => {
     <Indicator isLoading={result.isLoading} title="Lớp học" icon={<LayoutGrid size="18px" />} path="/classes">
       <div className="px-4">
         {result.isLoading ? (
-          <Skeleton className="w-10 h-4 rounded-lg" />
+          <Skeleton className="w-20 h-6 rounded-lg mb-2" />
         ) : (
           <p className="text-2xl font-semibold text-success">
             {result.data.active} <span className="text-base font-normal">đang hoạt động</span>
           </p>
         )}
         {result.isLoading ? (
-          <Skeleton className="w-10 h-4 rounded-lg" />
+          <Skeleton className="w-20 h-6 rounded-lg" />
         ) : (
           <p className="text-2xl font-semibold text-warning">
             {result.data.pending} <span className="text-base font-normal">sắp khai giảng</span>
