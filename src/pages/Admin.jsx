@@ -22,7 +22,7 @@ const Admin = () => {
       <section className="p-4">
         <dl className="grid w-full grid-cols-1 gap-5 lg:grid-cols-2 xl:grid-cols-3">
           <div className="col-span-1 sm:col-span-2">
-            <p className="mb-4 ml-2 text-xl font-semibold">Biểu đồ xu hướng học viên</p>
+            <p className="mb-4 ml-2 text-xl font-semibold">Biểu đồ xu hướng học viên mới</p>
             <StudentTrendChart />
           </div>
           <div className="col-span-1 lg:col-span-2 xl:col-span-1">

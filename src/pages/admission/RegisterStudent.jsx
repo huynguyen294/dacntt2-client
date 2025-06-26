@@ -22,7 +22,7 @@ const RegisterStudent = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
-  const { isOpen, onOpenChange, onOpen } = useDisclosure();
+  const { isOpen, onOpenChange, onOpen, onClose } = useDisclosure();
   const [lastedReloadedAt, reload] = useReload();
 
   const step = searchParams.get("step");
@@ -31,7 +31,7 @@ const RegisterStudent = () => {
 
   const { isSuccess, data, isLoading } = useQuery({
     queryKey: ["users", userId],
-    queryFn: () => userId && userApi.getById(userId),
+    queryFn: () => (userId ? userApi.getById(userId) : null),
   });
 
   const {
@@ -40,7 +40,7 @@ const RegisterStudent = () => {
     isLoading: admissionLoading,
   } = useQuery({
     queryKey: ["admissions", admissionId],
-    queryFn: () => admissionId && studentConsultationApi.getById(admissionId),
+    queryFn: () => (admissionId ? studentConsultationApi.getById(admissionId) : null),
   });
 
   const loading = isLoading || admissionLoading;

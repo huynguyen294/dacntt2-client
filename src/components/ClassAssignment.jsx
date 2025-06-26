@@ -36,13 +36,12 @@ const ClassAssignment = ({
   const [selectedClass, setSelectedClass] = useState(null);
   const confirmModal = useDisclosure();
 
+  const filters = { closingDay: { gte: format(new Date(), DATE_FORMAT) } };
+  if (selectedCourse) filters.courseId = selectedCourse;
+  if (selectedShift) filters.shiftId = selectedShift;
+  if (selectedTeacher) filters.teacherId = selectedTeacher;
   const classList = useServerList("classes", classApi.get, {
-    filters: {
-      courseId: selectedCourse,
-      shiftId: selectedShift,
-      teacherId: selectedTeacher,
-      closingDay: { gte: format(new Date(), DATE_FORMAT) },
-    },
+    filters,
     otherParams: ["fields=:full", "refs=true"],
     order: { orderBy: "name", order: "desc" },
   });
@@ -209,7 +208,7 @@ const ClassAssignment = ({
           bottomContent={classList.hasMore && <LoadMoreButton onLoadMore={classList.onLoadMore} />}
           renderCell={(rowData, columnKey, index) => {
             let cellValue = rowData[columnKey];
-            const studentCount = classList.data.refs?.studentCounts?.[rowData.id]?.total;
+            const studentCount = classList.data?.refs?.studentCounts?.[rowData.id]?.total;
             if (columnKey === "index") cellValue = index + 1;
             if (columnKey === "numberOfStudents") cellValue = `${studentCount || 0}/${cellValue}`;
             const dateFields = ["openingDay", "closingDay"];

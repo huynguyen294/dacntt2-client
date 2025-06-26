@@ -156,13 +156,10 @@ export const defaultDoughnutOptions = {
   plugins: {
     datalabels: {
       color: "#fff",
+      display: false,
       font: {
         size: 12,
         weight: "bold",
-      },
-      formatter: (value) => {
-        if (value < 10) return "";
-        return value + "%";
       },
     },
   },

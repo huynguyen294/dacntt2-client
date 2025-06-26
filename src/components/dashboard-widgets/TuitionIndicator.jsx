@@ -28,8 +28,6 @@ const TuitionIndicator = ({ disableFooter }) => {
       const { previousMonthValue, previous2MonthValue } = result.data;
       obj.value = localeString(previousMonthValue) + "đ";
       obj.change = previous2MonthValue - previousMonthValue;
-
-      console.log(obj.change);
     }
 
     return obj;

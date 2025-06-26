@@ -91,8 +91,8 @@ export const userSidebarItems = {
         { ...dashboard, path: "/", isDashboard: true },
         { label: "Lớp học", path: "/classes", icon: LayoutGrid },
         { label: "Lịch dạy", path: "/timetable", icon: CalendarDays },
-        { label: "Chấm điểm", path: "/assessment", icon: ClipboardCheck },
-        { label: "Điểm danh", path: "/attendance-check", icon: ListChecks },
+        /* { label: "Chấm điểm", path: "/assessment", icon: ClipboardCheck },
+        { label: "Điểm danh", path: "/attendance-check", icon: ListChecks }, */
       ],
     },
   ],
