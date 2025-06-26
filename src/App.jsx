@@ -51,6 +51,9 @@ import {
   EditTuitionDiscount,
   StudentTuitionPayment,
   TuitionPayment,
+  AdmissionReport,
+  FinanceReport,
+  EduReport,
 } from "./pages";
 
 import "./App.css";
@@ -113,6 +116,10 @@ const App = () => {
           <Route path="tuition-discount/add" element={<AddTuitionDiscount />} />
           <Route path="tuition-discount/edit/:id" element={<EditTuitionDiscount />} />
           <Route path="tuition-payment" element={<TuitionPayment />} />
+
+          <Route path="admission-report" element={<AdmissionReport />} />
+          <Route path="finance-report" element={<FinanceReport />} />
+          <Route path="edu-report" element={<EduReport />} />
         </Route>
 
         <Route path="teacher">

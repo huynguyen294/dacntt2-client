@@ -119,6 +119,8 @@ export const defaultWeekCalendarValue = {
   startDate: format(startOfWeek(currentDate, { weekStartsOn: 1 }), DATE_FORMAT),
   endDate: format(endOfWeek(currentDate, { weekStartsOn: 1 }), DATE_FORMAT),
 };
+export const CURRENT_MONTH = currentDate.getMonth() + 1;
+export const PREVIOUS_MONTH = CURRENT_MONTH - 1 === 0 ? 12 : CURRENT_MONTH - 1;
 export const ID_CODES = {
   user: "ND",
   course: "KH",

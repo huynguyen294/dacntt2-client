@@ -8,12 +8,16 @@ import { ArrowDown, ArrowUp, Minus } from "lucide-react";
 import { Skeleton } from "@heroui/skeleton";
 import { shortenNumber } from "@/utils";
 
-const Indicator = ({ isLoading, title, description, value, change, icon, path, children }) => {
+const Indicator = ({ isLoading, title, description, value, change, icon, path, children, disableFooter }) => {
   const navigate = useNavigate();
   const changeType = !change || change === 0 ? "neutral" : change < 0 ? "positive" : "negative";
 
   return (
-    <Card key={title} className="border border-transparent dark:border-default-100 flex flex-col justify-between">
+    <Card
+      shadow="sm"
+      key={title}
+      className="border border-transparent dark:border-default-100 flex flex-col justify-between"
+    >
       <div className="flex p-4">
         <div
           className={cn("mt-1 flex h-8 w-8 items-center justify-center rounded-md", {
@@ -61,17 +65,19 @@ const Indicator = ({ isLoading, title, description, value, change, icon, path, c
           </Chip>
         )}
       </div>
-      <div className="bg-default-100">
-        <Button
-          fullWidth
-          className="flex justify-start text-xs text-default-500 data-[pressed]:scale-100"
-          radius="none"
-          variant="light"
-          onPress={() => navigate(path)}
-        >
-          Xem tất cả
-        </Button>
-      </div>
+      {!disableFooter && path && (
+        <div className="bg-default-100">
+          <Button
+            fullWidth
+            className="flex justify-start text-xs text-default-500 data-[pressed]:scale-100"
+            radius="none"
+            variant="light"
+            onPress={() => navigate(path)}
+          >
+            Xem tất cả
+          </Button>
+        </div>
+      )}
     </Card>
   );
 };

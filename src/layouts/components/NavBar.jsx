@@ -151,7 +151,7 @@ const NavBar = ({ breadcrumbItems = [], ready, isModule, hideMenuButton = false,
                   >
                     Cài đặt ứng dụng
                   </DropdownItem>
-                  <DropdownItem startContent={<Info size="16px" />}>Liên hệ</DropdownItem>
+                  {/* <DropdownItem startContent={<Info size="16px" />}>Liên hệ</DropdownItem> */}
                   <DropdownItem startContent={<LogOut size="16px" />} color="danger" onPress={handleLogout}>
                     Đăng xuất
                   </DropdownItem>

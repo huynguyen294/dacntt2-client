@@ -10,7 +10,7 @@ export const DEFAULT_DOUGHNUT_DATASET_STYLE = {
 
 export const DEFAULT_LINE_DATASET_STYLE = {
   fill: true,
-  tension: 0.4,
+  tension: 0.5,
 };
 
 export const DEFAULT_BAR_DATASET_STYLE = {
@@ -37,16 +37,23 @@ export const defaultBarOptions = {
   responsive: true,
   maintainAspectRatio: false,
   layout: {
-    padding: {
-      left: 0,
-      right: 20,
-      top: 0,
-      bottom: 0,
-    },
+    padding: 18,
   },
   interaction: {
     mode: "index",
     intersect: false,
+  },
+  plugins: {
+    tooltip: { enabled: true },
+    legend: { display: false },
+    datalabels: {
+      anchor: "end",
+      align: "end",
+      offset: -5,
+      font: {
+        size: 12,
+      },
+    },
   },
   scales: {
     y: {
@@ -110,7 +117,7 @@ export const defaultMixedOptions = {
       align: "end",
       offset: -5,
       color: "#fff",
-      borderColor: "#000",
+      borderColor: "#fff",
       textStrokeColor: "black", // <-- added this
       textStrokeWidth: 3, // <-- added this,
       font: {

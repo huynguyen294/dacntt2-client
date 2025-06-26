@@ -31,7 +31,7 @@ const usePwaInstaller = (onOpen = () => {}) => {
     };
   }, []);
 
-  return deferredPrompt && handleInstall;
+  return (deferredPrompt || isIOS()) && handleInstall;
 };
 
 export default usePwaInstaller;

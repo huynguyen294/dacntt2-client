@@ -1,5 +1,10 @@
-import { ClassIndicator, StudentIndicator, StudentTrendChart, TuitionIndicator } from "@/components/dashboard-widgets";
-import AdmissionStatusPie from "@/components/dashboard-widgets/AdmissionStatusPie";
+import {
+  AdmissionStatusPie,
+  ClassIndicator,
+  StudentIndicator,
+  StudentTrendChart,
+  TuitionIndicator,
+} from "@/components/dashboard-widgets";
 import { MainLayout } from "@/layouts";
 
 const Admin = () => {

@@ -29,9 +29,7 @@ const StudentTuitionPayment = () => {
     setAmount(foundClass.tuitionFee - total);
   }, [classId, classes, tuitions, tuitionDiscounts, user]);
 
-  const content = `${getYearCode()} ${getCode("user", user.id)} ${getCode("class", foundClass.id)} ${user.email} ${
-    user.phoneNumber
-  }`;
+  const content = `${getYearCode()} ${getCode("user", user.id)} ${getCode("class", foundClass.id)}`;
 
   return (
     <ModuleLayout breadcrumbItems={tuitionPaymentBreadcrumbItems}>

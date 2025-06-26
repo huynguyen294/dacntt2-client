@@ -59,3 +59,8 @@ export { default as StudentLetter } from "./student/StudentLetter";
 export { default as StudentClassRoom } from "./student/StudentClassRoom";
 export { default as ClassExerciseDetail } from "./student/ClassExerciseDetail";
 export { default as StudentTuitionPayment } from "./student/StudentTuitionPayment";
+
+// report
+export { default as AdmissionReport } from "./reports/AdmissionReport";
+export { default as FinanceReport } from "./reports/FinanceReport";
+export { default as EduReport } from "./reports/EduReport";

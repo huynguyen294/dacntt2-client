@@ -2,8 +2,9 @@ import { alpha } from "@/utils";
 import { Chart } from "../common";
 import { PALETTE } from "@/constants/palette";
 import { getDefaultOptions } from "../common/Charts/constants";
+import { cn } from "@/lib/utils";
 
-const StudentTrendChart = () => {
+const StudentTrendChart = ({ className }) => {
   const lineChartData = {
     labels: ["Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6"],
     datasets: [
@@ -16,7 +17,7 @@ const StudentTrendChart = () => {
   };
 
   return (
-    <div className="h-[24rem] shadow-small rounded-large p-6">
+    <div className={cn("h-[24rem] shadow-small rounded-large p-6", className)}>
       <Chart
         type="line"
         data={lineChartData}

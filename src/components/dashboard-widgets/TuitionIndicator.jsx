@@ -1,11 +1,11 @@
 import { useMemo } from "react";
-import Indicator from "./components/Indicator";
+import Indicator from "../common/Indicator";
 import { User } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { API } from "@/apis";
 import { localeString } from "@/utils";
 
-const TuitionIndicator = () => {
+const TuitionIndicator = ({ disableFooter }) => {
   const result = useQuery({
     queryKey: ["reports", "tuition-indicator"],
     queryFn: async () => API.get("/api-v1/reports/tuition-indicator"),
@@ -35,7 +35,7 @@ const TuitionIndicator = () => {
     return obj;
   }, [result.data]);
 
-  return <Indicator title="Học phí đã thu" isLoading={result.isLoading} {...data} />;
+  return <Indicator title="Học phí đã thu" isLoading={result.isLoading} {...data} disableFooter={disableFooter} />;
 };
 
 export default TuitionIndicator;

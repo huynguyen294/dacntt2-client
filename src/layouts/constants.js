@@ -76,14 +76,14 @@ export const userSidebarItems = {
       section: "Báo cáo",
       sectionIcon: ChartColumnBig,
       items: [
-        { label: "Báo cáo tuyển sinh", path: "/admission-report", disabled: true },
-        { label: "Báo cáo tài chính", path: "/finance-report", disabled: true },
-        { label: "Báo cáo đào tạo", path: "/edu-report", disabled: true },
+        { label: "Báo cáo tuyển sinh", path: "/admission-report" },
+        { label: "Báo cáo tài chính", path: "/finance-report" },
+        { label: "Báo cáo đào tạo", path: "/edu-report" },
       ],
     },
-    {
-      items: [{ label: "Trung tâm trợ giúp", path: "/contact", icon: CircleHelp }],
-    },
+    // {
+    //   items: [{ label: "Trung tâm trợ giúp", path: "/contact", icon: CircleHelp }],
+    // },
   ],
   teacher: [
     {

@@ -1,11 +1,11 @@
 import { useMemo } from "react";
-import Indicator from "./components/Indicator";
+import Indicator from "../common/Indicator";
 import { User } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { API } from "@/apis";
 import { localeString } from "@/utils";
 
-const StudentIndicators = () => {
+const StudentIndicators = ({ disableFooter }) => {
   const result = useQuery({
     queryKey: ["reports", "student-indicator"],
     queryFn: async () => API.get("/api-v1/reports/student-indicator"),
@@ -34,6 +34,7 @@ const StudentIndicators = () => {
       icon={<User size="18px" />}
       path="/user-management/student"
       isLoading={result.isLoading}
+      disableFooter={disableFooter}
       {...data}
     />
   );

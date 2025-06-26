@@ -123,8 +123,6 @@ const defaultSelectedColumns = [
   "teacherId",
   "weekDays",
   "shiftId",
-  "numberOfLessons",
-  "numberOfStudents",
   "openingDay",
   "closingDay",
   "status",
