@@ -1,4 +1,9 @@
 export const PALETTE = {
+  PRIMARY: "#399653",
+  SECONDARY: "#377cfb",
+  SUCCESS: "#00a96e",
+  DANGER: "#ff5861",
+  WARNING: "#ffbe00",
   hot_pink: "#fb6b90",
   lilac: "#b185cc",
   blue_green: "#15b5b0",

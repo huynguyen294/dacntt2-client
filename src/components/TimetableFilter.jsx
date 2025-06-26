@@ -16,7 +16,6 @@ const TimetableFilter = ({ value, onChange }) => {
   });
   const classList = useServerList("classes", classApi.get, {
     filters: {
-      openingDay: { lte: format(new Date(), DATE_FORMAT) },
       closingDay: { gte: format(new Date(), DATE_FORMAT) },
     },
     searchPlaceholder: "Tìm theo mã, tên, email...",

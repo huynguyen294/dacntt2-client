@@ -151,6 +151,20 @@ export const getIdFromSrc = (src) => {
   return splitted2[0];
 };
 
+export const shortenNumber = (number) => {
+  if (!number || number <= 0) return "0đ";
+  if (number >= 1000000000) {
+    return (number / 1000000000).toFixed(1).replaceAll(".", ",").replaceAll(",0", "") + " T";
+  }
+  if (number >= 1000000) {
+    return (number / 1000000).toFixed(1).replaceAll(".", ",").replaceAll(",0", "") + " Tr";
+  }
+  if (number >= 1000) {
+    return (number / 1000).toFixed(1).replaceAll(".", ",").replaceAll(",0", "") + " N";
+  }
+  return number;
+};
+
 export const getCloudinaryPublicIdFromUrl = (url) => {
   if (!url) return null;
   const splitted = url.split("/");
