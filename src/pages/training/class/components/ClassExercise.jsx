@@ -20,9 +20,6 @@ import { Divider } from "@heroui/divider";
 import { ConfirmDeleteDialog, ExerciseList } from "@/components";
 import { exerciseApi, topicApi } from "@/apis";
 import { useQueryClient } from "@tanstack/react-query";
-import { format } from "date-fns";
-import { vi } from "date-fns/locale";
-import { cn } from "@/lib/utils";
 import { useNavigate } from "@/hooks";
 import { useParams } from "react-router";
 
@@ -30,12 +27,14 @@ const ClassExercise = () => {
   useClassData();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { id } = useParams();
+  const { classId } = useParams();
   const { fullExercises, exercises, topics, isLoading, ready } = useExerciseData();
   const topicModal = useDisclosure();
   const exerciseModal = useDisclosure();
   const deleteTopicModal = useDisclosure();
   const deleteExerciseModal = useDisclosure();
+
+  console.log(classId);
 
   const [selectedTopic, setSelectedTopic] = useState({});
   const [selectedExercise, setSelectedExercise] = useState({});
@@ -155,9 +154,18 @@ const ClassExercise = () => {
           <ExerciseList
             exercises={fullExercises.filter((e) => new Date(e.releaseDay) > new Date())}
             renderControls={renderExerciseControls}
+            onAction={(exercise) => navigate(`/classes/${classId}/exercise/${exercise.id}`)}
           />
-          <ExerciseList exercises={fullExercises.filter((e) => e.isDraft)} renderControls={renderExerciseControls} />
-          <ExerciseList exercises={exercises.filter((e) => !e.topicId)} renderControls={renderExerciseControls} />
+          <ExerciseList
+            exercises={fullExercises.filter((e) => e.isDraft)}
+            renderControls={renderExerciseControls}
+            onAction={(exercise) => navigate(`/classes/${classId}/exercise/${exercise.id}`)}
+          />
+          <ExerciseList
+            exercises={exercises.filter((e) => !e.topicId)}
+            renderControls={renderExerciseControls}
+            onAction={(exercise) => navigate(`/classes/${classId}/exercise/${exercise.id}`)}
+          />
           {topics.map((topic) => {
             const filtered = exercises.filter((e) => e.topicId === topic.id);
             if (!filtered.length) return null;
@@ -181,7 +189,13 @@ const ClassExercise = () => {
                   />
                 </div>
                 <Divider className="m-2" />
-                {<ExerciseList exercises={filtered} renderControls={renderExerciseControls} />}
+                {
+                  <ExerciseList
+                    exercises={filtered}
+                    renderControls={renderExerciseControls}
+                    onAction={(exercise) => navigate(`/classes/${classId}/exercise/${exercise.id}`)}
+                  />
+                }
               </div>
             );
           })}

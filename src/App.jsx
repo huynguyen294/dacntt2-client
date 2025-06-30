@@ -94,9 +94,9 @@ const App = () => {
 
           <Route path="classes" element={<ClassManagement />} />
           <Route path="classes/add" element={<AddClass />} />
-          <Route path="classes/:id" element={<ClassRoom />} />
-          <Route path="classes/:id/exercise/:exerciseId" element={<ClassExercisePage />} />
-          <Route path="classes/:id/student/:studentId" element={<ClassStudentExercises />} />
+          <Route path="classes/:classId" element={<ClassRoom />} />
+          <Route path="classes/:classId/exercise/:exerciseId" element={<ClassExercisePage />} />
+          <Route path="classes/:classId/student/:studentId" element={<ClassStudentExercises />} />
           <Route path="classes/edit/:id" element={<EditClass />} />
 
           <Route path="exams" element={<ExamManagement />} />
@@ -125,9 +125,9 @@ const App = () => {
         <Route path="teacher">
           <Route index element={<Dashboard />} />
           <Route path="classes" element={<TeacherClass />} />
-          <Route path="classes/:id" element={<ClassRoom />} />
-          <Route path="classes/:id/exercise/:exerciseId" element={<ClassExercisePage />} />
-          <Route path="classes/:id/student/:studentId" element={<ClassStudentExercises />} />
+          <Route path="classes/:classId" element={<ClassRoom />} />
+          <Route path="classes/:classId/exercise/:exerciseId" element={<ClassExercisePage />} />
+          <Route path="classes/:classId/student/:studentId" element={<ClassStudentExercises />} />
           <Route path="timetable" element={<TimeTablePage breadcrumbItems={teacherScheduleBreadcrumbItems} />} />
           <Route path="assessment" element={<Assessment />} />
           <Route path="attendance-check" element={<AttendanceCheck />} />
@@ -156,9 +156,9 @@ const App = () => {
 
           <Route path="classes" element={<ClassManagement />} />
           <Route path="classes/add" element={<AddClass />} />
-          <Route path="classes/:id" element={<ClassRoom />} />
-          <Route path="classes/:id/exercise/:exerciseId" element={<ClassExercisePage />} />
-          <Route path="classes/:id/student/:studentId" element={<ClassStudentExercises />} />
+          <Route path="classes/:classId" element={<ClassRoom />} />
+          <Route path="classes/:classId/exercise/:exerciseId" element={<ClassExercisePage />} />
+          <Route path="classes/:classId/student/:studentId" element={<ClassStudentExercises />} />
           <Route path="classes/edit/:id" element={<EditClass />} />
 
           <Route path="exams" element={<ExamManagement />} />

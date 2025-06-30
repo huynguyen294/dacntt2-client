@@ -9,7 +9,7 @@ import { useParams } from "react-router";
 import { Controller, Form, useForm } from "react-simple-formkit";
 
 const TopicModal = ({ defaultValues = {}, onOpenChange, onSave }) => {
-  const { id } = useParams();
+  const { classId } = useParams();
   const queryClient = useQueryClient();
   const form = useForm();
   const { isError, errors, actions } = form;
@@ -32,7 +32,7 @@ const TopicModal = ({ defaultValues = {}, onOpenChange, onSave }) => {
       return;
     }
 
-    const result = await topicApi.create({ ...data, classId: id });
+    const result = await topicApi.create({ ...data, classId });
     if (result.ok) {
       onOpenChange(false);
       onSave();

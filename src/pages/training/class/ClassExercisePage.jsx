@@ -9,17 +9,17 @@ import { Tab, Tabs } from "@heroui/tabs";
 import { Info, ListChecks } from "lucide-react";
 
 const ClassExercisePage = () => {
-  const { id, exerciseId } = useParams();
+  const { classId, exerciseId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const tab = searchParams.get("tab");
 
   const classResult = useQuery({
-    queryKey: ["classes", id, "refs=true"],
-    queryFn: () => classApi.getById(id, ["refs=true"]),
+    queryKey: ["classes", classId, "refs=true"],
+    queryFn: () => classApi.getById(classId, ["refs=true"]),
   });
 
   const exerciseResult = useQuery({
-    queryKey: ["class-exercises", id, exerciseId],
+    queryKey: ["class-exercises", classId, exerciseId],
     queryFn: () => exerciseApi.getById(exerciseId),
   });
 
@@ -27,7 +27,7 @@ const ClassExercisePage = () => {
     <ModuleLayout
       breadcrumbItems={[
         ...classesManagementBreadcrumbItems,
-        { label: classResult.data?.item?.name || "...", path: "/classes/" + id + "?tab=exercise" },
+        { label: classResult.data?.item?.name || "...", path: "/classes/" + classId + "?tab=exercise" },
         { label: exerciseResult.data?.item?.title || "..." },
       ]}
     >

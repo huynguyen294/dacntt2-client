@@ -20,7 +20,6 @@ const ClassSchedule = () => {
   const queryClient = useQueryClient();
   const user = useAppStore("user");
 
-  const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [selectedRow, setSelectedRow] = useState(null);
@@ -34,18 +33,18 @@ const ClassSchedule = () => {
   const shiftModal = useDisclosure();
 
   // const user = useAppStore('user')
-  const { loading, schedules } = useClassData(id);
+  const { loading, schedules, classId } = useClassData();
 
   const { data: dataLessonCheck } = useQuery({
-    queryKey: ["classes", id, "check-lessons"],
-    queryFn: () => attendanceApi.checkLessons(id),
+    queryKey: ["classes", classId, "check-lessons"],
+    queryFn: () => attendanceApi.checkLessons(classId),
   });
 
   const handleAbsented = async () => {
     if (!selectedRow || action !== "absented") return;
 
     const result = await scheduleApi.update(selectedRow.id, { isAbsented: true });
-    queryClient.invalidateQueries({ queryKey: ["classes", id, "schedules"] });
+    queryClient.invalidateQueries({ queryKey: ["classes", classId, "schedules"] });
 
     if (!result.ok) {
       addToast({ color: "danger", title: "Lỗi!", description: "Có lỗi khi báo vắng buổi học" });
@@ -60,7 +59,7 @@ const ClassSchedule = () => {
     if (!selectedRow || action !== "delete") return;
 
     const result = await scheduleApi.delete(selectedRow.id);
-    queryClient.invalidateQueries({ queryKey: ["classes", id, "schedules"] });
+    queryClient.invalidateQueries({ queryKey: ["classes", classId, "schedules"] });
 
     if (!result.ok) {
       addToast({ color: "danger", title: "Lỗi!", description: "Có lỗi khi xóa buổi học" });
@@ -159,7 +158,7 @@ const ClassSchedule = () => {
 
     const result = await scheduleApi.update(payload);
     if (result.ok) {
-      queryClient.invalidateQueries({ queryKey: ["classes", id, "schedules"] });
+      queryClient.invalidateQueries({ queryKey: ["classes", classId, "schedules"] });
     } else {
       addToast({ color: "danger", title: "Lỗi!", description: result.message });
     }
@@ -176,7 +175,7 @@ const ClassSchedule = () => {
 
     const result = await scheduleApi.update(payload);
     if (result.ok) {
-      queryClient.invalidateQueries({ queryKey: ["classes", id, "schedules"] });
+      queryClient.invalidateQueries({ queryKey: ["classes", classId, "schedules"] });
     } else {
       addToast({ color: "danger", title: "Lỗi!", description: result.message });
     }
@@ -218,7 +217,7 @@ const ClassSchedule = () => {
           btnText: "Xóa",
         };
     }
-  }, [action, id, selectedKeys, selectedTeacher, selectedShift, selectedRow]);
+  }, [action, classId, selectedKeys, selectedTeacher, selectedShift, selectedRow]);
 
   return (
     <div className="space-y-4">

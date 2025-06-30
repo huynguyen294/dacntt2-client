@@ -5,7 +5,7 @@ import { Loader } from "@/components/common";
 import { useParams } from "react-router";
 
 const ClassInfo = () => {
-  const { id } = useParams();
+  const { classId } = useParams();
   const { loading, data, shiftObj, ready } = useClassData();
 
   return (
@@ -29,7 +29,7 @@ const ClassInfo = () => {
           <div className="shadow-small p-2 pb-4 sm:p-4 sm:pb-8 rounded-large ">
             <p className="text-lg font-bold">Danh sách học viên</p>
             <div className="rounded-lg mt-4">
-              <StudentList classId={id} />
+              <StudentList classId={classId} />
             </div>
           </div>
         </>

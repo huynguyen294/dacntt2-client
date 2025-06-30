@@ -12,13 +12,13 @@ import { useNavigate } from "@/hooks";
 
 const ClassStudents = () => {
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { classId } = useParams();
   const { students, loading } = useClassData();
   const { exercises } = useExerciseData();
 
   const { isLoading, data } = useQuery({
-    queryKey: ["classes", id, "class-exercise-scores", "student-statuses"],
-    queryFn: () => exerciseScoreApi.getStudentStatuses(id),
+    queryKey: ["classes", classId, "class-exercise-scores", "student-statuses"],
+    queryFn: () => exerciseScoreApi.getStudentStatuses(classId),
   });
 
   return (

@@ -7,23 +7,23 @@ import { useParams, useSearchParams } from "react-router";
 import { classesManagementBreadcrumbItems } from "../constants";
 import { Calendar1, ClipboardCheck, Info, ListChecks, Users } from "lucide-react";
 import { Tab, Tabs } from "@heroui/tabs";
+import { useAppStore } from "@/state";
 import ClassStudents from "./components/ClassStudents";
 import CheckAttendance from "./components/CheckAttendance";
 import ClassSchedule from "./components/ClassSchedule";
 import ClassInfo from "./components/ClassInfo";
 import ClassExercise from "./components/ClassExercise";
-import { useAppStore } from "@/state";
 
 const ClassRoom = () => {
-  const { id } = useParams();
+  const { classId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const user = useAppStore("user");
   const tab = searchParams.get("tab");
 
   const { data, isError, error } = useQuery({
-    queryKey: ["classes", id, "refs=true"],
-    queryFn: () => classApi.getById(id, ["refs=true"]),
+    queryKey: ["classes", classId, "refs=true"],
+    queryFn: () => classApi.getById(classId, ["refs=true"]),
   });
 
   useEffect(() => {

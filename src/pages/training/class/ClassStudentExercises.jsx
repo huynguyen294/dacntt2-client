@@ -21,7 +21,7 @@ import { useNavigate } from "@/hooks";
 
 const ClassStudentExercises = () => {
   const navigate = useNavigate();
-  const { studentId, id: classId } = useParams();
+  const { studentId, classId } = useParams();
   const exerciseData = useExerciseData();
   const classData = useClassData();
   const { exercises } = exerciseData;

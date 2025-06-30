@@ -7,9 +7,8 @@ import { format } from "date-fns";
 import { useMemo } from "react";
 import { useParams } from "react-router";
 
-const useClassData = (classId) => {
-  const { id } = useParams();
-  if (!classId) classId = id;
+const useClassData = () => {
+  const { classId } = useParams();
 
   const { shiftObj } = useMetadata();
   const { isLoading, data } = useQuery({

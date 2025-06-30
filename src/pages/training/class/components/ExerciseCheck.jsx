@@ -16,13 +16,13 @@ import { useParams } from "react-router";
 
 const StudentScore = ({ student, onData }) => {
   const queryClient = useQueryClient();
-  const { id, exerciseId } = useParams();
+  const { classId, exerciseId } = useParams();
   const [value, setValue] = useState();
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
 
   const { isLoading, data } = useQuery({
-    queryKey: ["classes", id, "class-exercise-scores", exerciseId, student.id],
+    queryKey: ["classes", classId, "class-exercise-scores", exerciseId, student.id],
     queryFn: () => exerciseScoreApi.get(null, null, null, { exerciseId, studentId: student.id }),
   });
 
@@ -49,17 +49,21 @@ const StudentScore = ({ student, onData }) => {
 
     if (scoreData?.id) {
       const result = await exerciseScoreApi.update(scoreData?.id, { score, status: EXERCISE_STATUSES.submitted });
-      queryClient.invalidateQueries({ queryKey: ["classes", id, "class-exercise-scores", exerciseId, student.id] });
+      queryClient.invalidateQueries({
+        queryKey: ["classes", classId, "class-exercise-scores", exerciseId, student.id],
+      });
       if (!result.ok) addToast({ color: "danger", title: "Lỗi!", description: result.message });
     } else {
       const result = await exerciseScoreApi.create({
         score,
         studentId: student.id,
-        classId: +id,
+        classId: +classId,
         exerciseId: +exerciseId,
         status: EXERCISE_STATUSES.submitted,
       });
-      queryClient.invalidateQueries({ queryKey: ["classes", id, "class-exercise-scores", exerciseId, student.id] });
+      queryClient.invalidateQueries({
+        queryKey: ["classes", classId, "class-exercise-scores", exerciseId, student.id],
+      });
       if (!result.ok) addToast({ color: "danger", title: "Lỗi!", description: result.message });
     }
 
@@ -115,7 +119,7 @@ const StudentScore = ({ student, onData }) => {
 
 const ExerciseCheck = () => {
   const queryClient = useQueryClient();
-  const { id: classId, exerciseId } = useParams();
+  const { classId, exerciseId } = useParams();
   const studentResult = useQuery({
     queryKey: ["classes", classId, "students", "refFields=:full"],
     queryFn: () => classApi.getClassStudents(classId, ORDER_BY_NAME, ["refFields=:full"]),

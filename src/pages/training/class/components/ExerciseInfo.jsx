@@ -11,9 +11,9 @@ import { Divider } from "@heroui/divider";
 
 const ExerciseInfo = () => {
   const queryClient = useQueryClient();
-  const { id, exerciseId } = useParams();
+  const { classId, exerciseId } = useParams();
   const { data, isLoading } = useQuery({
-    queryKey: ["class-exercises", id, exerciseId],
+    queryKey: ["class-exercises", classId, exerciseId],
     queryFn: () => exerciseApi.getById(exerciseId),
   });
 

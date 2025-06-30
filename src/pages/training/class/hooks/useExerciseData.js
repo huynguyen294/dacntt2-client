@@ -4,14 +4,14 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router";
 
 const useExerciseData = () => {
-  const { id } = useParams();
+  const { classId } = useParams();
   const topicResult = useQuery({
-    queryKey: ["class-topics", id],
-    queryFn: () => topicApi.get(null, ORDER_BY_NAME, null, { classId: id }),
+    queryKey: ["class-topics", classId],
+    queryFn: () => topicApi.get(null, ORDER_BY_NAME, null, { classId }),
   });
   const exerciseResult = useQuery({
-    queryKey: ["class-exercises", id],
-    queryFn: () => exerciseApi.get(null, { orderBy: "title", order: "asc" }, null, { classId: id }),
+    queryKey: ["class-exercises", classId],
+    queryFn: () => exerciseApi.get(null, { orderBy: "title", order: "asc" }, null, { classId }),
   });
 
   const isLoading = topicResult.isLoading || exerciseResult.isLoading;
