@@ -288,28 +288,30 @@ const ClassSchedule = () => {
         >
           Buổi học
         </Button>
-        <HeroUiDropdown showArrow>
-          <DropdownTrigger>
-            <Button
-              isDisabled={loading || selectedKeys.size === 0}
-              variant="flat"
-              radius="full"
-              color="default"
-              className="shadow-lg"
-              endContent={<ChevronDown size="16px" strokeWidth={3} />}
-            >
-              Thao tác
-            </Button>
-          </DropdownTrigger>
-          <DropdownMenu variant="flat">
-            <DropdownItem startContent={<User size="16px" />} onPress={teacherModal.onOpen}>
-              Đổi giáo viên
-            </DropdownItem>
-            <DropdownItem startContent={<TimerReset size="16px" />} onPress={shiftModal.onOpen}>
-              Đổi ca học
-            </DropdownItem>
-          </DropdownMenu>
-        </HeroUiDropdown>
+        {["admin", "finance-officer"].includes(user?.role) && (
+          <HeroUiDropdown showArrow>
+            <DropdownTrigger>
+              <Button
+                isDisabled={loading || selectedKeys.size === 0}
+                variant="flat"
+                radius="full"
+                color="default"
+                className="shadow-lg"
+                endContent={<ChevronDown size="16px" strokeWidth={3} />}
+              >
+                Thao tác
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu variant="flat">
+              <DropdownItem startContent={<User size="16px" />} onPress={teacherModal.onOpen}>
+                Đổi giáo viên
+              </DropdownItem>
+              <DropdownItem startContent={<TimerReset size="16px" />} onPress={shiftModal.onOpen}>
+                Đổi ca học
+              </DropdownItem>
+            </DropdownMenu>
+          </HeroUiDropdown>
+        )}
       </div>
       <TableProvider
         value={{
