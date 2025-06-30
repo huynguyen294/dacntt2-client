@@ -1,8 +1,7 @@
 import { useServerList } from "@/hooks";
 import { classApi, userApi } from "@/apis";
 import { Avatar } from "@heroui/avatar";
-import { format } from "date-fns";
-import { DATE_FORMAT, EMPLOYEE_STATUS } from "@/constants";
+import { EMPLOYEE_STATUS, ORDER_BY_NAME } from "@/constants";
 import { Select, SelectItem, SelectSection } from "@heroui/select";
 
 const TimetableFilter = ({ value, onChange }) => {
@@ -15,10 +14,7 @@ const TimetableFilter = ({ value, onChange }) => {
     paging: false,
   });
   const classList = useServerList("classes", classApi.get, {
-    filters: {
-      closingDay: { gte: format(new Date(), DATE_FORMAT) },
-    },
-    searchPlaceholder: "Tìm theo mã, tên, email...",
+    order: ORDER_BY_NAME,
     paging: false,
   });
 

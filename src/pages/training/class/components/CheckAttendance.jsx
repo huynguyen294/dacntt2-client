@@ -1,5 +1,5 @@
-import { attendanceApi } from "@/apis";
 import useClassData from "../hooks/useClassData";
+import { attendanceApi } from "@/apis";
 import { Loader, Table, TableProvider } from "@/components/common";
 import { ATTENDANCES } from "@/constants";
 import { blurEmail, dayFormat, shiftFormat } from "@/utils";
@@ -13,7 +13,7 @@ import { RefreshCcw, Save } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router";
 
-const CheckAttendance = () => {
+const CheckAttendance = ({ scheduleSelectorProps = {}, customControls }) => {
   const queryClient = useQueryClient();
   const [searchParams, setSearchParams] = useSearchParams();
   const { students, loading, schedules, classId, ready } = useClassData();
@@ -122,96 +122,104 @@ const CheckAttendance = () => {
       searchParams.set("lessonId", date);
       setSearchParams(searchParams, { replace: true });
     }
-  }, [schedules, lessonId]);
+  }, [schedules, lessonId, ready]);
 
   return (
     <div id="attendance">
+      <div className="flex flex-wrap gap-2">
+        {customControls}
+        {attendances && (
+          <Autocomplete
+            label="Buổi học"
+            labelPlacement="outside-left"
+            inputProps={{ classNames: { label: "text-base font-semibold", input: "min-w-60" } }}
+            selectedKey={lessonId}
+            onSelectionChange={(newValue) => {
+              searchParams.set("lessonId", newValue);
+              setSearchParams(searchParams, { replace: true });
+            }}
+            isClearable={false}
+            {...scheduleSelectorProps}
+          >
+            {schedules.map((schedule, index) => (
+              <AutocompleteItem
+                key={schedule.id.toString()}
+                isDisabled={new Date(schedule.date) > new Date()}
+                description={schedule.shift.name + " " + shiftFormat(schedule.shift)}
+              >{`Buổi ${index + 1}: ${schedule.date} (${dayFormat(schedule.date)})`}</AutocompleteItem>
+            ))}
+          </Autocomplete>
+        )}
+      </div>
       <Loader isLoading={attendResult.isLoading || loading} />
       {attendances && (
-        <>
-          {schedules && (
-            <Autocomplete
-              label="Buổi học: "
-              labelPlacement="outside-left"
-              inputProps={{ classNames: { label: "text-base font-semibold", input: "min-w-60" } }}
-              selectedKey={lessonId}
-              onSelectionChange={(newValue) => {
-                searchParams.set("lessonId", newValue);
-                setSearchParams(searchParams, { replace: true });
-              }}
-              isClearable={false}
-            >
-              {schedules.map((schedule, index) => (
-                <AutocompleteItem
-                  key={schedule.id.toString()}
-                  isDisabled={new Date(schedule.date) > new Date()}
-                  description={schedule.shift.name + " " + shiftFormat(schedule.shift)}
-                >{`Buổi ${index + 1}: ${schedule.date} (${dayFormat(schedule.date)})`}</AutocompleteItem>
-              ))}
-            </Autocomplete>
-          )}
-          <TableProvider
-            value={{
-              columns: [
-                { uid: "index", name: "STT", disableSort: true },
-                {
-                  uid: "attend",
-                  name: "Điểm danh",
-                  disableSort: true,
-                  render: (row) => {
-                    const attendance = attendances[row.id];
-                    return (
-                      <RadioGroup
-                        orientation="horizontal"
-                        defaultValue={attendance?.attend}
-                        value={attendance?.attend}
-                        onValueChange={(attend) => changeAttendance(row.id, { ...attendance, attend, isTouched: true })}
-                      >
-                        {Object.keys(ATTENDANCES).map((a) => (
-                          <Radio key={a} value={a}>
-                            {ATTENDANCES[a]}
-                          </Radio>
-                        ))}
-                      </RadioGroup>
-                    );
-                  },
+        <TableProvider
+          value={{
+            columns: [
+              { uid: "index", name: "STT", disableSort: true },
+              {
+                uid: "attend",
+                name: "Điểm danh",
+                disableSort: true,
+                render: (row) => {
+                  const attendance = attendances[row.id];
+                  return (
+                    <RadioGroup
+                      orientation="horizontal"
+                      defaultValue={attendance?.attend}
+                      value={attendance?.attend}
+                      onValueChange={(attend) => changeAttendance(row.id, { ...attendance, attend, isTouched: true })}
+                    >
+                      {Object.keys(ATTENDANCES).map((a) => (
+                        <Radio key={a} value={a}>
+                          {ATTENDANCES[a]}
+                        </Radio>
+                      ))}
+                    </RadioGroup>
+                  );
                 },
-                { uid: "name", name: "Tên", disableSort: true },
-                { uid: "email", name: "Email", disableSort: true, render: (row) => blurEmail(row.email) },
-                {
-                  uid: "absents",
-                  name: "Số buổi nghỉ",
-                  disableSort: true,
-                  render: (row) => {
-                    const attends = attendResult.data?.refs?.studentAttends?.[row.id] || [];
-                    const found = attends.find((a) => a.attend === "no");
-                    return found?.total || 0;
-                  },
+              },
+              { uid: "name", name: "Tên", disableSort: true },
+              { uid: "email", name: "Email", disableSort: true, render: (row) => blurEmail(row.email) },
+              {
+                uid: "absents",
+                name: "Số buổi nghỉ",
+                disableSort: true,
+                render: (row) => {
+                  const attends = attendResult.data?.refs?.studentAttends?.[row.id] || [];
+                  const found = attends.find((a) => a.attend === "no");
+                  return found?.total || 0;
                 },
-                {
-                  uid: "late",
-                  name: "Số buổi trễ",
-                  disableSort: true,
-                  render: (row) => {
-                    const attends = attendResult.data?.refs?.studentAttends?.[row.id] || [];
-                    const found = attends.find((a) => a.attend === "late");
-                    return found?.total || 0;
-                  },
+              },
+              {
+                uid: "late",
+                name: "Số buổi trễ",
+                disableSort: true,
+                render: (row) => {
+                  const attends = attendResult.data?.refs?.studentAttends?.[row.id] || [];
+                  const found = attends.find((a) => a.attend === "late");
+                  return found?.total || 0;
                 },
-                { uid: "note", name: "Nhận xét", disableSort: true, render: renderNote },
-              ],
-            }}
-          >
-            <Table
-              rows={students}
-              isHeaderSticky={false}
-              classNames={{ wrapper: "shadow-none p-2 mt-2 border-2" }}
-              selectionMode="none"
-              isLoading={loading}
-            />
-          </TableProvider>
+              },
+              { uid: "note", name: "Nhận xét", disableSort: true, render: renderNote },
+            ],
+          }}
+        >
+          <Table
+            rows={students}
+            isHeaderSticky={false}
+            classNames={{ wrapper: "shadow-none p-2 mt-2 border-2" }}
+            selectionMode="none"
+            isLoading={loading}
+          />
           <div className="flex items-center mt-2 gap-2">
-            <Button isLoading={saving} color="primary" startContent={<Save size="18px" />} onPress={handleSave}>
+            <Button
+              isDisabled={!ready}
+              isLoading={saving}
+              color="primary"
+              startContent={<Save size="18px" />}
+              onPress={handleSave}
+            >
               Lưu lại
             </Button>
             <Button
@@ -223,7 +231,7 @@ const CheckAttendance = () => {
               Đặt lại
             </Button>
           </div>
-        </>
+        </TableProvider>
       )}
     </div>
   );

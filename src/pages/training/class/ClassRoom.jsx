@@ -43,7 +43,7 @@ const ClassRoom = () => {
         classNames={{
           base: "container mx-auto w-full justify-center my-2 sm:my-4 px-2 sm:px-10",
           panel:
-            "flex-1 overflow-y-auto container mx-auto max-w-3xl pb-10 px-2 sm:px-10 [&:has(#attendance)]:max-w-7xl [&:has(#info)]:max-w-none",
+            "flex-1 overflow-y-auto container mx-auto max-w-3xl pb-10 px-2 sm:px-10 [&:has(#attendance)]:max-w-none [&:has(#info)]:max-w-none",
         }}
       >
         {["admin", "finance-officer"].includes(user?.role) && (

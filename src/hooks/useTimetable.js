@@ -1,8 +1,7 @@
 import { classApi, enrollmentApi, scheduleApi, userApi } from "@/apis";
-import { DATE_FORMAT, defaultWeekCalendarValue, EMPLOYEE_STATUS } from "@/constants";
+import { defaultWeekCalendarValue, EMPLOYEE_STATUS, ORDER_BY_NAME } from "@/constants";
 import { useMetadata, useServerList } from "@/hooks";
 import { arrayToObject, unique } from "@/utils";
-import { format } from "date-fns";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { COLORS } from "@/constants/palette";
@@ -16,10 +15,7 @@ const useTimetable = ({ generalMode = null, studentId = null, teacherId = null, 
     paging: false,
   });
   const classList = useServerList("classes", classApi.get, {
-    filters: {
-      openingDay: { lte: format(new Date(), DATE_FORMAT) },
-      closingDay: { gte: format(new Date(), DATE_FORMAT) },
-    },
+    order: ORDER_BY_NAME,
     paging: false,
   });
   const scheduleList = useServerList("class-schedules", classList.ready && scheduleApi.get, {

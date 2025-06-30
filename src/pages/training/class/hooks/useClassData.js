@@ -9,8 +9,9 @@ import { useParams } from "react-router";
 
 const useClassData = () => {
   const { classId } = useParams();
-
   const { shiftObj } = useMetadata();
+  if (!classId || classId === "undefined") return { ready: false, schedules: [], students: [] };
+
   const { isLoading, data } = useQuery({
     queryKey: ["classes", classId, "refs=true"],
     queryFn: () => classApi.getById(classId, ["refs=true"]),

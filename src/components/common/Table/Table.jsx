@@ -3,6 +3,7 @@ import { Spinner } from "@heroui/spinner";
 import { Table as HerioUiTable, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/table";
 import { Ban } from "lucide-react";
 import { useTableContext } from "./context";
+import EmptyMessage from "@/components/EmptyMessage";
 
 const defaultCellRenderer = (row, columnKey, index, table) => row[columnKey];
 const Table = ({
@@ -62,14 +63,7 @@ const Table = ({
         ))}
       </TableHeader>
       <TableBody
-        emptyContent={
-          emptyContent || (
-            <div className="text-foreground-500 font-semibold flex gap-2 w-full justify-center items-center">
-              <Ban size="18px" />
-              Không có dữ liệu
-            </div>
-          )
-        }
+        emptyContent={emptyContent || <EmptyMessage message="Không có dữ liệu" />}
         loadingContent={<Spinner variant="wave" />}
         loadingState={loadingState}
       >

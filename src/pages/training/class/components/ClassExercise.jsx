@@ -34,8 +34,6 @@ const ClassExercise = () => {
   const deleteTopicModal = useDisclosure();
   const deleteExerciseModal = useDisclosure();
 
-  console.log(classId);
-
   const [selectedTopic, setSelectedTopic] = useState({});
   const [selectedExercise, setSelectedExercise] = useState({});
 

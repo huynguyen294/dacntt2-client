@@ -1,4 +1,4 @@
-import { Route, Routes, useHref } from "react-router";
+import { Navigate, Route, Routes, useHref } from "react-router";
 import { HeroUIProvider } from "@heroui/system";
 import { ToastProvider } from "@heroui/toast";
 
@@ -129,8 +129,10 @@ const App = () => {
           <Route path="classes/:classId/exercise/:exerciseId" element={<ClassExercisePage />} />
           <Route path="classes/:classId/student/:studentId" element={<ClassStudentExercises />} />
           <Route path="timetable" element={<TimeTablePage breadcrumbItems={teacherScheduleBreadcrumbItems} />} />
-          <Route path="assessment" element={<Assessment />} />
-          <Route path="attendance-check" element={<AttendanceCheck />} />
+          <Route path="assessment" element={<Navigate to="/teacher/assessment/undefined/exercise/undefined" />} />
+          <Route path="assessment/:classId/exercise/:exerciseId" element={<Assessment />} />
+          <Route path="attendance-check" element={<Navigate to="/teacher/attendance-check/undefined" />} />
+          <Route path="attendance-check/:classId" element={<AttendanceCheck />} />
         </Route>
 
         <Route path="consultant">
