@@ -11,10 +11,7 @@ const AttendanceCheck = () => {
   const navigate = useNavigate();
   const { classId } = useParams();
 
-  const classList = useServerList("classes", classApi.get, {
-    order: ORDER_BY_NAME,
-    paging: false,
-  });
+  const classList = useServerList("classes", classApi.get, { order: ORDER_BY_NAME, paging: false });
 
   const customControls = (
     <Select
