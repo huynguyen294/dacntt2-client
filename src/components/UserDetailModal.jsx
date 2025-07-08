@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { Avatar } from "@heroui/avatar";
 import { Chip } from "@heroui/chip";
 import { alpha, displayDate, localeString } from "@/utils";
-import { EMPLOYEE_ROLES, ROLE_PALLET } from "@/constants";
+import { EMPLOYEE_ROLES, getCode, ROLE_PALLET } from "@/constants";
 import { format } from "date-fns";
 import { useQuery } from "@tanstack/react-query";
 import { userApi } from "@/apis";
@@ -117,11 +117,10 @@ const UserDetailModal = ({ user, onOpenChange }) => {
                       value={{
                         columns: [
                           { uid: "index", name: "STT", disableSort: true },
+                          { uid: "code", name: "Mã lớp", disableSort: true },
                           { uid: "name", name: "Tên lớp", disableSort: true },
-                          { uid: "weekDays", name: "Ngày học", disableSort: true },
                           { uid: "openingDay", name: "Ngày khai giảng", disableSort: true },
                           { uid: "closingDay", name: "Ngày kết thúc", disableSort: true },
-                          user.role === "student" && { uid: "actions", name: "Thao tác", disableSort: true },
                         ],
                       }}
                     >
@@ -133,6 +132,7 @@ const UserDetailModal = ({ user, onOpenChange }) => {
                         renderCell={(rowData, columnKey, index) => {
                           let cellValue = rowData[columnKey];
                           if (columnKey === "index") cellValue = index + 1;
+                          if (columnKey === "code") cellValue = getCode("class", rowData.id);
                           const dateFields = ["openingDay", "closingDay"];
                           if (dateFields.includes(columnKey)) {
                             cellValue = displayDate(cellValue);
@@ -161,17 +161,6 @@ const UserDetailModal = ({ user, onOpenChange }) => {
                         }}
                       />
                     </TableProvider>
-                  </div>
-                )}
-
-                {user.role === "student" && (
-                  <div className="rounded-large border p-3 sm:p-4 py-6 gap-4">
-                    <p className="font-bold">Lịch sử thanh toán học phí</p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 w-full mt-4 space-y-3">
-                      <div className="col-span-1 sm:col-span-2 h-20 flex justify-center items-center">
-                        <Ban size="12px" className="mr-1" /> Không có dữ liệu
-                      </div>
-                    </div>
                   </div>
                 )}
               </div>

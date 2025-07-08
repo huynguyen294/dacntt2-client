@@ -44,7 +44,7 @@ const ClassStudents = () => {
               }
               description={`Bài tập đã hoàn thành: ${data.result?.[student.id]?.total || 0}/${exercises.length}`}
               className="py-3"
-              onPress={() => navigate(`/classes/${id}/student/${student.id}`)}
+              onPress={() => navigate(`/classes/${classId}/student/${student.id}`)}
             >
               <p className="text-base">{student.name}</p>
             </ListboxItem>
