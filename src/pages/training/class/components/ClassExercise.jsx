@@ -22,6 +22,7 @@ import { exerciseApi, topicApi } from "@/apis";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@/hooks";
 import { useParams } from "react-router";
+import ReuseExerciseModal from "./ReuseExerciseModal";
 
 const ClassExercise = () => {
   useClassData();
@@ -31,6 +32,7 @@ const ClassExercise = () => {
   const { fullExercises, exercises, topics, isLoading, ready } = useExerciseData();
   const topicModal = useDisclosure();
   const exerciseModal = useDisclosure();
+  const reuseExerciseModal = useDisclosure();
   const deleteTopicModal = useDisclosure();
   const deleteExerciseModal = useDisclosure();
 
@@ -79,6 +81,21 @@ const ClassExercise = () => {
 
   return (
     <div>
+      <ReuseExerciseModal
+        isOpen={reuseExerciseModal.isOpen}
+        onOpenChange={reuseExerciseModal.onOpenChange}
+        onSelect={async (selectedExercise) => {
+          try {
+            const exercise = await exerciseApi.getById(selectedExercise);
+            const { title, description } = exercise?.item || {};
+            setSelectedExercise({ title, description });
+            reuseExerciseModal.onClose();
+            exerciseModal.onOpen();
+          } catch {
+            console.log(error);
+          }
+        }}
+      />
       {topicModal.isOpen && (
         <TopicModal
           editMode={Boolean(selectedTopic.id)}
@@ -133,12 +150,7 @@ const ClassExercise = () => {
                 <DropdownItem startContent={<ClipboardCheck size="16px" />} onPress={exerciseModal.onOpen}>
                   Bài tập
                 </DropdownItem>
-                <DropdownItem
-                  startContent={<Repeat2 size="16px" />}
-                  onPress={() => {
-                    addToast({ color: "danger", title: "Lỗi!", description: "Tính năng chưa hỗ trợ" });
-                  }}
-                >
+                <DropdownItem startContent={<Repeat2 size="16px" />} onPress={reuseExerciseModal.onOpen}>
                   Sử dụng lại bài tập
                 </DropdownItem>
               </DropdownSection>
@@ -187,13 +199,11 @@ const ClassExercise = () => {
                   />
                 </div>
                 <Divider className="m-2" />
-                {
-                  <ExerciseList
-                    exercises={filtered}
-                    renderControls={renderExerciseControls}
-                    onAction={(exercise) => navigate(`/classes/${classId}/exercise/${exercise.id}`)}
-                  />
-                }
+                <ExerciseList
+                  exercises={filtered}
+                  renderControls={renderExerciseControls}
+                  onAction={(exercise) => navigate(`/classes/${classId}/exercise/${exercise.id}`)}
+                />
               </div>
             );
           })}
