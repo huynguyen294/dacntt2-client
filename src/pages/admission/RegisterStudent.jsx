@@ -8,7 +8,7 @@ import { Button } from "@heroui/button";
 import { MoveLeft, MoveRight } from "lucide-react";
 import { useNavigate, useReload } from "@/hooks";
 import { useSearchParams } from "react-router";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { ClassAssignment, SearchUser } from "@/components";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { studentConsultationApi, userApi } from "@/apis";
@@ -46,7 +46,6 @@ const RegisterStudent = () => {
   const loading = isLoading || admissionLoading;
 
   const defaultValues = useMemo(() => {
-    reload();
     return admissionData?.item || data?.item || {};
   }, [isSuccess, admissionSuccess, admissionData, data]);
 
@@ -60,6 +59,10 @@ const RegisterStudent = () => {
       addToast({ color: "danger", title: "Lỗi!", description: "Có lỗi khi cập nhật trạng thái." });
     }
   };
+
+  useEffect(() => {
+    reload();
+  }, [defaultValues]);
 
   return (
     <ModuleLayout breadcrumbItems={registerBreadcrumbItems} className="flex-1 overflow-y-auto pb-10">
@@ -101,7 +104,7 @@ const RegisterStudent = () => {
             </Button>
           </div>
           <AdmissionForm
-            key={lastedReloadedAt}
+            lastedReloadedAt={lastedReloadedAt}
             defaultValues={defaultValues}
             editMode={Boolean(admissionId)}
             onReload={reload}

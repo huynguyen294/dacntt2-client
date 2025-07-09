@@ -13,12 +13,12 @@ import { Select, SelectItem } from "@heroui/select";
 import { addToast } from "@heroui/toast";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { RefreshCcw, Save } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
 import { Controller, Form, useForm } from "react-simple-formkit";
 
 const numberFields = ["expectedClassId", "expectedCourseId", "consultantId"];
-const AdmissionForm = ({ defaultValues = {}, editMode, onReload }) => {
+const AdmissionForm = ({ defaultValues = {}, lastedReloadedAt, editMode, onReload }) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -64,7 +64,6 @@ const AdmissionForm = ({ defaultValues = {}, editMode, onReload }) => {
         addToast({ color: "danger", title: "Lỗi!", description: result.message });
       }
 
-      onReload();
       addToast({ color: "success", title: "Thành công!", description: "Lưu dữ liệu thành công" });
       setLoading(false);
       return;
@@ -82,7 +81,6 @@ const AdmissionForm = ({ defaultValues = {}, editMode, onReload }) => {
       addToast({ color: "danger", title: "Lỗi!", description: result.message });
     }
 
-    onReload();
     navigate(`/register-admission?step=1&admissionId=${result.created.id}`);
     addToast({ color: "success", title: "Thành công!", description: "Lưu dữ liệu thành công" });
     setLoading(false);
@@ -96,9 +94,14 @@ const AdmissionForm = ({ defaultValues = {}, editMode, onReload }) => {
     }
   };
 
+  useEffect(() => {
+    actions.reload();
+  }, [lastedReloadedAt]);
+
   return (
     <>
       <Form
+        key={lastedReloadedAt}
         form={form}
         onSubmit={handleSubmit}
         onChange={handleFormChange}
@@ -232,32 +235,34 @@ const AdmissionForm = ({ defaultValues = {}, editMode, onReload }) => {
             <Controller
               name="status"
               defaultValue={defaultValues.status || ADMISSION_STATUSES.pending}
-              render={({ name, ref, value, setValue, defaultValue }) => (
-                <Select
-                  ref={ref}
-                  name={name}
-                  isRequired
-                  selectedKeys={new Set([value])}
-                  onSelectionChange={(keys) => {
-                    setValue([...keys][0]);
-                    actions.instantChange();
-                  }}
-                  defaultSelectedKeys={new Set(defaultValue ? [defaultValue] : [])}
-                  startContent={<Dot variant={getAdmissionColor(value || defaultValue)} />}
-                  size="lg"
-                  variant="bordered"
-                  label="Trạng thái"
-                  radius="sm"
-                  labelPlacement="outside"
-                  placeholder="Chọn trạng thái"
-                >
-                  {Object.values(ADMISSION_STATUSES).map((status) => (
-                    <SelectItem key={status} startContent={<Dot variant={getAdmissionColor(status)} />}>
-                      {status}
-                    </SelectItem>
-                  ))}
-                </Select>
-              )}
+              render={({ name, ref, value, setValue, defaultValue }) => {
+                return (
+                  <Select
+                    ref={ref}
+                    name={name}
+                    isRequired
+                    selectedKeys={new Set([value])}
+                    onSelectionChange={(keys) => {
+                      setValue([...keys][0]);
+                      actions.instantChange();
+                    }}
+                    defaultSelectedKeys={new Set(defaultValue ? [defaultValue] : [])}
+                    startContent={<Dot variant={getAdmissionColor(value || defaultValue)} />}
+                    size="lg"
+                    variant="bordered"
+                    label="Trạng thái"
+                    radius="sm"
+                    labelPlacement="outside"
+                    placeholder="Chọn trạng thái"
+                  >
+                    {Object.values(ADMISSION_STATUSES).map((status) => (
+                      <SelectItem key={status} startContent={<Dot variant={getAdmissionColor(status)} />}>
+                        {status}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                );
+              }}
             />
             <Input
               name="source"
