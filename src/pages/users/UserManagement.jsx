@@ -121,7 +121,6 @@ const adminColumns = [...commonColumns, { name: "Thao tác", uid: "actions", dis
 const studentColumns = [
   ...commonColumns,
   { name: "Lớp đang học", uid: "classes", disableSort: true },
-  { name: "Học phí", uid: "tuition" },
   { name: "Thao tác", uid: "actions", disableSort: true },
 ];
 

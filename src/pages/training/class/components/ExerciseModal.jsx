@@ -13,7 +13,7 @@ import { Controller, Form, useForm } from "react-simple-formkit";
 import { DatePicker } from "@heroui/date-picker";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/dropdown";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { exerciseApi, topicApi } from "@/apis";
 import { useQueryClient } from "@tanstack/react-query";
 import { addToast } from "@heroui/toast";
@@ -23,6 +23,7 @@ const ExerciseModal = ({ editMode, defaultValues = {}, onOpenChange, onSave = ()
   const queryClient = useQueryClient();
   const { data, classId } = useClassData();
   const { topics, isLoading } = useExerciseData();
+  const modalRef = useRef();
 
   const form = useForm({ numberFields });
   const { isDirty, isError, actions } = form;
@@ -160,6 +161,7 @@ const ExerciseModal = ({ editMode, defaultValues = {}, onOpenChange, onSave = ()
         </Modal>
       )}
       <FullScreenModal
+        modalRef={modalRef}
         onOpenChange={onOpenChange}
         titleText="Bài tập"
         titleIcon={
@@ -178,13 +180,13 @@ const ExerciseModal = ({ editMode, defaultValues = {}, onOpenChange, onSave = ()
             >
               Giao bài
             </Button>
-            <Dropdown>
+            <Dropdown portalContainer={modalRef.current}>
               <DropdownTrigger>
                 <Button isDisabled={!isDirty || isError || saving} color="primary" isIconOnly>
                   <ChevronDown size="16px" strokeWidth={3} />
                 </Button>
               </DropdownTrigger>
-              <DropdownMenu>
+              <DropdownMenu pop>
                 <DropdownItem
                   startContent={<Send size="14px" />}
                   itemType="submit"

@@ -2,9 +2,10 @@ import { Button } from "@heroui/button";
 import { Modal, ModalBody, ModalContent, ModalHeader } from "@heroui/modal";
 import { X } from "lucide-react";
 
-const FullScreenModal = ({ classNames, titleText, titleIcon, onOpenChange, children, rightControls }) => {
+const FullScreenModal = ({ modalRef, titleText, titleIcon, onOpenChange, children, rightControls }) => {
   return (
     <Modal
+      ref={modalRef}
       scrollBehavior="inside"
       disableAnimation
       size="full"
