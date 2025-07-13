@@ -52,8 +52,9 @@ const FinanceReport = () => {
       .filter((t) => activeClasses.includes(t.classId))
       .reduce((acc, curr) => acc + curr.amount, 0);
     const totalTuition = classList.list.reduce((acc, curr) => {
+      let classTuition = 0;
       const found = resultTotal.data.totals.find((c) => c.id === curr.id);
-      const classTuition = curr.tuitionFee * +found.total;
+      if (found) classTuition = curr.tuitionFee * +found.total;
       return acc + classTuition;
     }, 0);
 
